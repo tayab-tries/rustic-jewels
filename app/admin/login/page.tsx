@@ -43,7 +43,7 @@ export default function AdminLogin() {
     try {
       const res = await authService.signIn(values.email, values.password);
       if (res.success) {
-        router.push("/admin/dashboard");
+        window.location.href = "/admin/dashboard";
       } else {
         setErrorMsg(res.error || "Authentication failed.");
       }
