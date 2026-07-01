@@ -1,24 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* Premium Brand Color System - Gold & Champagne Accents */
-  --color-gold-50: #fbf9f4;
-  --color-gold-100: #f4edd9;
-  --color-gold-200: #e7d8b1;
-  --color-gold-300: #d6be83;
-  --color-gold-400: #c4a159;
-  --color-gold-500: #b4853d; /* Primary brand gold */
-  --color-gold-600: #9c6c31;
-  --color-gold-700: #815328;
-  --color-gold-800: #694123;
-  --color-gold-900: #57351f;
+  /* Premium Brand Color System - Midnight Sapphire & Denim Accents */
+  --color-gold-50: #f4f6fb;
+  --color-gold-100: #d9e3f4;
+  --color-gold-200: #b1c6e7;
+  --color-gold-300: #AAB6C8; /* Pale Blue */
+  --color-gold-400: #59708E; /* Steel Blue */
+  --color-gold-500: #324A6A; /* Dusty Blue (Primary CTA) */
+  --color-gold-600: #1E2A44; /* Indigo Blue */
+  --color-gold-700: #121B2E; /* Deep Navy */
+  --color-gold-800: #0A0F17; /* Midnight */
+  --color-gold-900: #05080c;
   
-  --color-brand-emerald: #0b2c24; /* Deep luxury emerald */
-  --color-brand-emerald-light: #16463b;
-  --color-brand-champagne: #f5efe2;
-  --color-brand-charcoal: #111111;
-  --color-brand-charcoal-light: #181818;
-  --color-brand-charcoal-border: #2c2c2c;
+  --color-brand-emerald: #121B2E; /* Deep Navy */
+  --color-brand-emerald-light: #1E2A44; /* Indigo Blue */
+  --color-brand-champagne: #E6E4DF; /* Soft Ivory */
+  --color-brand-charcoal: #0A0F17; /* Midnight */
+  --color-brand-charcoal-light: #121B2E; /* Deep Navy background secondary */
+  --color-brand-charcoal-border: #1E2A44; /* Indigo Blue borders */
+
+  --color-slate-mist: #7C8CA6;
+  --color-pale-blue: #AAB6C8;
 
   /* Typography variables connected to next/font */
   --font-serif: var(--font-serif);
@@ -26,8 +29,8 @@
 }
 
 :root {
-  --background: #111111; /* Default to deep luxurious dark theme */
-  --foreground: #f5efe2;
+  --background: #0A0F17; /* Midnight background */
+  --foreground: #E6E4DF; /* Soft Ivory text */
 }
 
 body {
@@ -39,10 +42,10 @@ body {
 
 /* Glassmorphism utility */
 .glass {
-  background: rgba(24, 24, 24, 0.7);
+  background: rgba(18, 27, 46, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(30, 42, 68, 0.35);
 }
 
 /* Custom premium scrollbar */
@@ -50,12 +53,12 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #111111;
+  background: #0A0F17;
 }
 ::-webkit-scrollbar-thumb {
-  background: #b4853d;
+  background: #324A6A;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9c6c31;
+  background: #59708E;
 }
