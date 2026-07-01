@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS public.product_categories (
 CREATE TABLE IF NOT EXISTS public.settings (
     id BOOLEAN PRIMARY KEY DEFAULT true CHECK (id = true), -- Forces maximum of 1 row
     business_name TEXT NOT NULL DEFAULT 'Rustic Jewels',
-    hero_title TEXT NOT NULL DEFAULT 'Timeless Elegance Handcrafted for You',
-    hero_subtitle TEXT NOT NULL DEFAULT 'Browse our curated collection of fine artisan jewellery.',
+    hero_title TEXT NOT NULL DEFAULT 'Shop All',
+    hero_subtitle TEXT NOT NULL DEFAULT 'Browse our Collection',
     hero_image TEXT NOT NULL DEFAULT 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&auto=format&fit=crop&q=80',
     instagram_url TEXT NOT NULL DEFAULT 'https://instagram.com/rustic_jewels_instagram',
     email TEXT NOT NULL DEFAULT 'contact@rusticjewels.com',
@@ -197,5 +197,5 @@ WITH CHECK (bucket_id = 'category-images' AND public.is_admin());
 
 -- Populate initial default settings row
 INSERT INTO public.settings (id, business_name, hero_title, hero_subtitle)
-VALUES (true, 'Rustic Jewels', 'Timeless Elegance Handcrafted for You', 'Browse our curated collection of fine artisan jewellery.')
+VALUES (true, 'Rustic Jewels', 'Shop All', 'Browse our Collection')
 ON CONFLICT (id) DO NOTHING;

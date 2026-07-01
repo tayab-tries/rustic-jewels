@@ -123,8 +123,8 @@ const SEED_PRODUCTS: Product[] = [
 // Seed Data for Demo Mode Settings
 const SEED_SETTINGS: Settings = {
   business_name: "Rustic Jewels",
-  hero_title: "Timeless Elegance Handcrafted for You",
-  hero_subtitle: "Browse our curated collection of fine artisan jewellery, handcrafted with vintage design patterns.",
+  hero_title: "Shop All",
+  hero_subtitle: "Browse our Collection",
   hero_image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&auto=format&fit=crop&q=80",
   instagram_url: "https://instagram.com/rustic_jewels_instagram",
   email: "contact@rusticjewels.com"

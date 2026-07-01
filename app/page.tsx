@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, ShieldCheck, Heart, Eye } from "lucide-react";
+import { ArrowRight, Sparkles, Eye } from "lucide-react";
 import { Instagram } from "@/components/ui/Icons";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -49,25 +49,7 @@ export default function Home() {
     loadData();
   }, []);
 
-  const brandValues = [
-    {
-      icon: Sparkles,
-      title: "Artisan Craftsmanship",
-      desc: "Each item is individually handcrafted by skilled silver and goldsmiths, preserving antique wire-working and metal-beating traditions."
-    },
-    {
-      icon: ShieldCheck,
-      title: "Premium Materials",
-      desc: "We exclusively curate using verified 18K/14K gold, fine sterling silver, AAA-grade pearls, and ethically-sourced raw gemstones."
-    },
-    {
-      icon: Heart,
-      title: "One-of-a-Kind Pieces",
-      desc: "Embracing rustic texture and unique imperfections. No two pieces are ever identical, giving you a jewelry piece as unique as you."
-    }
-  ];
-
-  // Framer motion variants for page entrance animations
+// Framer motion variants for page entrance animations
   const pageVariants = {
     initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -106,7 +88,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 border border-gold-500/25 px-4 py-1.5 glass text-gold-400 text-xs uppercase tracking-widest font-sans"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Handcrafted Premium Collection</span>
+              <span>New Drop</span>
             </motion.div>
 
             <motion.h1
@@ -115,7 +97,7 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.35 }}
               className="font-serif text-5xl md:text-7xl text-brand-champagne tracking-wide leading-tight"
             >
-              {settings?.hero_title || "Timeless Elegance Handcrafted for You"}
+              {settings?.hero_title || "Shop All"}
             </motion.h1>
 
             <motion.p
@@ -124,7 +106,7 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.5 }}
               className="text-base md:text-lg text-brand-champagne/70 max-w-2xl font-sans font-light leading-relaxed"
             >
-              {settings?.hero_subtitle || "Browse our curated digital jewelry catalogue of custom rings, necklaces, and statement pieces. Purchase directly through Instagram."}
+              {settings?.hero_subtitle || "Browse our Collection"}
             </motion.p>
 
             <motion.div
@@ -147,48 +129,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* BRAND VALUES / STATEMENT */}
-        <section className="py-24 bg-brand-charcoal-light border-y border-brand-charcoal-border">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="text-xs uppercase tracking-widest text-gold-500 font-sans font-semibold">
-                Our Philosophy
-              </span>
-              <h2 className="font-serif text-3xl md:text-4xl text-brand-champagne mt-2 tracking-wide font-medium">
-                The Beauty of Raw Craftsmanship
-              </h2>
-              <div className="w-12 h-[1px] bg-gold-500/50 mx-auto mt-4" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {brandValues.map((value, idx) => {
-                const Icon = value.icon;
-                return (
-                  <motion.div
-                    key={value.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: idx * 0.15 }}
-                    className="p-8 border border-brand-charcoal-border/50 bg-brand-charcoal flex flex-col gap-4 text-center items-center"
-                  >
-                    <div className="w-12 h-12 bg-gold-500/10 border border-gold-500/35 flex items-center justify-center text-gold-400">
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <h3 className="font-serif text-xl text-brand-champagne tracking-wide">
-                      {value.title}
-                    </h3>
-                    <p className="text-sm text-brand-champagne/60 font-sans leading-relaxed">
-                      {value.desc}
-                    </p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* FEATURED CATEGORIES SECTION */}
+{/* FEATURED CATEGORIES SECTION */}
         <section className="py-24 bg-brand-charcoal border-b border-brand-charcoal-border">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-16">

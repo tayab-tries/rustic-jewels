@@ -20,9 +20,6 @@ export default function Footer() {
               Digital Catalogue
             </span>
           </Link>
-          <p className="text-sm text-brand-champagne/60 font-sans leading-relaxed max-w-sm">
-            Curators of fine handcrafted jewelry. We believe each piece tells a story, capturing the beauty of raw craftsmanship and vintage design.
-          </p>
         </div>
 
         {/* Quick Links */}
