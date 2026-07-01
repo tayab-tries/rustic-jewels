@@ -130,7 +130,7 @@ export default function Home() {
         </section>
 
 {/* FEATURED CATEGORIES SECTION */}
-        <section className="py-24 bg-brand-charcoal border-b border-brand-charcoal-border">
+        <section className="py-24 bg-section-pattern-3 border-b border-brand-charcoal-border">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <span className="text-xs uppercase tracking-widest text-gold-500 font-sans font-semibold">
@@ -191,7 +191,7 @@ export default function Home() {
         </section>
 
         {/* NEWEST PRODUCTS ARRIVALS SECTION */}
-        <section className="py-24 bg-brand-charcoal-light border-b border-brand-charcoal-border">
+        <section className="py-24 bg-section-pattern-4 border-b border-brand-charcoal-border">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row items-end justify-between mb-16">
               <div>
@@ -229,7 +229,7 @@ export default function Home() {
         </section>
 
         {/* BROWSE ALL PRODUCTS QUICK CATALOGUE GRID */}
-        <section className="py-24 bg-brand-charcoal">
+        <section className="py-24 bg-section-pattern-1">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <span className="text-xs uppercase tracking-widest text-gold-500 font-sans font-semibold">
@@ -270,7 +270,7 @@ export default function Home() {
         </section>
 
         {/* INSTAGRAM PURCHASE FLOW SECTION */}
-        <section className="py-24 bg-brand-charcoal-light border-t border-brand-charcoal-border relative overflow-hidden">
+        <section className="py-24 bg-section-pattern-5 border-t border-brand-charcoal-border relative overflow-hidden">
           <div className="absolute right-0 bottom-0 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
           
           <div className="max-w-5xl mx-auto px-6 text-center relative z-10 flex flex-col items-center gap-6">

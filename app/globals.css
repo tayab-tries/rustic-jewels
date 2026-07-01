@@ -79,3 +79,35 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
   background: #59708E;
 }
+
+/* Layered Section Patterns with opacity-controlled color overlays */
+.bg-section-pattern-1 {
+  background-image: linear-gradient(rgba(10, 15, 23, 0.96), rgba(10, 15, 23, 0.96)), url('/bg-pattern-1.png');
+  background-repeat: repeat;
+  background-size: 350px;
+}
+
+.bg-section-pattern-2 {
+  background-image: linear-gradient(rgba(10, 15, 23, 0.93), rgba(10, 15, 23, 0.93)), url('/bg-pattern-2.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-section-pattern-3 {
+  background-image: linear-gradient(rgba(10, 15, 23, 0.95), rgba(10, 15, 23, 0.95)), url('/bg-pattern-3.png');
+  background-repeat: repeat;
+  background-size: 450px;
+}
+
+.bg-section-pattern-4 {
+  background-image: linear-gradient(rgba(18, 27, 46, 0.95), rgba(18, 27, 46, 0.95)), url('/bg-pattern-4.png');
+  background-repeat: repeat;
+  background-size: 350px;
+}
+
+.bg-section-pattern-5 {
+  background-image: linear-gradient(rgba(10, 15, 23, 0.96), rgba(10, 15, 23, 0.96)), url('/bg-pattern-5.png');
+  background-repeat: repeat;
+  background-size: 300px;
+}

@@ -132,7 +132,7 @@ function CatalogContent() {
     <>
       <Navbar />
       
-      <main className="flex-grow pt-32 pb-24">
+      <main className="flex-grow pt-32 pb-24 bg-section-pattern-5">
         <div className="max-w-7xl mx-auto px-6">
           {/* Header Title */}
           <div className="text-center max-w-2xl mx-auto mb-12">
