@@ -74,7 +74,7 @@ export default function Home() {
               initial={{ scale: 1.1, opacity: 0 }}
               animate={{ scale: 1.05, opacity: 0.35 }}
               transition={{ duration: 1.8, ease: "easeOut" }}
-              src={settings?.hero_image || "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&auto=format&fit=crop&q=80"}
+              src={settings?.hero_image || "/bg-pattern-2.png"}
               alt="Luxury Jewellery Background"
               className="w-full h-full object-cover"
             />

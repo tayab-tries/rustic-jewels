@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS public.settings (
     business_name TEXT NOT NULL DEFAULT 'Rustic Jewels',
     hero_title TEXT NOT NULL DEFAULT 'Shop All',
     hero_subtitle TEXT NOT NULL DEFAULT 'Browse our Collection',
-    hero_image TEXT NOT NULL DEFAULT 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1600&auto=format&fit=crop&q=80',
+    hero_image TEXT NOT NULL DEFAULT '/bg-pattern-2.png',
     instagram_url TEXT NOT NULL DEFAULT 'https://instagram.com/rustic_jewels_instagram',
     email TEXT NOT NULL DEFAULT 'contact@rusticjewels.com',
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
