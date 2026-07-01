@@ -193,8 +193,8 @@ export default function Home() {
         {/* NEWEST PRODUCTS ARRIVALS SECTION */}
         <section className="py-24 bg-section-pattern-4 border-b border-brand-charcoal-border">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-end justify-between mb-16">
-              <div>
+            <div className="flex flex-col md:flex-row items-center md:items-end justify-between text-center md:text-left gap-6 mb-16">
+              <div className="flex flex-col items-center md:items-start">
                 <span className="text-xs uppercase tracking-widest text-gold-500 font-sans font-semibold">
                   Just Added
                 </span>
@@ -202,7 +202,7 @@ export default function Home() {
                   Newest Arrivals
                 </h2>
               </div>
-              <Link href="/catalog" className="text-sm font-sans uppercase tracking-wider text-gold-400 hover:text-gold-300 flex items-center gap-1.5 transition-colors mt-4 md:mt-0">
+              <Link href="/catalog" className="text-sm font-sans uppercase tracking-wider text-gold-400 hover:text-gold-300 flex items-center justify-center gap-1.5 transition-colors">
                 <span>View Full Catalogue</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>

@@ -59,7 +59,7 @@ body::before {
 
 /* Glassmorphism utility */
 .glass {
-  background: rgba(18, 27, 46, 0.75);
+  background: rgba(10, 15, 23, 0.94); /* Block scrolled content overlaps on mobile */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(30, 42, 68, 0.35);
