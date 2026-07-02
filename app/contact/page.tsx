@@ -98,7 +98,7 @@ export default function ContactPage() {
               Inquire or Collaborate
             </h1>
             <p className="text-xs text-brand-champagne/60 font-sans mt-3 leading-relaxed">
-              Have questions about custom sizing, commissions, or a specific catalogue piece? Reach out to us. We would love to hear from you.
+              Have questions about commissions, or a specific catalogue piece? Reach out to us. We would love to hear from you.
             </p>
             <div className="w-12 h-[1px] bg-gold-500/50 mx-auto mt-4" />
           </div>
