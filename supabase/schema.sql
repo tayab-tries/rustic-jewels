@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS public.listing_items (
     notes TEXT, -- Optional notes / gemstone details
     is_available BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    CONSTRAINT unique_listing_item_number UNIQUE (listing_id, item_number)
 );
 
 -- E. Listing Categories Join Table (Many-to-Many Relationship)

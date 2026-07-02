@@ -156,11 +156,18 @@ export default function NewListing() {
       return;
     }
 
+    const itemNums = new Set<string>();
     for (let i = 0; i < items.length; i++) {
-      if (!items[i].item_number || items[i].item_number.trim() === "") {
+      const num = items[i].item_number.trim();
+      if (!num) {
         setErrorMsg(`Item Row #${i + 1} is missing an Item Number.`);
         return;
       }
+      if (itemNums.has(num.toLowerCase())) {
+        setErrorMsg(`Duplicate Item Number "#${num}" found. Each item number in a listing must be unique.`);
+        return;
+      }
+      itemNums.add(num.toLowerCase());
     }
 
     // Generate url-safe slug from listing title
