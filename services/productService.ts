@@ -357,7 +357,7 @@ export const productService = {
             p.full_description.toLowerCase().includes(query) ||
             p.material?.toLowerCase().includes(query) ||
             p.collection?.toLowerCase().includes(query) ||
-            p.items.some((i) => i.item_number.toLowerCase().includes(query) || i.item_name?.toLowerCase().includes(query))
+            (p.items || []).some((i) => i.item_number.toLowerCase().includes(query) || i.item_name?.toLowerCase().includes(query))
         );
       }
       
