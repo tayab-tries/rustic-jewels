@@ -430,7 +430,7 @@ export default function NewListing() {
               </p>
 
               {/* Upload Dropzone */}
-              <div className="border-2 border-dashed border-brand-charcoal-border hover:border-gold-500/50 p-8 text-center flex flex-col items-center justify-center gap-3 bg-brand-charcoal transition-colors">
+              <div className="relative border-2 border-dashed border-brand-charcoal-border hover:border-gold-500/50 p-8 text-center flex flex-col items-center justify-center gap-3 bg-brand-charcoal transition-colors">
                 <ImageIcon className="w-10 h-10 text-gold-500/60" />
                 <div>
                   <p className="text-sm font-medium text-brand-champagne">Click to upload listing photos</p>

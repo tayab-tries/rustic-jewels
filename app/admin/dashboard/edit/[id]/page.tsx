@@ -471,7 +471,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                 Numbered Showcase Photo *
               </h2>
 
-              <div className="border-2 border-dashed border-brand-charcoal-border hover:border-gold-500/50 p-8 text-center flex flex-col items-center justify-center gap-3 bg-brand-charcoal relative">
+              <div className="relative border-2 border-dashed border-brand-charcoal-border hover:border-gold-500/50 p-8 text-center flex flex-col items-center justify-center gap-3 bg-brand-charcoal">
                 <ImageIcon className="w-10 h-10 text-gold-500/60" />
                 <div>
                   <p className="text-sm font-medium text-brand-champagne">Click to upload photos</p>
