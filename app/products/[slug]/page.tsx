@@ -131,7 +131,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const imagesList = [product.featured_image, ...(product.gallery_images || [])];
   
   // inquiry message prefill
-  const inquiryMessage = `Hi! I am inquiring about "${product.name}" (Slug: ${product.slug}) listed in your catalogue. Is this piece available?`;
+  const inquiryMessage = `Hi! I am inquiring about "${product.name}" listed in your catalogue. Is this piece available?`;
   const instagramInquiryUrl = settings?.instagram_url || "https://instagram.com/rustic_jewels_instagram";
 
   const nextImage = () => {

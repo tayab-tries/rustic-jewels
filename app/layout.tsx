@@ -15,13 +15,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Rustic Jewels | Fine Handcrafted Jewellery Catalogue",
-  description: "Browse our handpicked collection of exquisite artisan jewellery. Explore detailed product pages and contact us directly on Instagram for inquiries.",
+  title: "Rustic Jewels | Jewellery Catalogue",
+  description: "Browse our Collection.",
   keywords: ["jewellery", "handmade jewelry", "luxury rings", "vintage necklaces", "instagram jewellery", "rustic jewels"],
   authors: [{ name: "Rustic Jewels" }],
   openGraph: {
-    title: "Rustic Jewels | Fine Handcrafted Jewellery Catalogue",
-    description: "Browse our handpicked collection of exquisite artisan jewellery.",
+    title: "Rustic Jewels | Jewellery Catalogue",
+    description: "Browse our Collection.",
     type: "website",
   },
 };
