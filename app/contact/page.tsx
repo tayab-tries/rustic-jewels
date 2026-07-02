@@ -213,7 +213,7 @@ export default function ContactPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Custom Ring Sizing Commission"
+                    placeholder="e.g. Custom Jewellery Commission"
                     {...register("subject")}
                     className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                   />
@@ -229,7 +229,7 @@ export default function ContactPage() {
                   </label>
                   <textarea
                     rows={5}
-                    placeholder="Please specify size constraints, gemstone selections, metal finishes or catalogue reference numbers..."
+                    placeholder="Please specify gemstone selections, metal finishes or catalogue reference numbers..."
                     {...register("message")}
                     className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
                   />

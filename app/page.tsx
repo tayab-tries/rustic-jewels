@@ -160,7 +160,7 @@ export default function Home() {
                   >
                     <Link
                       href={`/category/${cat.slug}`}
-                      className="group relative aspect-[3/4] flex flex-col justify-end p-5 overflow-hidden border border-brand-charcoal-border hover:border-gold-500/50 transition-all duration-300 bg-brand-charcoal-light cursor-pointer block"
+                      className="group relative flex flex-col justify-end p-5 overflow-hidden border border-brand-charcoal-border hover:border-gold-500/50 transition-all duration-300 bg-brand-charcoal-light cursor-pointer block"
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal via-brand-charcoal/50 to-transparent z-10 opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
                       {cat.image ? (
@@ -304,7 +304,7 @@ export default function Home() {
                   3
                 </div>
                 <h4 className="font-serif text-brand-champagne text-base">Chat & Order</h4>
-                <p className="text-xs text-brand-champagne/60 font-sans">Discuss sizing, customize metals, and securely arrange delivery via DM.</p>
+                <p className="text-xs text-brand-champagne/60 font-sans">Discuss details, customize metals, and securely arrange delivery via DM.</p>
               </div>
             </div>
 
