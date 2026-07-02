@@ -108,14 +108,14 @@ export default function NewListing() {
     try {
       const filesArray = Array.from(e.target.files);
       const uploadedUrls: string[] = [];
-      
+
       for (const file of filesArray) {
         const url = await productService.uploadProductImage(file);
         if (url) {
           uploadedUrls.push(url);
         }
       }
-      
+
       setImages((prev) => [...prev, ...uploadedUrls]);
     } catch (err) {
       console.error("Image upload failed", err);
@@ -137,7 +137,7 @@ export default function NewListing() {
 
   const onSubmit = async (values: ListingFormValues) => {
     setErrorMsg(null);
-    
+
     // Validate image selection
     if (images.length === 0) {
       setErrorMsg("Please upload at least one listing showcase image.");
@@ -156,18 +156,11 @@ export default function NewListing() {
       return;
     }
 
-    const itemNums = new Set<string>();
     for (let i = 0; i < items.length; i++) {
-      const num = items[i].item_number.trim();
-      if (!num) {
+      if (!items[i].item_number || items[i].item_number.trim() === "") {
         setErrorMsg(`Item Row #${i + 1} is missing an Item Number.`);
         return;
       }
-      if (itemNums.has(num.toLowerCase())) {
-        setErrorMsg(`Duplicate Item Number "#${num}" found. Each item number in a listing must be unique.`);
-        return;
-      }
-      itemNums.add(num.toLowerCase());
     }
 
     // Generate url-safe slug from listing title
@@ -230,7 +223,7 @@ export default function NewListing() {
               Create New Multi-Item Listing
             </h1>
           </div>
-          
+
           <Button
             variant="primary"
             size="md"
@@ -381,11 +374,10 @@ export default function NewListing() {
                         <button
                           type="button"
                           onClick={() => handleUpdateItemRow(idx, "is_available", !item.is_available)}
-                          className={`w-full py-2 px-3 text-xs uppercase tracking-wider font-sans border flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                            item.is_available
+                          className={`w-full py-2 px-3 text-xs uppercase tracking-wider font-sans border flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${item.is_available
                               ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
                               : "bg-amber-950/40 border-amber-500/40 text-amber-300"
-                          }`}
+                            }`}
                         >
                           {item.is_available ? (
                             <>
@@ -553,17 +545,16 @@ export default function NewListing() {
                       <div
                         key={cat.id}
                         onClick={() => handleCategoryToggle(cat.id)}
-                        className={`flex items-center justify-between p-3 border cursor-pointer transition-colors select-none ${
-                          checked
+                        className={`flex items-center justify-between p-3 border cursor-pointer transition-colors select-none ${checked
                             ? "bg-gold-500/10 border-gold-500/50 text-gold-300"
                             : "bg-brand-charcoal border-brand-charcoal-border/70 text-brand-champagne/70 hover:border-gold-500/30"
-                        }`}
+                          }`}
                       >
                         <span className="text-xs font-medium">{cat.name}</span>
                         <input
                           type="checkbox"
                           checked={checked}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           className="accent-gold-500 h-4 w-4 pointer-events-none"
                         />
                       </div>

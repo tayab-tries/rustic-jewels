@@ -156,9 +156,13 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const imagesList = [listing.featured_image, ...(listing.gallery_images || [])];
   const items = listing.items || [];
   
+  const isSingleProduct = items.length === 1;
+
   // inquiry message prefill with required item selection
   const inquiryMessage = selectedItem
-    ? `Hi! I am inquiring about "${listing.title}" (Item Number: ${selectedItem.item_number}) listed in your catalogue. Is this piece available?`
+    ? selectedItem.item_number && selectedItem.item_number !== "1" && selectedItem.item_number !== "N/A"
+      ? `Hi! I am inquiring about "${listing.title}" (Item Number: ${selectedItem.item_number}) listed in your catalogue. Is this piece available?`
+      : `Hi! I am inquiring about "${listing.title}" listed in your catalogue. Is this piece available?`
     : `Hi! I am inquiring about "${listing.title}" listed in your catalogue. Is this piece available?`;
     
   const instagramInquiryUrl = settings?.instagram_url || "https://instagram.com/rustic_jewels_instagram";
@@ -222,13 +226,13 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   <>
                     <button
                       onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-charcoal/70 hover:bg-gold-500 hover:text-brand-charcoal text-brand-champagne flex items-center justify-center transition-colors duration-200 border border-brand-charcoal-border cursor-pointer z-10"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-brand-charcoal/80 text-brand-champagne hover:text-gold-400 flex items-center justify-center border border-brand-charcoal-border transition-colors cursor-pointer"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-charcoal/70 hover:bg-gold-500 hover:text-brand-charcoal text-brand-champagne flex items-center justify-center transition-colors duration-200 border border-brand-charcoal-border cursor-pointer z-10"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-brand-charcoal/80 text-brand-champagne hover:text-gold-400 flex items-center justify-center border border-brand-charcoal-border transition-colors cursor-pointer"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>
@@ -244,17 +248,15 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 )}
               </div>
 
-              {/* Thumbnails list if multiple images */}
+              {/* Gallery thumbnails */}
               {imagesList.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-1">
+                <div className="grid grid-cols-5 gap-3">
                   {imagesList.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveImageIdx(idx)}
-                      className={`relative w-20 h-20 aspect-square overflow-hidden border cursor-pointer flex-shrink-0 transition-all ${
-                        activeImageIdx === idx
-                          ? "border-gold-500 scale-[0.98]"
-                          : "border-brand-charcoal-border hover:border-gold-500/40"
+                      className={`relative aspect-square border overflow-hidden transition-colors cursor-pointer ${
+                        activeImageIdx === idx ? "border-gold-500" : "border-brand-charcoal-border opacity-60 hover:opacity-100"
                       }`}
                     >
                       <img src={img} alt={`thumbnail-${idx}`} className="w-full h-full object-cover" />
@@ -276,60 +278,65 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </h1>
               </div>
 
-              {/* MULTI-ITEM SELECTOR SECTION */}
+              {/* ITEM DETAILS & SELECTOR SECTION */}
               <div className="border-t border-b border-brand-charcoal-border p-5 bg-brand-charcoal-light flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs uppercase tracking-widest text-gold-400 font-sans font-semibold flex items-center gap-1.5">
-                    <Hash className="w-4 h-4 text-gold-500" />
-                    Select Item Number:
-                  </span>
-                  {selectedItem && (
-                    <span className={`text-xs font-sans font-medium flex items-center gap-1 ${selectedItem.is_available ? "text-emerald-400" : "text-amber-500"}`}>
-                      {selectedItem.is_available ? (
-                        <>
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Available
-                        </>
-                      ) : (
-                        <>
-                          <XCircle className="w-3.5 h-3.5" /> Item Sold
-                        </>
-                      )}
-                    </span>
-                  )}
-                </div>
-
-                {/* Item Numbers Chips Grid */}
-                {items.length > 0 ? (
-                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
-                    {items.map((item) => {
-                      const isSelected = selectedItem?.id === item.id || selectedItem?.item_number === item.item_number;
-                      return (
-                        <button
-                          key={item.id || item.item_number}
-                          onClick={() => handleSelectItem(item)}
-                          className={`px-3 py-2 text-xs uppercase tracking-wider font-sans font-medium border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
-                            isSelected
-                              ? "bg-gold-500 border-gold-500 text-brand-charcoal font-bold shadow-lg"
-                              : item.is_available
-                              ? "bg-brand-charcoal border-brand-charcoal-border hover:border-gold-500/50 text-brand-champagne"
-                              : "bg-brand-charcoal/40 border-brand-charcoal-border/40 text-brand-champagne/30 cursor-pointer line-through"
-                          }`}
-                        >
-                          <span>#{item.item_number}</span>
-                          {!item.is_available && (
-                            <span className="text-[9px] no-underline uppercase text-amber-500 font-semibold">Sold</span>
+                {/* Show Item Selector Header & Chips ONLY if listing has 2 or more items */}
+                {!isSingleProduct && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs uppercase tracking-widest text-gold-400 font-sans font-semibold flex items-center gap-1.5">
+                        <Hash className="w-4 h-4 text-gold-500" />
+                        Select Item Number:
+                      </span>
+                      {selectedItem && (
+                        <span className={`text-xs font-sans font-medium flex items-center gap-1 ${selectedItem.is_available ? "text-emerald-400" : "text-amber-500"}`}>
+                          {selectedItem.is_available ? (
+                            <>
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Available
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="w-3.5 h-3.5" /> Item Sold
+                            </>
                           )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-xs text-brand-champagne/50 font-sans italic">No individual items registered for this listing.</p>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Item Numbers Chips Grid */}
+                    {items.length > 0 ? (
+                      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
+                        {items.map((item) => {
+                          const isSelected = selectedItem?.id === item.id || selectedItem?.item_number === item.item_number;
+                          return (
+                            <button
+                              key={item.id || item.item_number}
+                              onClick={() => handleSelectItem(item)}
+                              className={`px-3 py-2 text-xs uppercase tracking-wider font-sans font-medium border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                                isSelected
+                                  ? "bg-gold-500 border-gold-500 text-brand-charcoal font-bold shadow-lg"
+                                  : item.is_available
+                                  ? "bg-brand-charcoal border-brand-charcoal-border hover:border-gold-500/50 text-brand-champagne"
+                                  : "bg-brand-charcoal/40 border-brand-charcoal-border/40 text-brand-champagne/30 cursor-pointer line-through"
+                              }`}
+                            >
+                              <span>#{item.item_number}</span>
+                              {!item.is_available && (
+                                <span className="text-[9px] no-underline uppercase text-amber-500 font-semibold">Sold</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-brand-champagne/50 font-sans italic">No individual items registered for this listing.</p>
+                    )}
+                  </>
                 )}
 
-                {/* DYNAMIC ITEM DETAILS CARD */}
+                {/* ITEM DETAILS DISPLAY */}
                 {selectedItem ? (
-                  <div className="mt-2 pt-4 border-t border-brand-charcoal-border/60 flex flex-col gap-2">
+                  <div className={`flex flex-col gap-2 ${!isSingleProduct ? "mt-2 pt-4 border-t border-brand-charcoal-border/60" : ""}`}>
                     {selectedItem.item_name && (
                       <h4 className="font-serif text-lg text-brand-champagne font-medium">
                         {selectedItem.item_name}
@@ -405,7 +412,11 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                       disabled={!selectedItem}
                       className="w-full text-center"
                     >
-                      {selectedItem ? `Inquire for Item #${selectedItem.item_number}` : "Select Item to Inquire"}
+                      {selectedItem
+                        ? isSingleProduct || !selectedItem.item_number || selectedItem.item_number === "1"
+                          ? "Inquire on Instagram"
+                          : `Inquire for Item #${selectedItem.item_number}`
+                        : "Select Item to Inquire"}
                     </Button>
                   </a>
 

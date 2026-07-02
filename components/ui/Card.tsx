@@ -21,7 +21,7 @@ export default function Card({ product }: CardProps) {
   const availableItems = items.filter((i) => i.is_available);
   const hasAvailableItems = availableItems.length > 0;
 
-  // Calculate price starting range
+  // Calculate price starting range or single item price
   const formatPriceRange = () => {
     if (!items || items.length === 0) return "Price on Inquiry";
     
@@ -38,6 +38,10 @@ export default function Card({ product }: CardProps) {
       currency: "PKR",
       maximumFractionDigits: 0,
     }).format(minPrice);
+
+    if (items.length === 1) {
+      return formatted;
+    }
 
     return `From ${formatted}`;
   };
@@ -57,7 +61,7 @@ export default function Card({ product }: CardProps) {
         {/* Availability / Sold Badge */}
         {!hasAvailableItems && (
           <div className="absolute top-3 left-3 z-10 bg-brand-charcoal/90 text-gold-300 border border-gold-500/20 px-3 py-1 text-xs uppercase tracking-widest font-sans">
-            All Items Sold
+            {items.length === 1 ? "Sold Out" : "All Items Sold"}
           </div>
         )}
         
@@ -67,11 +71,11 @@ export default function Card({ product }: CardProps) {
           </div>
         )}
 
-        {/* Numbered items count badge */}
-        {items.length > 0 && (
+        {/* Numbered items count badge - only shown for multi-item listings (2+) */}
+        {items.length > 1 && (
           <div className="absolute bottom-3 left-3 z-10 bg-brand-charcoal/85 border border-brand-charcoal-border text-brand-champagne/80 px-2.5 py-1 text-[10px] uppercase tracking-widest font-sans flex items-center gap-1.5 glass">
             <Layers className="w-3 h-3 text-gold-400" />
-            <span>{items.length} {items.length === 1 ? "Item" : "Items"}</span>
+            <span>{items.length} Items</span>
           </div>
         )}
 
