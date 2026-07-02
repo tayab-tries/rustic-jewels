@@ -66,9 +66,6 @@ export default function Footer() {
       {/* Copyright Line */}
       <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-brand-charcoal-border/30 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-brand-champagne/45 font-sans">
         <p>© {new Date().getFullYear()} Rustic Jewels. All rights reserved.</p>
-        <p className="tracking-wide">
-          Designed with timeless aesthetics.
-        </p>
       </div>
     </footer>
   );
