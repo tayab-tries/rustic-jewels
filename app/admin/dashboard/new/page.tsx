@@ -543,10 +543,10 @@ export default function NewListing() {
                   {categoriesList.map((cat) => {
                     const checked = selectedCategoryIds.includes(cat.id);
                     return (
-                      <label
+                      <div
                         key={cat.id}
                         onClick={() => handleCategoryToggle(cat.id)}
-                        className={`flex items-center justify-between p-3 border cursor-pointer transition-colors ${
+                        className={`flex items-center justify-between p-3 border cursor-pointer transition-colors select-none ${
                           checked
                             ? "bg-gold-500/10 border-gold-500/50 text-gold-300"
                             : "bg-brand-charcoal border-brand-charcoal-border/70 text-brand-champagne/70 hover:border-gold-500/30"
@@ -559,7 +559,7 @@ export default function NewListing() {
                           onChange={() => {}}
                           className="accent-gold-500 h-4 w-4 pointer-events-none"
                         />
-                      </label>
+                      </div>
                     );
                   })}
                 </div>

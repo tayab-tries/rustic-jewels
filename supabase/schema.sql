@@ -119,11 +119,6 @@ CREATE TRIGGER on_auth_user_created_admin
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_admin_user();
 
--- Auto-register any existing users in auth.users into public.admins table
-INSERT INTO public.admins (id, email)
-SELECT id, email FROM auth.users
-ON CONFLICT (id) DO NOTHING;
-
 ---------------------------------------------------------
 -- 3. Indexes for Query Optimization
 ---------------------------------------------------------
