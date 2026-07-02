@@ -389,7 +389,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                       {/* Item Number */}
                       <div className="sm:col-span-3 flex flex-col gap-1">
                         <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
-                          Number # (Optional)
+                          Number #
                         </label>
                         <input
                           type="text"
