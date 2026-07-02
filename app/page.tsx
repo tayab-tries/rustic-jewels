@@ -26,7 +26,7 @@ export default function Home() {
       setLoadingCategories(true);
       try {
         const [products, cats, config] = await Promise.all([
-          productService.getProducts(),
+          productService.getListings(),
           productService.getCategories(),
           productService.getSettings()
         ]);

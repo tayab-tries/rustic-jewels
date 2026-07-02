@@ -6,14 +6,13 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { ArrowLeft, Save, X, Image as ImageIcon, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Save, X, Image as ImageIcon, Loader2, AlertCircle, Plus, Trash2, Hash, CheckCircle2, XCircle } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { productService } from "@/services/productService";
-import { Category } from "@/types";
+import { Category, ListingItemInput } from "@/types";
 
-// Validation schema
-const productFormSchema = zod.object({
-  name: zod.string().min(1, "Name is required").max(120, "Name is too long"),
+const listingFormSchema = zod.object({
+  title: zod.string().min(1, "Title is required").max(120, "Title is too long"),
   short_description: zod.string().min(1, "Short description is required").max(300, "Short description is too long"),
   full_description: zod.string().min(1, "Full description is required"),
   material: zod.string().optional(),
@@ -21,22 +20,17 @@ const productFormSchema = zod.object({
   instagram_post_url: zod.string().optional(),
   featured: zod.boolean(),
   published: zod.boolean(),
-  is_available: zod.boolean(),
 });
 
-type ProductFormValues = zod.infer<typeof productFormSchema>;
+type ListingFormValues = zod.infer<typeof listingFormSchema>;
 
-export default function EditProduct({ params }: { params: Promise<{ id: string }> }) {
+export default function EditListing({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  // Price configuration
-  const [priceOnInquiry, setPriceOnInquiry] = useState(false);
-  const [priceValue, setPriceValue] = useState<string>("");
 
   // Categories list & selection state
   const [categoriesList, setCategoriesList] = useState<Category[]>([]);
@@ -47,22 +41,25 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
   const [images, setImages] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // DYNAMIC INLINE ITEM MANAGER STATE
+  const [items, setItems] = useState<ListingItemInput[]>([]);
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+  } = useForm<ListingFormValues>({
+    resolver: zodResolver(listingFormSchema),
   });
 
-  // Fetch product to edit & categories
+  // Fetch listing to edit & categories
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       try {
         const [p, cats] = await Promise.all([
-          productService.getProductById(id),
+          productService.getListingById(id),
           productService.getCategories()
         ]);
         
@@ -72,7 +69,7 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
         if (p) {
           // Prepopulate form values
           reset({
-            name: p.name,
+            title: p.title,
             short_description: p.short_description,
             full_description: p.full_description,
             material: p.material || "",
@@ -80,7 +77,6 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
             instagram_post_url: p.instagram_post_url || "",
             featured: p.featured,
             published: p.published,
-            is_available: p.is_available,
           });
           
           setSelectedCategoryIds(p.categories?.map((c) => c.id) || []);
@@ -91,25 +87,57 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
             : p.gallery_images || [];
           setImages(combinedImages);
           
-          if (p.price === null) {
-            setPriceOnInquiry(true);
-            setPriceValue("");
+          // Prepopulate item rows
+          if (p.items && p.items.length > 0) {
+            const prep: ListingItemInput[] = p.items.map((it) => ({
+              id: it.id,
+              item_number: it.item_number,
+              item_name: it.item_name || "",
+              price: it.price !== undefined ? it.price : null,
+              notes: it.notes || "",
+              is_available: it.is_available
+            }));
+            setItems(prep);
           } else {
-            setPriceOnInquiry(false);
-            setPriceValue(p.price.toString());
+            setItems([{ item_number: "1", item_name: "", price: null, notes: "", is_available: true }]);
           }
         } else {
-          setErrorMsg("The requested jewellery item does not exist.");
+          setErrorMsg("The requested listing does not exist.");
         }
       } catch (err) {
-        console.error("Failed to load product to edit", err);
-        setErrorMsg("Failed to load product details.");
+        console.error("Failed to load listing to edit", err);
+        setErrorMsg("Failed to load listing details.");
       } finally {
         setLoading(false);
       }
     }
     loadData();
   }, [id, reset]);
+
+  // Inline Item Manager actions
+  const handleAddItemRow = () => {
+    const nextNum = (items.length + 1).toString();
+    setItems((prev) => [
+      ...prev,
+      { item_number: nextNum, item_name: "", price: null, notes: "", is_available: true }
+    ]);
+  };
+
+  const handleUpdateItemRow = (index: number, field: keyof ListingItemInput, value: any) => {
+    setItems((prev) => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
+  const handleRemoveItemRow = (index: number) => {
+    if (items.length <= 1) {
+      setErrorMsg("A listing must contain at least one item.");
+      return;
+    }
+    setItems((prev) => prev.filter((_, idx) => idx !== index));
+  };
 
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -141,38 +169,36 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
 
   const handleCategoryToggle = (catId: string) => {
     setSelectedCategoryIds((prev) =>
-      prev.includes(catId) ? prev.filter((id) => id !== catId) : [...prev, catId]
+      prev.includes(catId) ? prev.filter((cId) => cId !== catId) : [...prev, catId]
     );
   };
 
-  const onSubmit = async (values: ProductFormValues) => {
+  const onSubmit = async (values: ListingFormValues) => {
     setErrorMsg(null);
     
-    // Validate image selection
     if (images.length === 0) {
-      setErrorMsg("Please upload at least one product image.");
+      setErrorMsg("Please upload at least one listing showcase image.");
       return;
     }
 
-    // Validate category selection
     if (selectedCategoryIds.length === 0) {
       setErrorMsg("Please select at least one category.");
       return;
     }
 
-    // Process price
-    let parsedPrice: number | null = null;
-    if (!priceOnInquiry) {
-      const parsed = parseFloat(priceValue);
-      if (isNaN(parsed) || parsed < 0) {
-        setErrorMsg("Please provide a valid price or check 'Price on Inquiry'.");
-        return;
-      }
-      parsedPrice = parsed;
+    if (items.length === 0) {
+      setErrorMsg("Please add at least one item number for this listing.");
+      return;
     }
 
-    // Generate url-safe slug from product name
-    const generatedSlug = values.name
+    for (let i = 0; i < items.length; i++) {
+      if (!items[i].item_number || items[i].item_number.trim() === "") {
+        setErrorMsg(`Item Row #${i + 1} is missing an Item Number.`);
+        return;
+      }
+    }
+
+    const generatedSlug = values.title
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9\s-]/g, "")
@@ -182,31 +208,33 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
 
     setSaving(true);
     try {
-      const res = await productService.updateProduct(id, {
-        name: values.name,
+      const featuredImg = images[0];
+      const galleryImgs = images.slice(1);
+
+      const updated = await productService.updateListing(id, {
         slug: generatedSlug,
+        title: values.title,
         short_description: values.short_description,
         full_description: values.full_description,
-        material: values.material || "",
-        collection: values.collection || "",
-        instagram_post_url: values.instagram_post_url || "",
+        featured_image: featuredImg,
+        gallery_images: galleryImgs,
+        instagram_post_url: values.instagram_post_url,
         featured: values.featured,
         published: values.published,
-        is_available: values.is_available,
+        material: values.material,
+        collection: values.collection,
         category_ids: selectedCategoryIds,
-        price: parsedPrice,
-        featured_image: images[0], // First image is cover
-        gallery_images: images.slice(1), // Remaining go to gallery
+        items: items
       });
 
-      if (res) {
+      if (updated) {
         router.push("/admin/dashboard");
       } else {
-        setErrorMsg("Failed to update the product in the database.");
+        setErrorMsg("Failed to update listing.");
       }
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : "An unexpected error occurred during update.";
-      setErrorMsg(errMsg);
+      console.error("Error updating listing", err);
+      setErrorMsg("An unexpected error occurred while updating.");
     } finally {
       setSaving(false);
     }
@@ -214,311 +242,416 @@ export default function EditProduct({ params }: { params: Promise<{ id: string }
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-brand-charcoal pt-24 pb-20 flex items-center justify-center">
+      <main className="min-h-screen bg-brand-charcoal pt-32 pb-24 flex items-center justify-center text-brand-champagne">
         <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
       </main>
     );
   }
 
   return (
-    <>
-      {/* Header bar */}
-      <header className="bg-brand-charcoal-light border-b border-brand-charcoal-border py-4 fixed top-0 left-0 right-0 z-30">
-        <div className="max-w-4xl mx-auto px-6 flex items-center justify-between">
-          <Link
-            href="/admin/dashboard"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand-champagne/70 hover:text-gold-400 font-sans transition-colors duration-150 cursor-pointer"
+    <main className="min-h-screen bg-brand-charcoal pt-28 pb-24 text-brand-champagne font-sans">
+      <div className="max-w-5xl mx-auto px-6">
+        {/* Header Breadcrumb */}
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-brand-charcoal-border">
+          <div>
+            <Link
+              href="/admin/dashboard"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand-champagne/60 hover:text-gold-400 transition-colors mb-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Dashboard</span>
+            </Link>
+            <h1 className="font-serif text-3xl text-brand-champagne font-medium tracking-wide">
+              Edit Multi-Item Listing
+            </h1>
+          </div>
+          
+          <Button
+            variant="primary"
+            size="md"
+            icon={Save}
+            onClick={handleSubmit(onSubmit)}
+            isLoading={saving}
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Dashboard</span>
-          </Link>
-          <span className="font-serif text-sm text-gold-500 uppercase tracking-widest font-semibold">
-            Edit Jewellery Item
-          </span>
+            Update Listing
+          </Button>
         </div>
-      </header>
 
-      {/* Form Area */}
-      <main className="min-h-screen bg-brand-charcoal pt-24 pb-20 flex flex-col">
-        <div className="max-w-4xl mx-auto px-6 w-full mt-6">
-          {errorMsg && (
-            <div className="mb-6 bg-red-950/40 border border-red-800/40 p-4 text-xs text-red-300 font-sans flex items-start gap-2.5">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-400" />
-              <div>
-                <span className="font-bold">Error:</span>
-                <p className="mt-1">{errorMsg}</p>
-              </div>
+        {/* Global Error Notice */}
+        {errorMsg && (
+          <div className="bg-red-950/40 border border-red-800/50 p-4 mb-8 text-xs text-red-300 font-sans flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+              <span>{errorMsg}</span>
             </div>
-          )}
+            <button onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-red-200">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column (7 cols) */}
-            <div className="lg:col-span-7 flex flex-col gap-6 bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8">
-              <h2 className="font-serif text-xl text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 mb-2 font-medium">
-                Product Details
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Form Fields (8 cols) */}
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            {/* Showcase Information Card */}
+            <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8 flex flex-col gap-6">
+              <h2 className="font-serif text-xl text-brand-champagne border-b border-brand-charcoal-border/60 pb-3 font-medium">
+                Showcase Information
               </h2>
 
-              {/* Title / Name Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-medium">
-                  Item Name *
+              {/* Title */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs uppercase tracking-widest text-brand-champagne/80 font-medium">
+                  Listing Title *
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Royal Emerald Ring"
-                  {...register("name")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                  placeholder="e.g. Vintage Silver Rings Collection"
+                  {...register("title")}
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none"
                 />
-                {errors.name && (
-                  <span className="text-[11px] text-red-400 font-sans mt-0.5">{errors.name.message}</span>
-                )}
+                {errors.title && <span className="text-xs text-red-400">{errors.title.message}</span>}
               </div>
 
-              {/* Multi-category select checklist */}
+              {/* Short Description */}
               <div className="flex flex-col gap-2">
-                <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-medium">
-                  Categories * <span className="text-[10px] text-brand-champagne/45 lowercase normal-case">(select all that apply)</span>
-                </label>
-                {loadingCategories ? (
-                  <div className="text-xs text-brand-champagne/45 font-sans py-2">Loading categories...</div>
-                ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 bg-brand-charcoal/30 border border-brand-charcoal-border/40 p-4">
-                    {categoriesList.map((cat) => (
-                      <label
-                        key={cat.id}
-                        className="flex items-center gap-2 cursor-pointer select-none text-xs font-sans text-brand-champagne/80 hover:text-brand-champagne py-1"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedCategoryIds.includes(cat.id)}
-                          onChange={() => handleCategoryToggle(cat.id)}
-                          className="accent-gold-500 cursor-pointer h-3.5 w-3.5"
-                        />
-                        <span>{cat.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Price Fields */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-medium">
-                  Price ($ USD)
-                </label>
-                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                  <input
-                    type="number"
-                    disabled={priceOnInquiry}
-                    placeholder="e.g. 1200"
-                    value={priceValue}
-                    onChange={(e) => setPriceValue(e.target.value)}
-                    className="w-full sm:w-44 bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans disabled:opacity-40 disabled:cursor-not-allowed"
-                  />
-                  <label className="flex items-center gap-2 cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-brand-charcoal-border/50 bg-brand-charcoal/50 px-4 py-3">
-                    <input
-                      type="checkbox"
-                      checked={priceOnInquiry}
-                      onChange={(e) => setPriceOnInquiry(e.target.checked)}
-                      className="accent-gold-500 cursor-pointer h-3.5 w-3.5"
-                    />
-                    <span className="text-brand-champagne/80">Inquire for Price</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Materials & Collection Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans">
-                    Materials
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 18K Yellow Gold"
-                    {...register("material")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans">
-                    Collection
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Heritage Collection"
-                    {...register("collection")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
-                  />
-                </div>
-              </div>
-
-              {/* Short Description Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-medium">
-                  Short Description * <span className="text-[10px] text-brand-champagne/45 uppercase tracking-normal font-normal">(Card preview, max 300 chars)</span>
+                <label className="text-xs uppercase tracking-widest text-brand-champagne/80 font-medium">
+                  Short Summary *
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. An exquisite yellow gold ring holding a hand-selected 2.5-carat emerald..."
+                  placeholder="A showcase of handcrafted sterling silver rings..."
                   {...register("short_description")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none"
                 />
-                {errors.short_description && (
-                  <span className="text-[11px] text-red-400 font-sans mt-0.5">{errors.short_description.message}</span>
-                )}
+                {errors.short_description && <span className="text-xs text-red-400">{errors.short_description.message}</span>}
               </div>
 
-              {/* Full Description Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-medium">
-                  Full Story Description *
+              {/* Full Detailed Description */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs uppercase tracking-widest text-brand-champagne/80 font-medium">
+                  Full Description *
                 </label>
                 <textarea
-                  rows={5}
-                  placeholder="Detail the weight, sizing, gemstones and inspiration behind this handcrafted jewelry piece..."
+                  rows={4}
+                  placeholder="Detail the materials or ordering instructions..."
                   {...register("full_description")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne p-4 text-sm rounded-none focus:outline-none resize-none"
                 />
-                {errors.full_description && (
-                  <span className="text-[11px] text-red-400 font-sans mt-0.5">{errors.full_description.message}</span>
-                )}
+                {errors.full_description && <span className="text-xs text-red-400">{errors.full_description.message}</span>}
               </div>
             </div>
 
-            {/* Right Column (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-6">
-              {/* Image upload box */}
-              <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
-                <h2 className="font-serif text-lg text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 font-medium">
-                  Product Images *
-                </h2>
+            {/* DYNAMIC INLINE ITEM MANAGER CARD */}
+            <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8 flex flex-col gap-6">
+              <div className="flex items-center justify-between border-b border-brand-charcoal-border/60 pb-3">
+                <div>
+                  <h2 className="font-serif text-xl text-brand-champagne font-medium flex items-center gap-2">
+                    <Hash className="w-5 h-5 text-gold-500" />
+                    Numbered Items Manager
+                  </h2>
+                  <p className="text-xs text-brand-champagne/60 mt-1">
+                    Add or modify numbered jewelry items for this showcase.
+                  </p>
+                </div>
+                <Button variant="secondary" size="sm" type="button" icon={Plus} onClick={handleAddItemRow}>
+                  Add Item Row
+                </Button>
+              </div>
 
-                <label className="border border-dashed border-brand-charcoal-border hover:border-gold-500/50 bg-brand-charcoal/50 p-6 text-center flex flex-col items-center gap-2 cursor-pointer transition-all">
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageFileChange}
-                    className="hidden"
-                  />
-                  {uploadingImage ? (
-                    <Loader2 className="w-8 h-8 text-gold-400 animate-spin" />
-                  ) : (
-                    <ImageIcon className="w-8 h-8 text-brand-champagne/40" />
-                  )}
-                  <span className="text-xs font-sans text-brand-champagne/80 mt-1">
-                    {uploadingImage ? "Uploading files..." : "Click to upload product photos"}
-                  </span>
-                  <span className="text-[10px] text-brand-champagne/40 font-sans">
-                    Supports PNG, JPG or WEBP (First file becomes COVER)
-                  </span>
-                </label>
-
-                {/* Images Preview list grid */}
-                {images.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <span className="text-[10px] uppercase tracking-wider text-gold-400 font-sans font-semibold">Uploaded Photos:</span>
-                    <div className="grid grid-cols-3 gap-2 mt-1 max-h-56 overflow-y-auto pr-1">
-                      {images.map((url, idx) => (
-                        <div key={idx} className={`relative aspect-square border bg-brand-charcoal ${idx === 0 ? 'border-gold-500' : 'border-brand-charcoal-border'}`}>
-                          <img src={url} alt={`upload-${idx}`} className="w-full h-full object-cover" />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(idx)}
-                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-650 hover:bg-red-750 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                          {idx === 0 && (
-                            <span className="absolute bottom-0 left-0 right-0 bg-gold-500 text-[8px] text-brand-charcoal font-sans uppercase font-bold text-center py-0.5">
-                              Cover
-                            </span>
-                          )}
-                        </div>
-                      ))}
+              {/* Item Manager Dynamic Rows */}
+              <div className="flex flex-col gap-4">
+                {items.map((item, idx) => (
+                  <div key={idx} className="p-4 bg-brand-charcoal border border-brand-charcoal-border/70 flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-serif text-gold-400 font-semibold flex items-center gap-1">
+                        Item Row #{idx + 1}
+                      </span>
+                      {items.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItemRow(idx)}
+                          className="text-red-400/80 hover:text-red-300 text-xs flex items-center gap-1 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove</span>
+                        </button>
+                      )}
                     </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
+                      {/* Item Number */}
+                      <div className="sm:col-span-3 flex flex-col gap-1">
+                        <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
+                          Number # *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 15"
+                          value={item.item_number}
+                          onChange={(e) => handleUpdateItemRow(idx, "item_number", e.target.value)}
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none"
+                        />
+                      </div>
+
+                      {/* Price */}
+                      <div className="sm:col-span-4 flex flex-col gap-1">
+                        <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
+                          Price (PKR)
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="e.g. 2500"
+                          value={item.price !== null && item.price !== undefined ? item.price : ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            handleUpdateItemRow(idx, "price", val === "" ? null : parseFloat(val));
+                          }}
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none"
+                        />
+                      </div>
+
+                      {/* Status Toggle */}
+                      <div className="sm:col-span-5 flex flex-col gap-1 justify-end">
+                        <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
+                          Availability Status
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemRow(idx, "is_available", !item.is_available)}
+                          className={`w-full py-2 px-3 text-xs uppercase tracking-wider font-sans border flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                            item.is_available
+                              ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
+                              : "bg-amber-950/40 border-amber-500/40 text-amber-300"
+                          }`}
+                        >
+                          {item.is_available ? (
+                            <>
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Available
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="w-3.5 h-3.5" /> Marked as Sold
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                      {/* Optional Item Name */}
+                      <div className="sm:col-span-6 flex flex-col gap-1">
+                        <input
+                          type="text"
+                          placeholder="Optional Item Title"
+                          value={item.item_name || ""}
+                          onChange={(e) => handleUpdateItemRow(idx, "item_name", e.target.value)}
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-1.5 text-xs rounded-none focus:outline-none"
+                        />
+                      </div>
+                      {/* Optional Notes */}
+                      <div className="sm:col-span-6 flex flex-col gap-1">
+                        <input
+                          type="text"
+                          placeholder="Optional Notes (e.g. 18K Gold Plated)"
+                          value={item.notes || ""}
+                          onChange={(e) => handleUpdateItemRow(idx, "notes", e.target.value)}
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-1.5 text-xs rounded-none focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Showcase Image Upload */}
+            <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8 flex flex-col gap-6">
+              <h2 className="font-serif text-xl text-brand-champagne border-b border-brand-charcoal-border/60 pb-3 font-medium">
+                Numbered Showcase Photo *
+              </h2>
+
+              <div className="border-2 border-dashed border-brand-charcoal-border hover:border-gold-500/50 p-8 text-center flex flex-col items-center justify-center gap-3 bg-brand-charcoal relative">
+                <ImageIcon className="w-10 h-10 text-gold-500/60" />
+                <div>
+                  <p className="text-sm font-medium text-brand-champagne">Click to upload photos</p>
+                  <p className="text-xs text-brand-champagne/40 mt-1">First photo acts as the main showcase image</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageFileChange}
+                  disabled={uploadingImage}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+                {uploadingImage && (
+                  <div className="flex items-center gap-2 text-xs text-gold-400 font-sans mt-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Uploading...</span>
                   </div>
                 )}
               </div>
 
-              {/* Status toggles */}
-              <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
-                <h2 className="font-serif text-lg text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 font-medium">
-                  Visibility & Status
-                </h2>
-
-                <div className="flex flex-col gap-3">
-                  {/* Published Visibility */}
-                  <label className="flex items-center justify-between cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-brand-charcoal-border bg-brand-charcoal p-3.5">
-                    <span className="text-brand-champagne/85">Publish Listing</span>
-                    <input
-                      type="checkbox"
-                      {...register("published")}
-                      className="accent-gold-500 cursor-pointer h-4 w-4"
-                    />
-                  </label>
-
-                  {/* Featured */}
-                  <label className="flex items-center justify-between cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-brand-charcoal-border bg-brand-charcoal p-3.5">
-                    <span className="text-brand-champagne/85">Feature in Showcase</span>
-                    <input
-                      type="checkbox"
-                      {...register("featured")}
-                      className="accent-gold-500 cursor-pointer h-4 w-4"
-                    />
-                  </label>
-
-                  {/* Available */}
-                  <label className="flex items-center justify-between cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-brand-charcoal-border bg-brand-charcoal p-3.5">
-                    <span className="text-brand-champagne/85">Mark In Stock</span>
-                    <input
-                      type="checkbox"
-                      {...register("is_available")}
-                      className="accent-gold-500 cursor-pointer h-4 w-4"
-                    />
-                  </label>
+              {images.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+                  {images.map((imgUrl, idx) => (
+                    <div key={idx} className="relative aspect-square bg-brand-charcoal border border-brand-charcoal-border group overflow-hidden">
+                      <img src={imgUrl} alt={`Uploaded ${idx}`} className="w-full h-full object-cover" />
+                      {idx === 0 && (
+                        <div className="absolute top-2 left-2 bg-gold-500 text-brand-charcoal px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest">
+                          Main
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        className="absolute top-2 right-2 w-6 h-6 bg-red-950 text-red-200 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
+              )}
+            </div>
 
-                {/* Optional Custom Instagram inquiry Link */}
-                <div className="flex flex-col gap-1.5 mt-2">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans">
-                    Custom Instagram Post URL
+            {/* Specifications */}
+            <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8 flex flex-col gap-6">
+              <h2 className="font-serif text-xl text-brand-champagne border-b border-brand-charcoal-border/60 pb-3 font-medium">
+                Attributes & Social Link
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs uppercase tracking-widest text-brand-champagne/80 font-medium">
+                    Metal / Material
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. https://instagram.com/p/..."
-                    {...register("instagram_post_url")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                    placeholder="e.g. Sterling Silver"
+                    {...register("material")}
+                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none"
                   />
-                  <span className="text-[10px] text-brand-champagne/40 leading-relaxed font-sans">
-                    Link to your matching post on Instagram. Leave blank to point inquiries to your default profile DM inbox.
-                  </span>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs uppercase tracking-widest text-brand-champagne/80 font-medium">
+                    Collection Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Vintage Collection"
+                    {...register("collection")}
+                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none"
+                  />
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex gap-4">
-                <Link href="/admin/dashboard" className="w-1/2">
-                  <Button variant="secondary" size="md" type="button" className="w-full">
-                    Cancel
-                  </Button>
-                </Link>
-                <Button
-                  variant="primary"
-                  size="md"
-                  type="submit"
-                  isLoading={saving}
-                  icon={Save}
-                  className="w-1/2"
-                >
-                  Save Changes
-                </Button>
+              <div className="flex flex-col gap-2">
+                <label className="text-xs uppercase tracking-widest text-brand-champagne/80 font-medium">
+                  Instagram Post URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://www.instagram.com/p/..."
+                  {...register("instagram_post_url")}
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none"
+                />
               </div>
             </div>
-          </form>
-        </div>
-      </main>
-    </>
+          </div>
+
+          {/* Sidebar Controls (4 cols) */}
+          <div className="lg:col-span-4 flex flex-col gap-8">
+            {/* Categories */}
+            <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
+              <h3 className="font-serif text-lg text-brand-champagne border-b border-brand-charcoal-border/60 pb-3 font-medium">
+                Categories *
+              </h3>
+
+              {loadingCategories ? (
+                <div className="flex items-center gap-2 text-xs text-brand-champagne/50 py-4">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Loading categories...</span>
+                </div>
+              ) : categoriesList.length === 0 ? (
+                <p className="text-xs text-brand-champagne/50 py-2">No categories available.</p>
+              ) : (
+                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
+                  {categoriesList.map((cat) => {
+                    const checked = selectedCategoryIds.includes(cat.id);
+                    return (
+                      <label
+                        key={cat.id}
+                        onClick={() => handleCategoryToggle(cat.id)}
+                        className={`flex items-center justify-between p-3 border cursor-pointer transition-colors ${
+                          checked
+                            ? "bg-gold-500/10 border-gold-500/50 text-gold-300"
+                            : "bg-brand-charcoal border-brand-charcoal-border/70 text-brand-champagne/70 hover:border-gold-500/30"
+                        }`}
+                      >
+                        <span className="text-xs font-medium">{cat.name}</span>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {}}
+                          className="accent-gold-500 h-4 w-4 pointer-events-none"
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Visibility Settings */}
+            <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
+              <h3 className="font-serif text-lg text-brand-champagne border-b border-brand-charcoal-border/60 pb-3 font-medium">
+                Visibility Settings
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                <label className="flex items-center justify-between p-3 bg-brand-charcoal border border-brand-charcoal-border cursor-pointer">
+                  <div>
+                    <span className="text-xs font-semibold text-brand-champagne block">Published</span>
+                    <span className="text-[10px] text-brand-champagne/50">Visible on storefront catalogue</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    {...register("published")}
+                    className="accent-gold-500 h-4 w-4 cursor-pointer"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between p-3 bg-brand-charcoal border border-brand-charcoal-border cursor-pointer">
+                  <div>
+                    <span className="text-xs font-semibold text-brand-champagne block">Featured Listing</span>
+                    <span className="text-[10px] text-brand-champagne/50">Showcase on homepage grid</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    {...register("featured")}
+                    className="accent-gold-500 h-4 w-4 cursor-pointer"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Submit Action Button */}
+            <Button
+              variant="primary"
+              size="lg"
+              icon={Save}
+              onClick={handleSubmit(onSubmit)}
+              isLoading={saving}
+              className="w-full py-4 text-center"
+            >
+              Update & Save Listing
+            </Button>
+          </div>
+        </form>
+      </div>
+    </main>
   );
 }

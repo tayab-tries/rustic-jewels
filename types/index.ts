@@ -5,11 +5,20 @@ export interface Category {
   image: string | null;
 }
 
-export interface Product {
+export interface ListingItem {
+  id: string;
+  listing_id?: string;
+  item_number: string;
+  item_name?: string | null;
+  price?: number | null; // null represents "Price on Inquiry"
+  notes?: string | null;
+  is_available: boolean;
+}
+
+export interface Listing {
   id: string;
   slug: string;
-  name: string;
-  price: number | null; // null represents "Price on Inquiry"
+  title: string;
   short_description: string;
   full_description: string;
   featured_image: string;
@@ -19,16 +28,24 @@ export interface Product {
   published: boolean;
   material: string | null;
   collection: string | null;
-  is_available: boolean;
   created_at: string;
   updated_at: string;
-  categories?: Category[]; // Many-to-many joined categories list
+  categories?: Category[];
+  items: ListingItem[];
 }
 
-export interface ProductInput {
+export interface ListingItemInput {
+  id?: string;
+  item_number: string;
+  item_name?: string;
+  price?: number | null;
+  notes?: string;
+  is_available: boolean;
+}
+
+export interface ListingInput {
   slug: string;
-  name: string;
-  price: number | null;
+  title: string;
   short_description: string;
   full_description: string;
   featured_image: string;
@@ -38,9 +55,13 @@ export interface ProductInput {
   published: boolean;
   material?: string;
   collection?: string;
-  is_available: boolean;
-  category_ids: string[]; // List of category IDs associated during create/edit
+  category_ids: string[];
+  items: ListingItemInput[];
 }
+
+// Backwards-compatibility Aliases for migration phase
+export type Product = Listing;
+export type ProductInput = ListingInput;
 
 export interface Settings {
   business_name: string;

@@ -8,7 +8,7 @@ import Footer from "@/components/ui/Footer";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { productService } from "@/services/productService";
-import { Product, Category } from "@/types";
+import { Product, Listing, Category } from "@/types";
 
 function CatalogContent() {
   const router = useRouter();
@@ -63,21 +63,31 @@ function CatalogContent() {
         
         // Handle client side toggle for stock
         if (hideOutOfStock) {
-          fetched = fetched.filter((p) => p.is_available);
+          fetched = fetched.filter((p) => p.items && p.items.some((i) => i.is_available));
         }
+
+        // Helper to get minimum item price for a listing
+        const getMinPrice = (p: Listing) => {
+          const valid = (p.items || []).map((i) => i.price).filter((pr): pr is number => pr !== null && pr !== undefined && pr > 0);
+          return valid.length > 0 ? Math.min(...valid) : null;
+        };
 
         // Apply sorting
         if (sortBy === "price-asc") {
           fetched.sort((a, b) => {
-            if (a.price === null) return 1;
-            if (b.price === null) return -1;
-            return a.price - b.price;
+            const priceA = getMinPrice(a);
+            const priceB = getMinPrice(b);
+            if (priceA === null) return 1;
+            if (priceB === null) return -1;
+            return priceA - priceB;
           });
         } else if (sortBy === "price-desc") {
           fetched.sort((a, b) => {
-            if (a.price === null) return 1;
-            if (b.price === null) return -1;
-            return b.price - a.price;
+            const priceA = getMinPrice(a);
+            const priceB = getMinPrice(b);
+            if (priceA === null) return 1;
+            if (priceB === null) return -1;
+            return priceB - priceA;
           });
         } // "newest" sorting is handled by default from productService
 

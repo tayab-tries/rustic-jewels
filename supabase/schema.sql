@@ -1,4 +1,4 @@
--- Complete Supabase Database Schema for Rustic Jewels
+-- Complete Supabase Database Schema for Rustic Jewels (Multi-Item Listings)
 
 -- Enable UUID extension if not already present
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -23,34 +23,45 @@ CREATE TABLE IF NOT EXISTS public.categories (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- C. Products Table
-CREATE TABLE IF NOT EXISTS public.products (
+-- C. Listings Table (Replaces single Product model)
+CREATE TABLE IF NOT EXISTS public.listings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     slug TEXT UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    price NUMERIC, -- Nullable represents "Price on Inquiry"
+    title TEXT NOT NULL,
     short_description TEXT NOT NULL,
     full_description TEXT NOT NULL,
-    featured_image TEXT NOT NULL, -- Cover photo URL
-    gallery_images TEXT[] NOT NULL DEFAULT '{}', -- Array of extra photo URLs
+    featured_image TEXT NOT NULL, -- Showcase photo containing numbered items
+    gallery_images TEXT[] NOT NULL DEFAULT '{}', -- Optional extra photo URLs
     instagram_post_url TEXT,
     featured BOOLEAN NOT NULL DEFAULT false,
-    published BOOLEAN NOT NULL DEFAULT true, -- Dynamic visibility toggle
-    material TEXT, -- e.g. "18K Gold"
-    collection TEXT, -- e.g. "Heritage Collection"
+    published BOOLEAN NOT NULL DEFAULT true,
+    material TEXT,
+    collection TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- D. Listing Items Table (One Listing has many Listing Items)
+CREATE TABLE IF NOT EXISTS public.listing_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    listing_id UUID NOT NULL REFERENCES public.listings(id) ON DELETE CASCADE,
+    item_number TEXT NOT NULL, -- e.g. "15", "16", "17"
+    item_name TEXT, -- Optional item title
+    price NUMERIC, -- Nullable represents "Price on Inquiry"
+    notes TEXT, -- Optional notes / gemstone details
     is_available BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- D. Product Categories Join Table (Many-to-Many Relationship)
-CREATE TABLE IF NOT EXISTS public.product_categories (
-    product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
+-- E. Listing Categories Join Table (Many-to-Many Relationship)
+CREATE TABLE IF NOT EXISTS public.listing_categories (
+    listing_id UUID REFERENCES public.listings(id) ON DELETE CASCADE,
     category_id UUID REFERENCES public.categories(id) ON DELETE CASCADE,
-    PRIMARY KEY (product_id, category_id)
+    PRIMARY KEY (listing_id, category_id)
 );
 
--- E. Settings Table (Single-row Global Configuration)
+-- F. Settings Table (Single-row Global Configuration)
 CREATE TABLE IF NOT EXISTS public.settings (
     id BOOLEAN PRIMARY KEY DEFAULT true CHECK (id = true), -- Forces maximum of 1 row
     business_name TEXT NOT NULL DEFAULT 'Rustic Jewels',
@@ -75,109 +86,129 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Apply timestamp triggers to products and settings
-CREATE OR REPLACE TRIGGER update_products_updated_at
-    BEFORE UPDATE ON public.products
+-- Apply timestamp triggers
+CREATE TRIGGER update_listings_updated_at
+    BEFORE UPDATE ON public.listings
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
-CREATE OR REPLACE TRIGGER update_settings_updated_at
+CREATE TRIGGER update_listing_items_updated_at
+    BEFORE UPDATE ON public.listing_items
+    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER update_settings_updated_at
     BEFORE UPDATE ON public.settings
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
--- Trigger function to automatically register new Supabase Auth sign-ups into the public.admins table
-CREATE OR REPLACE FUNCTION public.handle_new_admin()
+-- Function & Trigger to auto-register new Supabase Auth users into public.admins table
+CREATE OR REPLACE FUNCTION public.handle_new_admin_user()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO public.admins (id, email)
-    VALUES (NEW.id, NEW.email);
+    VALUES (NEW.id, NEW.email)
+    ON CONFLICT (id) DO NOTHING;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger to sync auth.users with public.admins
-CREATE OR REPLACE TRIGGER on_auth_user_created
+CREATE TRIGGER on_auth_user_created_admin
     AFTER INSERT ON auth.users
-    FOR EACH ROW EXECUTE FUNCTION public.handle_new_admin();
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_admin_user();
 
 ---------------------------------------------------------
--- 3. Create Indexes for Query Optimization
+-- 3. Indexes for Query Optimization
 ---------------------------------------------------------
-
-CREATE INDEX IF NOT EXISTS idx_products_slug ON public.products(slug);
-CREATE INDEX IF NOT EXISTS idx_products_featured ON public.products(featured) WHERE featured = true;
-CREATE INDEX IF NOT EXISTS idx_products_published ON public.products(published) WHERE published = true;
+CREATE INDEX IF NOT EXISTS idx_listings_slug ON public.listings(slug);
+CREATE INDEX IF NOT EXISTS idx_listings_published ON public.listings(published);
+CREATE INDEX IF NOT EXISTS idx_listings_featured ON public.listings(featured);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
-CREATE INDEX IF NOT EXISTS idx_prod_cat_product_id ON public.product_categories(product_id);
-CREATE INDEX IF NOT EXISTS idx_prod_cat_category_id ON public.product_categories(category_id);
+CREATE INDEX IF NOT EXISTS idx_listing_items_listing_id ON public.listing_items(listing_id);
+CREATE INDEX IF NOT EXISTS idx_listing_items_item_number ON public.listing_items(item_number);
 
 ---------------------------------------------------------
--- 4. Enable Row Level Security (RLS) & Define Policies
+-- 4. Enable Row Level Security (RLS)
 ---------------------------------------------------------
-
 ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.product_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.listings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.listing_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.listing_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
 
--- Helper Function to check if a user is an authorized Admin
+---------------------------------------------------------
+-- 5. RLS Policies
+---------------------------------------------------------
+
+-- Helper function to check if authenticated user is an admin
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN AS $$
 BEGIN
-    RETURN (auth.uid() IS NOT NULL AND EXISTS (SELECT 1 FROM public.admins WHERE id = auth.uid()));
+    RETURN EXISTS (
+        SELECT 1 FROM public.admins WHERE id = auth.uid()
+    );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- A. Admins Policies
-CREATE POLICY "Admins list visible to logged-in admins only"
+-- Admins Policy
+CREATE POLICY "Allow authenticated admins read access to admins table" 
 ON public.admins FOR SELECT TO authenticated USING (public.is_admin());
 
--- B. Categories Policies
-CREATE POLICY "Public read access for categories"
+-- Categories Policies
+CREATE POLICY "Allow public read access to categories" 
 ON public.categories FOR SELECT USING (true);
 
-CREATE POLICY "Admin write access for categories"
-ON public.categories FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+CREATE POLICY "Allow admin full access to categories" 
+ON public.categories FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- C. Products Policies
-CREATE POLICY "Public read access for published products"
-ON public.products FOR SELECT
-USING (published = true OR (auth.uid() IS NOT NULL AND public.is_admin()));
+-- Listings Policies
+CREATE POLICY "Allow public read access to published listings" 
+ON public.listings FOR SELECT USING (published = true OR public.is_admin());
 
-CREATE POLICY "Admin write access for products"
-ON public.products FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+CREATE POLICY "Allow admin full access to listings" 
+ON public.listings FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- D. Product Categories Policies
-CREATE POLICY "Public read access for product category mappings of published items"
-ON public.product_categories FOR SELECT
-USING (
-    EXISTS (SELECT 1 FROM public.products p WHERE p.id = product_id AND p.published = true)
-    OR
-    (auth.uid() IS NOT NULL AND public.is_admin())
+-- Listing Items Policies
+CREATE POLICY "Allow public read access to listing items" 
+ON public.listing_items FOR SELECT USING (
+    EXISTS (
+        SELECT 1 FROM public.listings 
+        WHERE listings.id = listing_items.listing_id 
+        AND (listings.published = true OR public.is_admin())
+    )
 );
 
-CREATE POLICY "Admin write access for product category mappings"
-ON public.product_categories FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+CREATE POLICY "Allow admin full access to listing items" 
+ON public.listing_items FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
--- E. Settings Policies
-CREATE POLICY "Public read access for settings"
+-- Listing Categories Policies
+CREATE POLICY "Allow public read access to listing categories" 
+ON public.listing_categories FOR SELECT USING (true);
+
+CREATE POLICY "Allow admin full access to listing categories" 
+ON public.listing_categories FOR ALL TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Settings Policies
+CREATE POLICY "Allow public read access to settings" 
 ON public.settings FOR SELECT USING (true);
 
-CREATE POLICY "Admin write access for settings"
-ON public.settings FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+CREATE POLICY "Allow admin update access to settings" 
+ON public.settings FOR UPDATE TO authenticated 
+USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 ---------------------------------------------------------
--- 5. Storage Buckets Configuration & RLS Policies
+-- 6. Storage Bucket Policies
 ---------------------------------------------------------
-
--- Create product-images and category-images buckets
 INSERT INTO storage.buckets (id, name, public) 
-VALUES 
-  ('product-images', 'product-images', true),
-  ('category-images', 'category-images', true)
+VALUES ('product-images', 'product-images', true) 
 ON CONFLICT (id) DO NOTHING;
 
--- RLS policies for product-images bucket
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('category-images', 'category-images', true) 
+ON CONFLICT (id) DO NOTHING;
+
 CREATE POLICY "Allow public select of product images" 
 ON storage.objects FOR SELECT USING (bucket_id = 'product-images');
 
@@ -186,7 +217,6 @@ ON storage.objects FOR ALL TO authenticated
 USING (bucket_id = 'product-images' AND public.is_admin()) 
 WITH CHECK (bucket_id = 'product-images' AND public.is_admin());
 
--- RLS policies for category-images bucket
 CREATE POLICY "Allow public select of category images" 
 ON storage.objects FOR SELECT USING (bucket_id = 'category-images');
 

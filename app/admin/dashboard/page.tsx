@@ -32,7 +32,7 @@ import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { productService } from "@/services/productService";
 import { authService } from "@/services/authService";
-import { Product, Category, Settings } from "@/types";
+import { Product, Listing, Category, Settings } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Validation schemas
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
       setUserEmail(email);
 
       const [productsList, categoriesList, settingsConfig] = await Promise.all([
-        productService.getProducts({ includeDrafts: true }),
+        productService.getListings({ includeDrafts: true }),
         productService.getCategories(),
         productService.getSettings(),
       ]);
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
       const ok = await productService.deleteProduct(productToDelete.id);
       if (ok) {
         setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
-        addToast(`Deleted "${productToDelete.name}" successfully.`);
+        addToast(`Deleted "${productToDelete.title}" successfully.`);
       } else {
         addToast("Failed to delete catalog item.", "error");
       }
@@ -367,13 +367,17 @@ export default function AdminDashboard() {
   };
 
   // Price formatter helper
-  const formatPrice = (price: number | null) => {
-    if (price === null) return "Price on Inquiry";
-    return new Intl.NumberFormat("en-PK", {
+  const formatPrice = (items?: Listing["items"]) => {
+    if (!items || items.length === 0) return "Price on Inquiry";
+    const prices = items.map((i) => i.price).filter((p): p is number => p !== null && p !== undefined && p > 0);
+    if (prices.length === 0) return "Price on Inquiry";
+    const minPrice = Math.min(...prices);
+    const formatted = new Intl.NumberFormat("en-PK", {
       style: "currency",
       currency: "PKR",
       maximumFractionDigits: 0,
-    }).format(price);
+    }).format(minPrice);
+    return `From ${formatted}`;
   };
 
   return (
@@ -540,16 +544,16 @@ export default function AdminDashboard() {
                       {products.slice(0, 4).map((p) => (
                         <div key={p.id} className="py-3.5 flex items-center justify-between gap-4 text-xs font-sans first:pt-0 last:pb-0">
                           <div className="flex items-center gap-3">
-                            <img src={p.featured_image} alt={p.name} className="w-10 h-10 object-cover border border-brand-charcoal-border flex-shrink-0 bg-brand-charcoal" />
+                            <img src={p.featured_image} alt={p.title} className="w-10 h-10 object-cover border border-brand-charcoal-border flex-shrink-0 bg-brand-charcoal" />
                             <div className="flex flex-col gap-0.5">
-                              <span className="font-semibold text-brand-champagne">{p.name}</span>
+                              <span className="font-semibold text-brand-champagne">{p.title}</span>
                               <span className="text-[10px] text-brand-champagne/40">
                                 {p.categories?.map((c) => c.name).join(", ") || "No Category"}
                               </span>
                             </div>
                           </div>
                           <div className="flex items-center gap-6">
-                            <span className="font-medium text-gold-400/80">{formatPrice(p.price)}</span>
+                            <span className="font-medium text-gold-400/80">{formatPrice(p.items)}</span>
                             <div className="flex items-center gap-3.5">
                               <button
                                 onClick={() => {
@@ -644,11 +648,11 @@ export default function AdminDashboard() {
                         {products.map((p) => (
                           <tr key={p.id} className="hover:bg-brand-charcoal/20 transition-colors duration-150">
                             <td className="p-4 pl-6">
-                              <img src={p.featured_image} alt={p.name} className="w-12 h-12 object-cover border border-brand-charcoal-border bg-brand-charcoal" />
+                              <img src={p.featured_image} alt={p.title} className="w-12 h-12 object-cover border border-brand-charcoal-border bg-brand-charcoal" />
                             </td>
                             <td className="p-4">
                               <div className="flex flex-col gap-0.5">
-                                <span className="font-serif text-sm font-semibold text-brand-champagne line-clamp-1">{p.name}</span>
+                                <span className="font-serif text-sm font-semibold text-brand-champagne line-clamp-1">{p.title}</span>
                                 <span className="text-[10px] text-brand-champagne/40 line-clamp-1 max-w-xs">
                                   {p.material || "No Materials"} • {p.collection || "No Collection"}
                                 </span>
@@ -657,7 +661,7 @@ export default function AdminDashboard() {
                             <td className="p-4 text-brand-champagne/80 font-medium">
                               {p.categories?.map((c) => c.name).join(", ") || "None"}
                             </td>
-                            <td className="p-4 text-gold-400 font-medium">{formatPrice(p.price)}</td>
+                            <td className="p-4 text-gold-400 font-medium">{formatPrice(p.items)}</td>
                             <td className="p-4 text-center">
                               <div className="flex justify-center">
                                 {p.featured ? <Sparkles className="w-4 h-4 text-gold-400" /> : <span className="text-brand-champagne/20">—</span>}
@@ -1009,7 +1013,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <p className="text-brand-champagne/80 leading-relaxed">
-            Are you sure you want to delete <strong className="text-brand-champagne">&quot;{productToDelete?.name}&quot;</strong>?
+            Are you sure you want to delete <strong className="text-brand-champagne">&quot;{productToDelete?.title}&quot;</strong>?
           </p>
           <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-brand-charcoal-border/50">
             <Button
@@ -1087,12 +1091,12 @@ export default function AdminDashboard() {
               <div className="relative aspect-square border border-brand-charcoal-border bg-brand-charcoal overflow-hidden">
                 <img
                   src={productToPreview.featured_image}
-                  alt={productToPreview.name}
+                  alt={productToPreview.title}
                   className="w-full h-full object-cover"
                 />
-                {!productToPreview.is_available && (
+                {(!productToPreview.items || !productToPreview.items.some((i) => i.is_available)) && (
                   <div className="absolute top-3 left-3 bg-brand-charcoal/90 text-gold-300 border border-gold-500/20 px-2 py-0.5 text-[9px] uppercase tracking-widest">
-                    Sold
+                    All Items Sold
                   </div>
                 )}
               </div>
@@ -1104,10 +1108,16 @@ export default function AdminDashboard() {
                     {productToPreview.categories?.map((c) => c.name).join(", ") || "Fine Jewellery"}
                   </span>
                   <h3 className="font-serif text-2xl text-brand-champagne font-semibold tracking-wide">
-                    {productToPreview.name}
+                    {productToPreview.title}
                   </h3>
                   <p className="font-serif text-lg text-gold-300 mt-1.5 font-bold">
-                    {formatPrice(productToPreview.price)}
+                    {(() => {
+                      const items = productToPreview.items || [];
+                      const prices = items.map((i) => i.price).filter((p): p is number => p !== null && p !== undefined && p > 0);
+                      if (prices.length === 0) return "Price on Inquiry";
+                      const minPrice = Math.min(...prices);
+                      return `From PKR ${minPrice.toLocaleString()}`;
+                    })()}
                   </p>
                 </div>
 
@@ -1134,9 +1144,9 @@ export default function AdminDashboard() {
                       <span className="text-brand-champagne font-medium text-right">{productToPreview.collection}</span>
                     </>
                   )}
-                  <span className="text-brand-champagne/40">Status:</span>
-                  <span className={`font-semibold text-right ${productToPreview.is_available ? "text-emerald-400" : "text-amber-500"}`}>
-                    {productToPreview.is_available ? "In Stock" : "Remake on Request"}
+                  <span className="text-brand-champagne/40">Item Availability:</span>
+                  <span className={`font-semibold text-right ${productToPreview.items?.some((i) => i.is_available) ? "text-emerald-400" : "text-amber-500"}`}>
+                    {productToPreview.items?.some((i) => i.is_available) ? `${productToPreview.items.filter((i) => i.is_available).length} Items Available` : "All Items Sold"}
                   </span>
                 </div>
               </div>
