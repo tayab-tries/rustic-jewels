@@ -156,11 +156,12 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const imagesList = [listing.featured_image, ...(listing.gallery_images || [])];
   const items = listing.items || [];
   
-  const isSingleProduct = items.length === 1;
+  const hasNumberedItems = items.some((i) => i.item_number && i.item_number.trim() !== "");
+  const isSingleProduct = items.length <= 1 || !hasNumberedItems;
 
   // inquiry message prefill with required item selection
   const inquiryMessage = selectedItem
-    ? selectedItem.item_number && selectedItem.item_number !== "1" && selectedItem.item_number !== "N/A"
+    ? selectedItem.item_number && selectedItem.item_number.trim() !== ""
       ? `Hi! I am inquiring about "${listing.title}" (Item Number: ${selectedItem.item_number}) listed in your catalogue. Is this piece available?`
       : `Hi! I am inquiring about "${listing.title}" listed in your catalogue. Is this piece available?`
     : `Hi! I am inquiring about "${listing.title}" listed in your catalogue. Is this piece available?`;
@@ -413,7 +414,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                       className="w-full text-center"
                     >
                       {selectedItem
-                        ? isSingleProduct || !selectedItem.item_number || selectedItem.item_number === "1"
+                        ? isSingleProduct || !selectedItem.item_number || selectedItem.item_number.trim() === ""
                           ? "Inquire on Instagram"
                           : `Inquire for Item #${selectedItem.item_number}`
                         : "Select Item to Inquire"}

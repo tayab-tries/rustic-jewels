@@ -187,14 +187,20 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
     }
 
     if (items.length === 0) {
-      setErrorMsg("Please add at least one item number for this listing.");
+      setErrorMsg("Please add at least one item row for this listing.");
       return;
     }
 
+    // Check for duplicate non-empty item numbers
+    const seenNumbers = new Set<string>();
     for (let i = 0; i < items.length; i++) {
-      if (!items[i].item_number || items[i].item_number.trim() === "") {
-        setErrorMsg(`Item Row #${i + 1} is missing an Item Number.`);
-        return;
+      const numStr = (items[i].item_number || "").trim().toLowerCase();
+      if (numStr !== "") {
+        if (seenNumbers.has(numStr)) {
+          setErrorMsg(`Duplicate Item Number "#${items[i].item_number.trim()}" found. Each item number in a listing must be unique.`);
+          return;
+        }
+        seenNumbers.add(numStr);
       }
     }
 
@@ -383,7 +389,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                       {/* Item Number */}
                       <div className="sm:col-span-3 flex flex-col gap-1">
                         <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
-                          Number # *
+                          Number # (Optional)
                         </label>
                         <input
                           type="text"

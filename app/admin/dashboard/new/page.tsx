@@ -40,7 +40,7 @@ export default function NewListing() {
 
   // DYNAMIC INLINE ITEM MANAGER STATE
   const [items, setItems] = useState<ListingItemInput[]>([
-    { item_number: "1", item_name: "", price: 2500, notes: "", is_available: true }
+    { item_number: "", item_name: "", price: null, notes: "", is_available: true }
   ]);
 
   // Load available categories from database
@@ -78,10 +78,9 @@ export default function NewListing() {
 
   // Inline Item Manager actions
   const handleAddItemRow = () => {
-    const nextNum = (items.length + 1).toString();
     setItems((prev) => [
       ...prev,
-      { item_number: nextNum, item_name: "", price: null, notes: "", is_available: true }
+      { item_number: "", item_name: "", price: null, notes: "", is_available: true }
     ]);
   };
 
@@ -152,14 +151,20 @@ export default function NewListing() {
 
     // Validate Items Manager list
     if (items.length === 0) {
-      setErrorMsg("Please add at least one item number for this listing.");
+      setErrorMsg("Please add at least one item row for this listing.");
       return;
     }
 
+    // Check for duplicate non-empty item numbers
+    const seenNumbers = new Set<string>();
     for (let i = 0; i < items.length; i++) {
-      if (!items[i].item_number || items[i].item_number.trim() === "") {
-        setErrorMsg(`Item Row #${i + 1} is missing an Item Number.`);
-        return;
+      const numStr = (items[i].item_number || "").trim().toLowerCase();
+      if (numStr !== "") {
+        if (seenNumbers.has(numStr)) {
+          setErrorMsg(`Duplicate Item Number "#${items[i].item_number.trim()}" found. Each item number in a listing must be unique.`);
+          return;
+        }
+        seenNumbers.add(numStr);
       }
     }
 
@@ -338,7 +343,7 @@ export default function NewListing() {
                       {/* Item Number */}
                       <div className="sm:col-span-3 flex flex-col gap-1">
                         <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
-                          Number # *
+                          Number # (Optional)
                         </label>
                         <input
                           type="text"
