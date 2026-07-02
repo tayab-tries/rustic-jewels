@@ -1,4 +1,5 @@
 -- Complete Supabase Database Schema for Rustic Jewels (Multi-Item Listings)
+-- Idempotent & Re-executable in Supabase SQL Editor
 
 -- Enable UUID extension if not already present
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -86,15 +87,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Apply timestamp triggers
+-- Drop triggers if they already exist before recreating
+DROP TRIGGER IF EXISTS update_listings_updated_at ON public.listings;
 CREATE TRIGGER update_listings_updated_at
     BEFORE UPDATE ON public.listings
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_listing_items_updated_at ON public.listing_items;
 CREATE TRIGGER update_listing_items_updated_at
     BEFORE UPDATE ON public.listing_items
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_settings_updated_at ON public.settings;
 CREATE TRIGGER update_settings_updated_at
     BEFORE UPDATE ON public.settings
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
@@ -110,6 +114,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+DROP TRIGGER IF EXISTS on_auth_user_created_admin ON auth.users;
 CREATE TRIGGER on_auth_user_created_admin
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_admin_user();
@@ -135,7 +140,7 @@ ALTER TABLE public.listing_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
 
 ---------------------------------------------------------
--- 5. RLS Policies
+-- 5. Helper Function & RLS Policies
 ---------------------------------------------------------
 
 -- Helper function to check if authenticated user is an admin
@@ -149,26 +154,32 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Admins Policy
+DROP POLICY IF EXISTS "Allow authenticated admins read access to admins table" ON public.admins;
 CREATE POLICY "Allow authenticated admins read access to admins table" 
 ON public.admins FOR SELECT TO authenticated USING (public.is_admin());
 
 -- Categories Policies
+DROP POLICY IF EXISTS "Allow public read access to categories" ON public.categories;
 CREATE POLICY "Allow public read access to categories" 
 ON public.categories FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Allow admin full access to categories" ON public.categories;
 CREATE POLICY "Allow admin full access to categories" 
 ON public.categories FOR ALL TO authenticated 
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- Listings Policies
+DROP POLICY IF EXISTS "Allow public read access to published listings" ON public.listings;
 CREATE POLICY "Allow public read access to published listings" 
 ON public.listings FOR SELECT USING (published = true OR public.is_admin());
 
+DROP POLICY IF EXISTS "Allow admin full access to listings" ON public.listings;
 CREATE POLICY "Allow admin full access to listings" 
 ON public.listings FOR ALL TO authenticated 
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- Listing Items Policies
+DROP POLICY IF EXISTS "Allow public read access to listing items" ON public.listing_items;
 CREATE POLICY "Allow public read access to listing items" 
 ON public.listing_items FOR SELECT USING (
     EXISTS (
@@ -178,22 +189,27 @@ ON public.listing_items FOR SELECT USING (
     )
 );
 
+DROP POLICY IF EXISTS "Allow admin full access to listing items" ON public.listing_items;
 CREATE POLICY "Allow admin full access to listing items" 
 ON public.listing_items FOR ALL TO authenticated 
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- Listing Categories Policies
+DROP POLICY IF EXISTS "Allow public read access to listing categories" ON public.listing_categories;
 CREATE POLICY "Allow public read access to listing categories" 
 ON public.listing_categories FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Allow admin full access to listing categories" ON public.listing_categories;
 CREATE POLICY "Allow admin full access to listing categories" 
 ON public.listing_categories FOR ALL TO authenticated 
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
 -- Settings Policies
+DROP POLICY IF EXISTS "Allow public read access to settings" ON public.settings;
 CREATE POLICY "Allow public read access to settings" 
 ON public.settings FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Allow admin update access to settings" ON public.settings;
 CREATE POLICY "Allow admin update access to settings" 
 ON public.settings FOR UPDATE TO authenticated 
 USING (public.is_admin()) WITH CHECK (public.is_admin());
@@ -209,17 +225,21 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('category-images', 'category-images', true) 
 ON CONFLICT (id) DO NOTHING;
 
+DROP POLICY IF EXISTS "Allow public select of product images" ON storage.objects;
 CREATE POLICY "Allow public select of product images" 
 ON storage.objects FOR SELECT USING (bucket_id = 'product-images');
 
+DROP POLICY IF EXISTS "Allow admin manage of product images" ON storage.objects;
 CREATE POLICY "Allow admin manage of product images" 
 ON storage.objects FOR ALL TO authenticated 
 USING (bucket_id = 'product-images' AND public.is_admin()) 
 WITH CHECK (bucket_id = 'product-images' AND public.is_admin());
 
+DROP POLICY IF EXISTS "Allow public select of category images" ON storage.objects;
 CREATE POLICY "Allow public select of category images" 
 ON storage.objects FOR SELECT USING (bucket_id = 'category-images');
 
+DROP POLICY IF EXISTS "Allow admin manage of category images" ON storage.objects;
 CREATE POLICY "Allow admin manage of category images" 
 ON storage.objects FOR ALL TO authenticated 
 USING (bucket_id = 'category-images' AND public.is_admin()) 
