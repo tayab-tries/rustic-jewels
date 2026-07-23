@@ -286,7 +286,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                         Select Item Number:
                       </span>
                       {selectedItem && (
-                        <span className={`text-xs font-sans font-medium flex items-center gap-1 ${selectedItem.is_available ? "text-emerald-400" : "text-amber-500"}`}>
+                        <span className={`text-xs font-sans font-medium flex items-center gap-1 ${selectedItem.is_available ? "text-[#3E6B52]" : "text-amber-500"}`}>
                           {selectedItem.is_available ? (
                             <>
                               <CheckCircle2 className="w-3.5 h-3.5" /> Available
@@ -361,7 +361,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                                 <span className="font-serif text-base text-brand-champagne/40 line-through font-normal">
                                   {formatPrice(originalPrice)}
                                 </span>
-                                <span className="bg-red-950/80 text-red-400 border border-red-800/40 text-[10px] uppercase font-sans font-extrabold px-2.5 py-1 tracking-wider shadow-sm">
+                                <span className="bg-[#FFFFFF] text-[#CF6A6A] border border-[#CF6A6A]/30 text-[10px] uppercase font-sans font-extrabold px-2.5 py-1 tracking-wider shadow-xs">
                                   {discountPercent}% OFF
                                 </span>
                               </>
@@ -373,7 +373,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                           </div>
                           
                           {hasDiscount && (
-                            <div className="text-[11px] text-emerald-400 font-sans font-medium tracking-wide flex items-center gap-1.5 bg-emerald-950/20 border border-emerald-950/40 px-3 py-1.5 w-fit">
+                            <div className="text-[11px] text-[#3E6B52] font-sans font-medium tracking-wide flex items-center gap-1.5 bg-[#FFFFFF] border border-[#DCE5EF] px-3 py-1.5 w-fit shadow-xs">
                               <span>You save {formatPrice(originalPrice - discountedPrice)} ({discountPercent}% OFF)</span>
                             </div>
                           )}
