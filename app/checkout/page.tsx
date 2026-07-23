@@ -67,11 +67,6 @@ export default function CheckoutPage() {
     }).format(price);
   };
 
-  if (cartItems.length === 0) {
-    addToast("Your cart is empty.", "error");
-    return null;
-  }
-
   const DELIVERY_FEE = 250;
   const finalTotal = cartTotal + DELIVERY_FEE;
 
