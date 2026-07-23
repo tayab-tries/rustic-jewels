@@ -64,10 +64,10 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="group flex flex-col">
-            <span className="font-serif text-2xl tracking-widest text-[#2D2A2D] group-hover:text-[#7F9CB8] transition-colors duration-250 uppercase font-light">
-              Rustic <span className="font-normal text-[#7F9CB8]">Jewels</span>
+            <span className="font-serif text-2xl tracking-widest text-[#F5F2EC] group-hover:text-[#C6A870] transition-colors duration-250 uppercase font-light">
+              Rustic <span className="font-normal text-[#C6A870]">Jewels</span>
             </span>
-            <span className="text-[9px] uppercase tracking-[0.3em] text-[#5F5A5A] -mt-1 font-sans text-right font-medium">
+            <span className="text-[9px] uppercase tracking-[0.3em] text-[#9BA8BC] -mt-1 font-sans text-right font-medium">
               Digital Catalog
             </span>
           </Link>
@@ -81,14 +81,14 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={`font-sans text-xs uppercase tracking-widest transition-colors duration-200 relative py-1 ${
-                    isActive ? "text-[#7F9CB8] font-medium" : "text-[#5F5A5A] hover:text-[#2D2A2D]"
+                    isActive ? "text-[#AAB6C8] font-semibold" : "text-[#C7CFDA] hover:text-[#59708E]"
                   }`}
                 >
                   {link.name}
                   {isActive && (
                     <motion.div
                       layoutId="activeNavLine"
-                      className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#7F9CB8]"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#AAB6C8]"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -105,19 +105,19 @@ export default function Navbar() {
                 placeholder="Search catalogue..."
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] pl-8 pr-3 py-1.5 text-[10px] rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans tracking-wide"
+                className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] pl-8 pr-3 py-1.5 text-[10px] rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans tracking-wide"
               />
-              <Search className="w-3.5 h-3.5 text-[#5F5A5A] absolute left-2.5 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-[#9BA8BC] absolute left-2.5 top-2.5" />
             </form>
 
             <Link
               href="/cart"
-              className="relative p-2 text-[#2D2A2D] hover:text-[#7F9CB8] transition-colors cursor-pointer"
+              className="relative p-2 text-[#C7CFDA] hover:text-[#AAB6C8] transition-colors cursor-pointer"
               title="View Cart"
             >
               <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-[#7F9CB8] text-[#FFFFFF] text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-sans">
+                <span className="absolute -top-0.5 -right-0.5 bg-[#324A6A] text-[#F5F2EC] text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-sans">
                   {cartCount}
                 </span>
               )}
@@ -127,9 +127,9 @@ export default function Navbar() {
               href={`https://instagram.com/${instagramUser}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#5F5A5A] hover:text-[#2D2A2D] transition-colors duration-200 border border-[#D8E4F1] hover:border-[#7F9CB8]/60 px-4 py-2 glass"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#C7CFDA] hover:text-[#F5F2EC] transition-colors duration-200 border border-[#2F3C56] hover:border-[#59708E] px-4 py-2 glass rounded-xl"
             >
-              <Instagram className="w-4 h-4 text-[#7F9CB8]" />
+              <Instagram className="w-4 h-4 text-[#C7CFDA]" />
               <span>Our Instagram</span>
             </a>
           </div>
@@ -138,11 +138,11 @@ export default function Navbar() {
           <div className="flex items-center gap-3 md:hidden">
             <Link
               href="/cart"
-              className="relative p-2 text-[#2D2A2D] hover:text-[#7F9CB8] transition-colors cursor-pointer"
+              className="relative p-2 text-[#C7CFDA] hover:text-[#AAB6C8] transition-colors cursor-pointer"
             >
               <ShoppingBag className="w-6 h-6" />
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-[#7F9CB8] text-[#FFFFFF] text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-sans">
+                <span className="absolute top-0 right-0 bg-[#324A6A] text-[#F5F2EC] text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-sans">
                   {cartCount}
                 </span>
               )}
@@ -150,7 +150,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-[#2D2A2D]/80 hover:text-[#2D2A2D] p-1 cursor-pointer"
+              className="text-[#C7CFDA] hover:text-[#F5F2EC] p-1 cursor-pointer"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -166,7 +166,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 top-[73px] z-35 bg-[#F4F8FF] glass flex flex-col md:hidden"
+            className="fixed inset-0 top-[73px] z-35 bg-[#0A0F17] glass flex flex-col md:hidden"
           >
             {/* Mobile Search Input */}
             <div className="px-8 pt-6 w-full">
@@ -176,9 +176,9 @@ export default function Navbar() {
                   placeholder="Search catalogue..."
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] pl-10 pr-4 py-3 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans"
+                  className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] pl-10 pr-4 py-3 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans"
                 />
-                <Search className="w-4 h-4 text-[#5F5A5A] absolute left-3.5 top-3.5" />
+                <Search className="w-4 h-4 text-[#9BA8BC] absolute left-3.5 top-3.5" />
               </form>
             </div>
 
@@ -195,7 +195,7 @@ export default function Navbar() {
                     <Link
                       href={link.href}
                       className={`font-serif text-3xl tracking-wider ${
-                        isActive ? "text-[#7F9CB8] font-medium" : "text-[#5F5A5A] hover:text-[#2D2A2D]"
+                        isActive ? "text-[#AAB6C8] font-medium" : "text-[#C7CFDA] hover:text-[#59708E]"
                       }`}
                     >
                       {link.name}
@@ -208,13 +208,13 @@ export default function Navbar() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="w-full max-w-xs pt-8 border-t border-[#D8E4F1] flex flex-col items-center"
+                className="w-full max-w-xs pt-8 border-t border-[#2F3C56] flex flex-col items-center"
               >
                 <a
                   href={`https://instagram.com/${instagramUser}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-3 bg-[#7F9CB8] text-[#FFFFFF] py-3 tracking-widest text-xs uppercase font-sans font-semibold hover:bg-[#6D8DAA] transition-colors duration-200"
+                  className="w-full flex items-center justify-center gap-3 bg-[#324A6A] text-[#F5F2EC] py-3 tracking-widest text-xs uppercase font-sans font-semibold hover:bg-[#3E5C85] rounded-xl transition-colors duration-200"
                 >
                   <Instagram className="w-4 h-4" />
                   <span>Visit Instagram</span>

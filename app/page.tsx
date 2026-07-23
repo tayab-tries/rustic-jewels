@@ -72,7 +72,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 via-brand-charcoal/90 to-brand-charcoal z-10" />
             <motion.img
               initial={{ scale: 1.1, opacity: 0 }}
-              animate={{ scale: 1.05, opacity: 0.20 }}
+              animate={{ scale: 1.05, opacity: 0.10 }}
               transition={{ duration: 1.8, ease: "easeOut" }}
               src={settings?.hero_image || "/bg-pattern-2.png"}
               alt="Luxury Jewellery Background"
@@ -85,7 +85,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 border border-gold-500/25 px-4 py-1.5 glass text-gold-400 text-xs uppercase tracking-widest font-sans"
+              className="inline-flex items-center gap-2 border border-[#C6A870]/30 px-4 py-1.5 glass text-[#C6A870] text-xs uppercase tracking-widest font-sans rounded-full"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>New Drop</span>

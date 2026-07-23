@@ -11,7 +11,7 @@ import { orderService } from "@/services/orderService";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import Button from "@/components/ui/Button";
-import { ArrowLeft, CreditCard, ShoppingBag, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, CreditCard, ShoppingBag, Loader2, AlertCircle, Truck } from "lucide-react";
 import { motion } from "framer-motion";
 
 // Checkout Form Validation Schema
@@ -67,16 +67,22 @@ export default function CheckoutPage() {
     }).format(price);
   };
 
-  const onSubmit = async (values: CheckoutFormValues) => {
-    if (cartItems.length === 0) {
-      addToast("Your cart is empty.", "error");
-      return;
-    }
+  if (cartItems.length === 0) {
+    addToast("Your cart is empty.", "error");
+    return null;
+  }
 
+  const DELIVERY_FEE = 250;
+  const finalTotal = cartTotal + DELIVERY_FEE;
+
+  const onSubmit = async (values: CheckoutFormValues) => {
     setSubmitting(true);
     try {
+      // Map cart items into listing_items schema for backend submission
       const orderItemsInput = cartItems.map((item) => ({
         listing_id: item.listing.id,
+        listing_title: item.listing.title,
+        listing_image: item.listing.featured_image,
         item_number: item.selectedItem.item_number,
         price: item.price,
         quantity: item.quantity,
@@ -92,7 +98,7 @@ export default function CheckoutPage() {
           city: values.city,
           notes: values.notes || null,
           subtotal: cartTotal,
-          total: cartTotal, // Free manual delivery or manual cost included
+          total: finalTotal, // Subtotal + PKR 250 Standard Delivery
         },
         orderItemsInput
       );
@@ -135,8 +141,8 @@ export default function CheckoutPage() {
     return (
       <>
         <Navbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-brand-charcoal min-h-screen">
-          <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-[#121B2E] min-h-screen">
+          <Loader2 className="w-8 h-8 text-[#C6A870] animate-spin" />
         </main>
         <Footer />
       </>
@@ -149,10 +155,10 @@ export default function CheckoutPage() {
       <>
         <Navbar />
         <main className="flex-grow pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-[70vh] flex flex-col justify-center items-center text-center">
-          <div className="flex flex-col items-center gap-4 py-20 border border-brand-charcoal-border/50 bg-brand-charcoal-light w-full max-w-lg">
-            <AlertCircle className="w-12 h-12 text-gold-500" />
-            <h2 className="font-serif text-2xl text-brand-champagne">Your Cart is Empty</h2>
-            <p className="text-xs text-brand-champagne/50 font-sans max-w-xs mt-1.5 leading-relaxed">
+          <div className="flex flex-col items-center gap-4 py-20 border border-[#2F3C56] bg-[#1A2438] rounded-2xl w-full max-w-lg shadow-sm">
+            <AlertCircle className="w-12 h-12 text-[#C6A870]" />
+            <h2 className="font-serif text-2xl text-[#F5F2EC]">Your Cart is Empty</h2>
+            <p className="text-xs text-[#C7CFDA] font-sans max-w-xs mt-1.5 leading-relaxed">
               You must add items to your cart before proceeding to checkout.
             </p>
             <Link href="/catalog" className="mt-4">
@@ -175,101 +181,102 @@ export default function CheckoutPage() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex-grow pt-32 pb-24 bg-brand-charcoal"
+        className="flex-grow pt-32 pb-24 bg-[#121B2E]"
       >
         <div className="max-w-6xl mx-auto px-6">
-          {/* Back link */}
-          <Link
-            href="/cart"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand-champagne/60 hover:text-gold-400 font-sans transition-colors mb-8 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Cart</span>
-          </Link>
+          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#2F3C56] pb-6 mb-8 gap-4">
+            <div>
+              <h1 className="font-serif text-3xl md:text-4xl text-[#F5F2EC] tracking-wide font-semibold">Order Checkout</h1>
+              <p className="text-xs text-[#C7CFDA] font-sans mt-1">Provide your delivery details to complete your order reservation.</p>
+            </div>
+            <Link
+              href="/cart"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#C7CFDA] hover:text-[#59708E] font-sans transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Modify Shopping Bag</span>
+            </Link>
+          </div>
 
-          <h1 className="font-serif text-3xl md:text-4xl text-brand-champagne tracking-wide mb-8 font-medium">
-            Checkout Details
-          </h1>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Form Column (7 cols) */}
+            <div className="lg:col-span-7 bg-[#1A2438] border border-[#2F3C56] p-6 sm:p-8 rounded-2xl shadow-sm">
+              <h2 className="font-serif text-xl text-[#F5F2EC] border-b border-[#2F3C56] pb-4 mb-6 font-semibold flex items-center gap-2">
+                <Truck className="w-5 h-5 text-[#C6A870]" />
+                Shipping & Delivery Address
+              </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            {/* Form Details Column (7 cols) */}
-            <div className="lg:col-span-7">
-              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8">
-                <h3 className="font-serif text-xl text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 font-medium flex items-center gap-2.5">
-                  <CreditCard className="w-5 h-5 text-gold-400" />
-                  Shipping & Order Information
-                </h3>
-
-                {/* Name */}
+              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                {/* Recipient Full Name */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Customer Full Name *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#C7CFDA] font-sans font-semibold">Recipient Full Name *</label>
                   <input
                     type="text"
-                    placeholder="e.g. John Doe"
+                    placeholder="e.g. Ayesha Khan"
                     {...register("customer_name")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                    className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] px-4 py-2.5 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans"
                   />
-                  {errors.customer_name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errors.customer_name.message}</span>}
+                  {errors.customer_name && <span className="text-[10px] text-[#C86969] font-sans mt-0.5">{errors.customer_name.message}</span>}
                 </div>
 
-                {/* Phone */}
+                {/* Mobile Phone Number */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Phone Number *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#C7CFDA] font-sans font-semibold">Phone Number * (for Courier delivery SMS)</label>
                   <input
                     type="text"
                     placeholder="e.g. 03001234567"
                     {...register("phone")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                    className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] px-4 py-2.5 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans"
                   />
-                  {errors.phone && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errors.phone.message}</span>}
+                  {errors.phone && <span className="text-[10px] text-[#C86969] font-sans mt-0.5">{errors.phone.message}</span>}
                 </div>
 
                 {/* Email Address */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Email Address (Optional)</label>
+                  <label className="text-xs uppercase tracking-widest text-[#C7CFDA] font-sans font-semibold">Email Address (Optional)</label>
                   <input
                     type="email"
-                    placeholder="e.g. buyer@example.com"
+                    placeholder="name@example.com"
                     {...register("email")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                    className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] px-4 py-2.5 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans"
                   />
-                  {errors.email && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errors.email.message}</span>}
+                  {errors.email && <span className="text-[10px] text-[#C86969] font-sans mt-0.5">{errors.email.message}</span>}
                 </div>
 
-                {/* Shipping Address */}
+                {/* Complete Street Shipping Address */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Shipping Address *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#C7CFDA] font-sans font-semibold">Complete Street Address *</label>
                   <textarea
                     rows={3}
-                    placeholder="Enter complete delivery street address, house number, area..."
+                    placeholder="House/Apartment #, Street #, Block/Sector, Area"
                     {...register("shipping_address")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                    className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] px-4 py-2.5 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans resize-none"
                   />
-                  {errors.shipping_address && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errors.shipping_address.message}</span>}
+                  {errors.shipping_address && <span className="text-[10px] text-[#C86969] font-sans mt-0.5">{errors.shipping_address.message}</span>}
                 </div>
 
                 {/* City */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">City *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#C7CFDA] font-sans font-semibold">City *</label>
                   <input
                     type="text"
                     placeholder="e.g. Lahore, Karachi, Islamabad"
                     {...register("city")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                    className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] px-4 py-2.5 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans"
                   />
-                  {errors.city && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errors.city.message}</span>}
+                  {errors.city && <span className="text-[10px] text-[#C86969] font-sans mt-0.5">{errors.city.message}</span>}
                 </div>
 
                 {/* Notes */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Additional Notes (Optional)</label>
+                  <label className="text-xs uppercase tracking-widest text-[#C7CFDA] font-sans font-semibold">Additional Notes (Optional)</label>
                   <textarea
                     rows={2}
                     placeholder="Special requests or instructions for shipping..."
                     {...register("notes")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                    className="w-full bg-[#121B2E] border border-[#2F3C56] focus:border-[#59708E] text-[#F5F2EC] px-4 py-2.5 text-xs rounded-lg focus:outline-none placeholder:text-[#66758D] font-sans resize-none"
                   />
-                  {errors.notes && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errors.notes.message}</span>}
+                  {errors.notes && <span className="text-[10px] text-[#C86969] font-sans mt-0.5">{errors.notes.message}</span>}
                 </div>
 
                 <div className="mt-4">
@@ -281,44 +288,44 @@ export default function CheckoutPage() {
             </div>
 
             {/* Checkout Items Summary Column (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-5 bg-brand-charcoal-light border border-brand-charcoal-border p-6">
-              <h3 className="font-serif text-lg text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 font-medium flex items-center gap-2">
-                <ShoppingBag className="w-4 h-4 text-gold-400" />
+            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#1A2438] border border-[#2F3C56] p-6 rounded-2xl shadow-sm">
+              <h3 className="font-serif text-lg text-[#F5F2EC] border-b border-[#2F3C56] pb-3 font-semibold flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-[#C6A870]" />
                 Order Summary
               </h3>
 
               {/* Items List */}
-              <div className="flex flex-col divide-y divide-brand-charcoal-border/30 max-h-[300px] overflow-y-auto pr-1">
+              <div className="flex flex-col divide-y divide-[#2F3C56]/50 max-h-[300px] overflow-y-auto pr-1">
                 {cartItems.map((item) => (
                   <div key={`${item.listing.id}-${item.selectedItem.item_number}`} className="py-3 flex items-center justify-between gap-3 text-xs font-sans first:pt-0 last:pb-0">
                     <div className="flex items-center gap-3">
-                      <img src={item.listing.featured_image} alt={item.listing.title} className="w-10 h-10 object-cover border border-brand-charcoal-border bg-brand-charcoal flex-shrink-0" />
+                      <img src={item.listing.featured_image} alt={item.listing.title} className="w-10 h-10 object-cover border border-[#2F3C56] bg-[#121B2E] rounded-xl flex-shrink-0" />
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-brand-champagne line-clamp-1">{item.listing.title}</span>
-                        <span className="text-[9px] text-gold-400 uppercase tracking-widest font-medium">Item #{item.selectedItem.item_number}</span>
+                        <span className="font-semibold text-[#F5F2EC] line-clamp-1">{item.listing.title}</span>
+                        <span className="text-[9px] text-[#C6A870] uppercase tracking-widest font-semibold">Item #{item.selectedItem.item_number}</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="font-semibold text-brand-champagne">{formatPrice(item.price)}</span>
-                      <span className="text-[10px] text-brand-champagne/40 block">Qty: {item.quantity}</span>
+                      <span className="font-semibold text-[#F5F2EC]">{formatPrice(item.price)}</span>
+                      <span className="text-[10px] text-[#9BA8BC] block">Qty: {item.quantity}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Pricing Totals */}
-              <div className="border-t border-brand-charcoal-border/50 pt-4 flex flex-col gap-3 text-xs font-sans">
-                <div className="flex justify-between text-brand-champagne/60">
+              <div className="border-t border-[#2F3C56] pt-4 flex flex-col gap-3 text-xs font-sans">
+                <div className="flex justify-between text-[#C7CFDA]">
                   <span>Subtotal</span>
-                  <span>{formatPrice(cartTotal)}</span>
+                  <span className="text-[#F5F2EC] font-medium">{formatPrice(cartTotal)}</span>
                 </div>
-                <div className="flex justify-between text-brand-champagne/60">
-                  <span>Manual Shipping Fee</span>
-                  <span className="text-emerald-400 font-semibold tracking-wider uppercase text-[9px] mt-0.5">Free</span>
+                <div className="flex justify-between text-[#C7CFDA]">
+                  <span>Standard Delivery</span>
+                  <span className="text-[#F5F2EC] font-medium">{formatPrice(DELIVERY_FEE)}</span>
                 </div>
-                <div className="border-t border-brand-charcoal-border/40 pt-4 flex justify-between items-baseline">
-                  <span className="text-sm font-semibold text-brand-champagne">Total Amount Due</span>
-                  <span className="font-serif text-xl font-bold text-gold-300">{formatPrice(cartTotal)}</span>
+                <div className="border-t border-[#2F3C56] pt-4 flex justify-between items-baseline">
+                  <span className="text-sm font-semibold text-[#F5F2EC]">Total Amount Due</span>
+                  <span className="font-serif text-xl font-bold text-[#C6A870]">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
             </div>
