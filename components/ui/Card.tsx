@@ -110,7 +110,7 @@ export default function Card({ product }: CardProps) {
 
         {/* Showcase Image */}
         <div className="w-full h-full relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0.5)] to-[rgba(255,255,255,0.15)] opacity-100 group-hover:opacity-0 group-focus-within:opacity-0 group-active:opacity-0 transition-opacity duration-500 ease-in-out pointer-events-none z-[5]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(255,255,255,0.5)] to-[rgba(255,255,255,0.15)] opacity-100 group-hover:opacity-0 group-focus-within:opacity-0 group-active:opacity-0 transition-opacity duration-500 ease-in-out pointer-events-none z-[5]" />
           <img
             src={currentImage || "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=80"}
             alt={listing.title}
