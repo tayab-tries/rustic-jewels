@@ -68,10 +68,9 @@ body::before {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
+  opacity: 0.04;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* Glassmorphism utility */

@@ -115,6 +115,7 @@ export default function Card({ product }: CardProps) {
             alt={listing.title}
             className="w-full h-full object-cover transition-transform duration-700 ease-out scale-100 group-hover:scale-105"
             loading="lazy"
+            decoding="async"
           />
         </div>
       </Link>
