@@ -120,7 +120,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
             <div>
               <h1 className="font-serif text-2xl md:text-3xl text-text-primary font-medium">Order Placed Successfully!</h1>
               <p className="text-xs text-text-secondary font-sans mt-1.5 leading-relaxed">
-                Thank you for shopping with us. Your order is registered in our database under status <strong className="text-[#C9A96A]">Pending Payment</strong>.
+                Thank you for shopping with us. Your order is registered in our database under status <strong className="text-[#7D96B5]">Pending Payment</strong>.
               </p>
             </div>
 
@@ -144,7 +144,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
 
               <div className="border-t border-[#E1E8F1] pt-3.5 flex justify-between items-baseline font-sans text-xs">
                 <span className="text-text-secondary">Total Amount Due</span>
-                <span className="font-serif text-xl font-bold text-[#C9A96A]">{formatPrice(order.total)}</span>
+                <span className="font-serif text-xl font-bold text-[#7D96B5]">{formatPrice(order.total)}</span>
               </div>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
               {settings?.account_title && (
                 <div className="flex justify-between items-center border-b border-[#E1E8F1] pb-4">
                   <span className="text-[10px] uppercase tracking-widest text-text-muted font-sans font-bold">Account Title</span>
-                  <span className="font-serif text-base font-semibold text-[#C9A96A] select-all">{settings.account_title}</span>
+                  <span className="font-serif text-base font-semibold text-[#7D96B5] select-all">{settings.account_title}</span>
                 </div>
               )}
 
@@ -178,12 +178,12 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
                       <dd className="col-span-2 text-text-primary font-medium">{settings.bank_name}</dd>
 
                       <dt className="text-text-secondary">Account No:</dt>
-                      <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all">{settings.account_number}</dd>
+                      <dd className="col-span-2 text-[#7D96B5] font-mono font-semibold select-all">{settings.account_number}</dd>
 
                       {settings.iban && (
                         <>
                           <dt className="text-text-secondary">IBAN:</dt>
-                          <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all text-[11px] break-all">{settings.iban}</dd>
+                          <dd className="col-span-2 text-[#7D96B5] font-mono font-semibold select-all text-[11px] break-all">{settings.iban}</dd>
                         </>
                       )}
                     </dl>
@@ -200,13 +200,13 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
                       {settings.easypaisa_number && (
                         <>
                           <dt className="text-text-secondary">Easypaisa:</dt>
-                          <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all">{settings.easypaisa_number}</dd>
+                          <dd className="col-span-2 text-[#7D96B5] font-mono font-semibold select-all">{settings.easypaisa_number}</dd>
                         </>
                       )}
                       {settings.jazzcash_number && (
                         <>
                           <dt className="text-text-secondary">JazzCash:</dt>
-                          <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all">{settings.jazzcash_number}</dd>
+                          <dd className="col-span-2 text-[#7D96B5] font-mono font-semibold select-all">{settings.jazzcash_number}</dd>
                         </>
                       )}
                     </dl>
@@ -221,7 +221,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
               <ol className="list-decimal list-inside flex flex-col gap-2.5 text-text-secondary">
                 <li>Complete your manual payment transfer to one of the accounts listed above.</li>
                 <li>Take a clear **screenshot** or PDF confirmation of the completed payment.</li>
-                <li>Copy your unique Order ID: <span className="font-mono text-[#C9A96A] font-semibold">{order.order_id}</span>.</li>
+                <li>Copy your unique Order ID: <span className="font-mono text-[#7D96B5] font-semibold">{order.order_id}</span>.</li>
                 <li>Click the **Open Instagram** button below to open our Direct Messages.</li>
                 <li>Send us both: **Payment Screenshot** and **Order ID**.</li>
               </ol>

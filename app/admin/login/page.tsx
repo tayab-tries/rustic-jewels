@@ -65,7 +65,7 @@ export default function AdminLogin() {
         {/* Branding header */}
         <div className="text-center flex flex-col gap-2">
           <span className="font-serif text-3xl tracking-widest text-text-primary uppercase font-light">
-            Rustic <span className="font-normal text-[#C9A96A]">Jewels</span>
+            Rustic <span className="font-normal text-[#7D96B5]">Jewels</span>
           </span>
           <span className="text-xs uppercase tracking-widest text-[#7D96B5]/80 font-sans">
             Catalogue Administration

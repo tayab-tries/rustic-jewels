@@ -306,7 +306,7 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="font-semibold text-[#C9A96A]">{formatPrice(item.price)}</span>
+                      <span className="font-semibold text-[#7D96B5]">{formatPrice(item.price)}</span>
                       <span className="text-[10px] text-[#525B66] block">Qty: {item.quantity}</span>
                     </div>
                   </div>
@@ -325,7 +325,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="border-t border-[#E1E8F1] pt-4 flex justify-between items-baseline">
                   <span className="text-sm font-semibold text-[#202124]">Total Amount Due</span>
-                  <span className="font-serif text-xl font-bold text-[#C9A96A]">{formatPrice(finalTotal)}</span>
+                  <span className="font-serif text-xl font-bold text-[#7D96B5]">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
             </div>

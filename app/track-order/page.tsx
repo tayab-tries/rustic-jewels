@@ -162,7 +162,7 @@ function OrderTrackingContent() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#DCE5EF] pb-4 gap-3">
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-sm font-bold text-[#C9A96A] select-all tracking-wide">{ord.order_id}</span>
+            <span className="font-mono text-sm font-bold text-[#7D96B5] select-all tracking-wide">{ord.order_id}</span>
             <button
               onClick={() => handleCopyId(ord.order_id)}
               className="text-text-secondary hover:text-[#7D96B5] p-1 cursor-pointer transition-colors"
@@ -222,7 +222,7 @@ function OrderTrackingContent() {
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-semibold text-[#C9A96A]">{formatPrice(oi.price)}</span>
+                <span className="font-semibold text-[#7D96B5]">{formatPrice(oi.price)}</span>
                 <span className="text-[10px] text-text-secondary block">Qty: {oi.quantity}</span>
               </div>
             </div>
@@ -248,7 +248,7 @@ function OrderTrackingContent() {
           <Info className="w-5 h-5 text-[#7D96B5] flex-shrink-0 mt-0.5" />
           <div>
             <span className="font-semibold text-text-primary block mb-0.5">Payment Required</span>
-            To process this order, make a manual bank transfer of <strong className="text-[#C9A96A]">{formatPrice(ord.total)}</strong>.
+            To process this order, make a manual bank transfer of <strong className="text-[#7D96B5]">{formatPrice(ord.total)}</strong>.
             <Link href={`/payment-instructions/${ord.order_id}`} className="text-primary hover:text-primary-hover font-medium inline-flex items-center gap-1 ml-1 cursor-pointer underline">
               View Payment Instructions <ChevronRight className="w-3 h-3" />
             </Link>
@@ -259,7 +259,7 @@ function OrderTrackingContent() {
       {/* Footer Total */}
       <div className="border-t border-[#DCE5EF] pt-4 flex justify-between items-baseline font-sans text-xs">
         <span className="text-text-secondary">Amount Total Paid/Due</span>
-        <span className="font-serif text-lg font-bold text-[#C9A96A]">{formatPrice(ord.total)}</span>
+        <span className="font-serif text-lg font-bold text-[#7D96B5]">{formatPrice(ord.total)}</span>
       </div>
     </div>
   );

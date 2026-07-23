@@ -355,7 +355,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                           <div className="flex items-baseline gap-3 flex-wrap">
                             {hasDiscount ? (
                               <>
-                                <span className="font-serif text-3xl text-gold-300 font-bold tracking-wide">
+                                <span className="font-serif text-3xl text-[#7D96B5] font-bold tracking-wide">
                                   {formatPrice(discountedPrice)}
                                 </span>
                                 <span className="font-serif text-base text-brand-champagne/40 line-through font-normal">
@@ -366,7 +366,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                                 </span>
                               </>
                             ) : (
-                              <span className="font-serif text-3xl text-gold-300 font-bold tracking-wide">
+                              <span className="font-serif text-3xl text-[#7D96B5] font-bold tracking-wide">
                                 {formatPrice(originalPrice)}
                               </span>
                             )}

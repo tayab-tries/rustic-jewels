@@ -78,7 +78,7 @@ export default function Card({ product }: CardProps) {
           </div>
         ) : (
           hasDiscount && (
-            <div className="absolute top-3 left-3 z-10 bg-[#C9A96A] text-[#FFFFFF] px-2.5 py-1 text-[10px] uppercase tracking-widest font-sans font-bold shadow-xs rounded-full">
+            <div className="absolute top-3 left-3 z-10 bg-[#7D96B5] text-[#FFFFFF] px-2.5 py-1 text-[10px] uppercase tracking-widest font-sans font-bold shadow-xs">
               {discountPercent}% OFF
             </div>
           )
@@ -152,16 +152,16 @@ export default function Card({ product }: CardProps) {
                   <span className="line-through text-[#9EA8B5] text-xs font-normal">
                     {prefix}{formattedOriginal}
                   </span>
-                  <span className="bg-[#C9A96A]/20 text-[#C9A96A] border border-[#C9A96A]/40 px-1 py-0.5 text-[8px] font-bold font-sans uppercase tracking-wide rounded">
+                  <span className="bg-[#7D96B5]/15 text-[#7D96B5] border border-[#7D96B5]/30 px-1 py-0.5 text-[8px] font-bold font-sans uppercase tracking-wide rounded">
                     {discountPercent}% OFF
                   </span>
                 </div>
-                <span className="font-serif text-lg text-[#C9A96A] font-bold leading-tight">
+                <span className="font-serif text-lg text-[#7D96B5] font-bold leading-tight">
                   {prefix}{formattedDiscounted}
                 </span>
               </>
             ) : (
-              <span className="font-serif text-lg text-[#C9A96A] font-semibold">
+              <span className="font-serif text-lg text-[#7D96B5] font-semibold">
                 {prefix}{formattedOriginal}
               </span>
             )}

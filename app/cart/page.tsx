@@ -98,7 +98,7 @@ export default function CartPage() {
 
                     <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-[#E1E8F1]">
                       <div className="text-left sm:text-right flex flex-col">
-                        <span className="font-serif text-lg font-bold text-[#C9A96A]">
+                        <span className="font-serif text-lg font-bold text-[#7D96B5]">
                           {formatPrice(item.price * item.quantity)}
                         </span>
                         {item.quantity > 1 && (
@@ -146,7 +146,7 @@ export default function CartPage() {
                   </div>
                   <div className="border-t border-[#E1E8F1] pt-4 flex justify-between items-baseline mt-1">
                     <span className="text-sm font-semibold text-[#202124]">Estimated Total</span>
-                    <span className="font-serif text-xl font-bold text-[#C9A96A]">{formatPrice(estimatedTotal)}</span>
+                    <span className="font-serif text-xl font-bold text-[#7D96B5]">{formatPrice(estimatedTotal)}</span>
                   </div>
                 </div>
 
