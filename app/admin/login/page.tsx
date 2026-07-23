@@ -56,18 +56,18 @@ export default function AdminLogin() {
   };
 
   return (
-    <main className="min-h-screen bg-brand-charcoal flex flex-col items-center justify-center p-6 relative">
+    <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6 relative">
       {/* Background design accents */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-gold-500/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold-500/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
 
       <div className="w-full max-w-md relative z-10 flex flex-col gap-6">
         {/* Branding header */}
         <div className="text-center flex flex-col gap-2">
-          <span className="font-serif text-3xl tracking-widest text-brand-champagne uppercase font-light">
-            Rustic <span className="font-normal text-gold-500">Jewels</span>
+          <span className="font-serif text-3xl tracking-widest text-text-primary uppercase font-light">
+            Rustic <span className="font-normal text-[#C9A96A]">Jewels</span>
           </span>
-          <span className="text-xs uppercase tracking-widest text-gold-500/80 font-sans">
+          <span className="text-xs uppercase tracking-widest text-[#7D96B5]/80 font-sans">
             Catalogue Administration
           </span>
         </div>
@@ -77,22 +77,22 @@ export default function AdminLogin() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-brand-charcoal-light border border-brand-charcoal-border p-8 shadow-2xl"
+          className="bg-[#FFFFFF] border border-[#DCE5EF] p-8 shadow-2xl rounded-2xl"
         >
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-brand-charcoal-border/50">
-            <Lock className="w-5 h-5 text-gold-500" />
-            <h2 className="font-serif text-xl font-medium tracking-wide text-brand-champagne">
+          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
+            <Lock className="w-5 h-5 text-primary" />
+            <h2 className="font-serif text-xl font-medium tracking-wide text-text-primary">
               Sign In to Dashboard
             </h2>
           </div>
 
           {/* Configuration alert banner */}
           {!isSupabaseConfigured && (
-            <div className="mb-6 bg-gold-500/10 border border-gold-500/30 p-3 text-xs text-gold-400 font-sans flex items-start gap-2.5">
+            <div className="mb-6 bg-primary/10 border border-primary/30 p-3 text-xs text-primary font-sans flex items-start gap-2.5 rounded-[10px]">
               <KeyRound className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Demo Mode Active:</strong> Log in using the test credentials below:<br />
-                <span className="font-mono text-brand-champagne block mt-1">
+                <span className="font-mono text-text-primary block mt-1">
                   Email: admin@rusticjewels.com<br />
                   Password: admin
                 </span>
@@ -102,8 +102,8 @@ export default function AdminLogin() {
 
           {/* General error message banner */}
           {errorMsg && (
-            <div className="mb-6 bg-red-950/40 border border-red-800/40 p-4 text-xs text-red-300 font-sans flex items-start gap-2.5">
-              <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0 text-red-400" />
+            <div className="mb-6 bg-[#CF6A6A]/10 border border-[#CF6A6A]/30 p-4 text-xs text-[#CF6A6A] font-sans flex items-start gap-2.5 rounded-[10px]">
+              <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#CF6A6A]" />
               <p className="leading-relaxed">{errorMsg}</p>
             </div>
           )}
@@ -112,7 +112,7 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
             {/* Email Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans">
+              <label className="text-xs uppercase tracking-widest text-text-secondary font-sans font-semibold">
                 Admin Email
               </label>
               <div className="relative">
@@ -120,12 +120,12 @@ export default function AdminLogin() {
                   type="email"
                   placeholder="admin@rusticjewels.com"
                   {...register("email")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne pl-10 pr-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/25 font-sans"
+                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm rounded-[10px] focus:outline-none placeholder:text-text-light font-sans"
                 />
-                <Mail className="w-4 h-4 text-brand-champagne/40 absolute left-3.5 top-3.5" />
+                <Mail className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
               </div>
               {errors.email && (
-                <span className="text-[11px] text-red-400 font-sans mt-0.5">
+                <span className="text-[11px] text-[#CF6A6A] font-sans mt-0.5">
                   {errors.email.message}
                 </span>
               )}
@@ -133,7 +133,7 @@ export default function AdminLogin() {
 
             {/* Password Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans">
+              <label className="text-xs uppercase tracking-widest text-text-secondary font-sans font-semibold">
                 Password
               </label>
               <div className="relative">
@@ -141,12 +141,12 @@ export default function AdminLogin() {
                   type="password"
                   placeholder="••••••••"
                   {...register("password")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne pl-10 pr-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/25 font-sans"
+                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm rounded-[10px] focus:outline-none placeholder:text-text-light font-sans"
                 />
-                <Lock className="w-4 h-4 text-brand-champagne/40 absolute left-3.5 top-3.5" />
+                <Lock className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
               </div>
               {errors.password && (
-                <span className="text-[11px] text-red-400 font-sans mt-0.5">
+                <span className="text-[11px] text-[#CF6A6A] font-sans mt-0.5">
                   {errors.password.message}
                 </span>
               )}
@@ -167,7 +167,7 @@ export default function AdminLogin() {
         {/* Back Link to Catalogue */}
         <Link
           href="/catalog"
-          className="text-center text-xs uppercase tracking-widest text-brand-champagne/50 hover:text-gold-400 font-sans transition-colors duration-150"
+          className="text-center text-xs uppercase tracking-widest text-text-secondary hover:text-primary font-sans transition-colors duration-150"
         >
           ← Return to Catalogue
         </Link>

@@ -43,7 +43,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative w-full max-w-lg bg-brand-charcoal-light border border-brand-charcoal-border p-6 shadow-2xl z-10 rounded-none overflow-hidden"
+            className="relative w-full max-w-lg bg-brand-charcoal-light border border-brand-charcoal-border p-6 shadow-2xl z-10 rounded-[20px] overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-brand-charcoal-border mb-4">
@@ -56,7 +56,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
               )}
               <button
                 onClick={onClose}
-                className="text-brand-champagne/60 hover:text-brand-champagne transition-colors duration-150 p-1 hover:bg-brand-charcoal rounded-none cursor-pointer"
+                className="text-brand-champagne/60 hover:text-brand-champagne transition-colors duration-150 p-1 hover:bg-brand-charcoal rounded-full cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>

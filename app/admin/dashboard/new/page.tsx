@@ -271,7 +271,7 @@ export default function NewListing() {
                   type="text"
                   placeholder="e.g. Vintage Silver Rings Collection"
                   {...register("title")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20"
                 />
                 {errors.title && <span className="text-xs text-red-400">{errors.title.message}</span>}
               </div>
@@ -285,7 +285,7 @@ export default function NewListing() {
                   type="text"
                   placeholder="A showcase of handcrafted sterling silver rings featuring intricate wirework..."
                   {...register("short_description")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20"
                 />
                 {errors.short_description && <span className="text-xs text-red-400">{errors.short_description.message}</span>}
               </div>
@@ -299,7 +299,7 @@ export default function NewListing() {
                   rows={4}
                   placeholder="Detail the materials, inspiration, or instructions for choosing numbered pieces..."
                   {...register("full_description")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne p-4 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20 resize-none"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne p-4 text-sm rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 resize-none"
                 />
                 {errors.full_description && <span className="text-xs text-red-400">{errors.full_description.message}</span>}
               </div>
@@ -353,7 +353,7 @@ export default function NewListing() {
                           placeholder="e.g. 15"
                           value={item.item_number}
                           onChange={(e) => handleUpdateItemRow(idx, "item_number", e.target.value)}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none"
                         />
                       </div>
 
@@ -370,7 +370,7 @@ export default function NewListing() {
                             const val = e.target.value;
                             handleUpdateItemRow(idx, "price", val === "" ? null : parseFloat(val));
                           }}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none"
                         />
                       </div>
 
@@ -408,7 +408,7 @@ export default function NewListing() {
                           placeholder="Optional Item Title (e.g. Emerald Solitaire)"
                           value={item.item_name || ""}
                           onChange={(e) => handleUpdateItemRow(idx, "item_name", e.target.value)}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-1.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/30"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-1.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/30"
                         />
                       </div>
                       {/* Optional Notes */}
@@ -418,7 +418,7 @@ export default function NewListing() {
                           placeholder="Optional Notes (e.g. 18K Gold Plated)"
                           value={item.notes || ""}
                           onChange={(e) => handleUpdateItemRow(idx, "notes", e.target.value)}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-1.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/30"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-1.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/30"
                         />
                       </div>
                     </div>
@@ -498,7 +498,7 @@ export default function NewListing() {
                     type="text"
                     placeholder="e.g. 925 Sterling Silver"
                     {...register("material")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20"
+                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20"
                   />
                 </div>
 
@@ -510,7 +510,7 @@ export default function NewListing() {
                     type="text"
                     placeholder="e.g. Vintage Collection"
                     {...register("collection")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20"
+                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20"
                   />
                 </div>
               </div>
@@ -524,7 +524,7 @@ export default function NewListing() {
                   type="url"
                   placeholder="https://www.instagram.com/p/..."
                   {...register("instagram_post_url")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-3 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/20"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20"
                 />
               </div>
             </div>

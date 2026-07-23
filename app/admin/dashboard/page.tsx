@@ -553,19 +553,18 @@ export default function AdminDashboard() {
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case "Pending Payment":
-        return "bg-amber-950/40 border-amber-800/40 text-amber-400";
+        return "bg-status-pending/15 border-status-pending/30 text-status-pending rounded-full";
       case "Payment Under Review":
-        return "bg-blue-950/40 border-blue-800/40 text-blue-400";
+        return "bg-status-review/15 border-status-review/30 text-status-review rounded-full";
       case "Approved":
-        return "bg-emerald-950/40 border-emerald-800/40 text-emerald-400";
-      case "Rejected":
-        return "bg-red-950/40 border-red-800/40 text-red-400";
       case "Completed":
-        return "bg-zinc-900 border-zinc-700 text-zinc-300";
+        return "bg-status-approved/15 border-status-approved/30 text-status-approved rounded-full";
+      case "Rejected":
+        return "bg-status-rejected/15 border-status-rejected/30 text-status-rejected rounded-full";
       case "Cancelled":
-        return "bg-zinc-950 border-zinc-800 text-zinc-500";
+        return "bg-status-cancelled/15 border-status-cancelled/30 text-status-cancelled rounded-full";
       default:
-        return "bg-zinc-900 border-zinc-750 text-zinc-300";
+        return "bg-status-review/15 border-status-review/30 text-status-review rounded-full";
     }
   };
 
@@ -892,7 +891,7 @@ export default function AdminDashboard() {
                       placeholder="Search orders (ID, Name, Phone)..."
                       value={orderSearchQuery}
                       onChange={handleOrderSearchChange}
-                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/30 font-sans"
+                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/30 font-sans"
                     />
                     <Search className="w-3.5 h-3.5 text-brand-champagne/40 absolute left-3 top-2.5" />
                   </div>
@@ -1016,7 +1015,7 @@ export default function AdminDashboard() {
                       placeholder="Search inventory..."
                       value={searchQuery}
                       onChange={handleSearchChange}
-                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/30 font-sans"
+                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/30 font-sans"
                     />
                     <Search className="w-3.5 h-3.5 text-brand-champagne/40 absolute left-3 top-2.5" />
                   </div>
@@ -1148,7 +1147,7 @@ export default function AdminDashboard() {
                           type="text"
                           placeholder="e.g. Brooches"
                           {...registerCat("name", { onChange: handleCategoryNameChange })}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                         />
                         {errorsCat.name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.name.message}</span>}
                       </div>
@@ -1160,7 +1159,7 @@ export default function AdminDashboard() {
                           type="text"
                           placeholder="e.g. brooches"
                           {...registerCat("slug")}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans font-mono"
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans font-mono"
                         />
                         {errorsCat.slug && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.slug.message}</span>}
                       </div>
@@ -1203,7 +1202,7 @@ export default function AdminDashboard() {
                           min="0"
                           max="100"
                           {...registerCat("discount_percentage", { valueAsNumber: true })}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                         />
                         {errorsCat.discount_percentage && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.discount_percentage.message}</span>}
                       </div>
@@ -1329,7 +1328,7 @@ export default function AdminDashboard() {
                             type="text"
                             placeholder="Rustic Jewels"
                             {...registerSet("business_name")}
-                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                           />
                           {errorsSet.business_name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.business_name.message}</span>}
                         </div>
@@ -1341,7 +1340,7 @@ export default function AdminDashboard() {
                             type="text"
                             placeholder="Timeless Elegance Handcrafted for You"
                             {...registerSet("hero_title")}
-                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                           />
                           {errorsSet.hero_title && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_title.message}</span>}
                         </div>
@@ -1353,7 +1352,7 @@ export default function AdminDashboard() {
                             rows={2}
                             placeholder="Browse our curated collection of fine artisan jewellery..."
                             {...registerSet("hero_subtitle")}
-                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
                           />
                           {errorsSet.hero_subtitle && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_subtitle.message}</span>}
                         </div>

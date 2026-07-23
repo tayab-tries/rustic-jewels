@@ -141,8 +141,8 @@ export default function CheckoutPage() {
     return (
       <>
         <Navbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-[#F4F8FF] min-h-screen">
-          <Loader2 className="w-8 h-8 text-[#7F9CB8] animate-spin" />
+        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-[#F4F7FB] min-h-screen">
+          <Loader2 className="w-8 h-8 text-[#7D96B5] animate-spin" />
         </main>
         <Footer />
       </>
@@ -155,10 +155,10 @@ export default function CheckoutPage() {
       <>
         <Navbar />
         <main className="flex-grow pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-[70vh] flex flex-col justify-center items-center text-center">
-          <div className="flex flex-col items-center gap-4 py-20 border border-[#D8E4F1] bg-[#FFFFFF] w-full max-w-lg shadow-xs">
-            <AlertCircle className="w-12 h-12 text-[#7F9CB8]" />
-            <h2 className="font-serif text-2xl text-[#2D2A2D]">Your Cart is Empty</h2>
-            <p className="text-xs text-[#5F5A5A] font-sans max-w-xs mt-1.5 leading-relaxed">
+          <div className="flex flex-col items-center gap-4 py-20 border border-[#E1E8F1] bg-[#FFFFFF] w-full max-w-lg shadow-xs rounded-2xl">
+            <AlertCircle className="w-12 h-12 text-[#7D96B5]" />
+            <h2 className="font-serif text-2xl text-[#202124]">Your Cart is Empty</h2>
+            <p className="text-xs text-[#525B66] font-sans max-w-xs mt-1.5 leading-relaxed">
               You must add items to your cart before proceeding to checkout.
             </p>
             <Link href="/catalog" className="mt-4">
@@ -181,17 +181,17 @@ export default function CheckoutPage() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex-grow pt-32 pb-24 bg-[#F4F8FF]"
+        className="flex-grow pt-32 pb-24 bg-[#F4F7FB]"
       >
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#D8E4F1] pb-6 mb-8 gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[#E1E8F1] pb-6 mb-8 gap-4">
             <div>
-              <h1 className="font-serif text-3xl md:text-4xl text-[#2D2A2D] tracking-wide font-medium">Order Checkout</h1>
-              <p className="text-xs text-[#5F5A5A] font-sans mt-1">Provide your delivery details to complete your order reservation.</p>
+              <h1 className="font-serif text-3xl md:text-4xl text-[#202124] tracking-wide font-medium">Order Checkout</h1>
+              <p className="text-xs text-[#525B66] font-sans mt-1">Provide your delivery details to complete your order reservation.</p>
             </div>
             <Link
               href="/cart"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#5F5A5A] hover:text-[#7F9CB8] font-sans transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#525B66] hover:text-[#7D96B5] font-sans transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Modify Shopping Bag</span>
@@ -200,83 +200,83 @@ export default function CheckoutPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Form Column (7 cols) */}
-            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#D8E4F1] p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl text-[#2D2A2D] border-b border-[#D8E4F1] pb-4 mb-6 font-medium flex items-center gap-2">
-                <Truck className="w-5 h-5 text-[#7F9CB8]" />
+            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E1E8F1] p-6 sm:p-8 shadow-xs rounded-2xl">
+              <h2 className="font-serif text-xl text-[#202124] border-b border-[#E1E8F1] pb-4 mb-6 font-medium flex items-center gap-2">
+                <Truck className="w-5 h-5 text-[#7D96B5]" />
                 Shipping & Delivery Address
               </h2>
 
               <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
                 {/* Recipient Full Name */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-[#5F5A5A] font-sans font-semibold">Recipient Full Name *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">Recipient Full Name *</label>
                   <input
                     type="text"
                     placeholder="e.g. Ayesha Khan"
                     {...register("customer_name")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
-                  {errors.customer_name && <span className="text-[10px] text-[#B86A6A] font-sans mt-0.5">{errors.customer_name.message}</span>}
+                  {errors.customer_name && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.customer_name.message}</span>}
                 </div>
 
                 {/* Mobile Phone Number */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-[#5F5A5A] font-sans font-semibold">Phone Number * (for Courier delivery SMS)</label>
+                  <label className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">Phone Number * (for Courier delivery SMS)</label>
                   <input
                     type="text"
                     placeholder="e.g. 03001234567"
                     {...register("phone")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
-                  {errors.phone && <span className="text-[10px] text-[#B86A6A] font-sans mt-0.5">{errors.phone.message}</span>}
+                  {errors.phone && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.phone.message}</span>}
                 </div>
 
                 {/* Email Address */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-[#5F5A5A] font-sans font-semibold">Email Address (Optional)</label>
+                  <label className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">Email Address (Optional)</label>
                   <input
                     type="email"
                     placeholder="name@example.com"
                     {...register("email")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
-                  {errors.email && <span className="text-[10px] text-[#B86A6A] font-sans mt-0.5">{errors.email.message}</span>}
+                  {errors.email && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.email.message}</span>}
                 </div>
 
                 {/* Complete Street Shipping Address */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-[#5F5A5A] font-sans font-semibold">Complete Street Address *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">Complete Street Address *</label>
                   <textarea
                     rows={3}
                     placeholder="House/Apartment #, Street #, Block/Sector, Area"
                     {...register("shipping_address")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans resize-none"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none"
                   />
-                  {errors.shipping_address && <span className="text-[10px] text-[#B86A6A] font-sans mt-0.5">{errors.shipping_address.message}</span>}
+                  {errors.shipping_address && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.shipping_address.message}</span>}
                 </div>
 
                 {/* City */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-[#5F5A5A] font-sans font-semibold">City *</label>
+                  <label className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">City *</label>
                   <input
                     type="text"
                     placeholder="e.g. Lahore, Karachi, Islamabad"
                     {...register("city")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
-                  {errors.city && <span className="text-[10px] text-[#B86A6A] font-sans mt-0.5">{errors.city.message}</span>}
+                  {errors.city && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.city.message}</span>}
                 </div>
 
                 {/* Notes */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs uppercase tracking-widest text-[#5F5A5A] font-sans font-semibold">Additional Notes (Optional)</label>
+                  <label className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">Additional Notes (Optional)</label>
                   <textarea
                     rows={2}
                     placeholder="Special requests or instructions for shipping..."
                     {...register("notes")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E4F1] focus:border-[#7F9CB8] text-[#2D2A2D] px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-[#5F5A5A]/50 font-sans resize-none"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none"
                   />
-                  {errors.notes && <span className="text-[10px] text-[#B86A6A] font-sans mt-0.5">{errors.notes.message}</span>}
+                  {errors.notes && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.notes.message}</span>}
                 </div>
 
                 <div className="mt-4">
@@ -288,44 +288,44 @@ export default function CheckoutPage() {
             </div>
 
             {/* Checkout Items Summary Column (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#FFFFFF] border border-[#D8E4F1] p-6 shadow-xs">
-              <h3 className="font-serif text-lg text-[#2D2A2D] border-b border-[#D8E4F1] pb-3 font-medium flex items-center gap-2">
-                <ShoppingBag className="w-4 h-4 text-[#7F9CB8]" />
+            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#FFFFFF] border border-[#E1E8F1] p-6 shadow-xs rounded-2xl">
+              <h3 className="font-serif text-lg text-[#202124] border-b border-[#E1E8F1] pb-3 font-medium flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-[#7D96B5]" />
                 Order Summary
               </h3>
 
               {/* Items List */}
-              <div className="flex flex-col divide-y divide-[#D8E4F1]/60 max-h-[300px] overflow-y-auto pr-1">
+              <div className="flex flex-col divide-y divide-[#E1E8F1]/60 max-h-[300px] overflow-y-auto pr-1">
                 {cartItems.map((item) => (
                   <div key={`${item.listing.id}-${item.selectedItem.item_number}`} className="py-3 flex items-center justify-between gap-3 text-xs font-sans first:pt-0 last:pb-0">
                     <div className="flex items-center gap-3">
-                      <img src={item.listing.featured_image} alt={item.listing.title} className="w-10 h-10 object-cover border border-[#D8E4F1] bg-[#EAF2FF] flex-shrink-0" />
+                      <img src={item.listing.featured_image} alt={item.listing.title} className="w-10 h-10 object-cover border border-[#E1E8F1] bg-[#EAF0F8] flex-shrink-0 rounded-[10px]" />
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-[#2D2A2D] line-clamp-1">{item.listing.title}</span>
-                        <span className="text-[9px] text-[#7F9CB8] uppercase tracking-widest font-semibold">Item #{item.selectedItem.item_number}</span>
+                        <span className="font-semibold text-[#202124] line-clamp-1">{item.listing.title}</span>
+                        <span className="text-[9px] text-[#7D96B5] uppercase tracking-widest font-semibold">Item #{item.selectedItem.item_number}</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="font-semibold text-[#2D2A2D]">{formatPrice(item.price)}</span>
-                      <span className="text-[10px] text-[#5F5A5A] block">Qty: {item.quantity}</span>
+                      <span className="font-semibold text-[#C9A96A]">{formatPrice(item.price)}</span>
+                      <span className="text-[10px] text-[#525B66] block">Qty: {item.quantity}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Pricing Totals */}
-              <div className="border-t border-[#D8E4F1] pt-4 flex flex-col gap-3 text-xs font-sans">
-                <div className="flex justify-between text-[#5F5A5A]">
+              <div className="border-t border-[#E1E8F1] pt-4 flex flex-col gap-3 text-xs font-sans">
+                <div className="flex justify-between text-[#525B66]">
                   <span>Subtotal</span>
-                  <span className="text-[#2D2A2D] font-medium">{formatPrice(cartTotal)}</span>
+                  <span className="text-[#202124] font-medium">{formatPrice(cartTotal)}</span>
                 </div>
-                <div className="flex justify-between text-[#5F5A5A]">
+                <div className="flex justify-between text-[#525B66]">
                   <span>Standard Delivery</span>
-                  <span className="text-[#2D2A2D] font-medium">{formatPrice(DELIVERY_FEE)}</span>
+                  <span className="text-[#202124] font-medium">{formatPrice(DELIVERY_FEE)}</span>
                 </div>
-                <div className="border-t border-[#D8E4F1] pt-4 flex justify-between items-baseline">
-                  <span className="text-sm font-semibold text-[#2D2A2D]">Total Amount Due</span>
-                  <span className="font-serif text-xl font-bold text-[#7F9CB8]">{formatPrice(finalTotal)}</span>
+                <div className="border-t border-[#E1E8F1] pt-4 flex justify-between items-baseline">
+                  <span className="text-sm font-semibold text-[#202124]">Total Amount Due</span>
+                  <span className="font-serif text-xl font-bold text-[#C9A96A]">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
             </div>

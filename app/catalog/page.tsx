@@ -142,21 +142,21 @@ function CatalogContent() {
     <>
       <Navbar />
       
-      <main className="flex-grow pt-32 pb-24 bg-section-pattern-5">
+      <main className="flex-grow pt-32 pb-24 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           {/* Header Title */}
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs uppercase tracking-widest text-gold-500 font-sans font-semibold">
+            <span className="text-xs uppercase tracking-widest text-text-muted font-sans font-semibold">
               The Collection
             </span>
-            <h1 className="font-serif text-4xl md:text-5xl text-brand-champagne mt-2 tracking-wide font-medium">
+            <h1 className="font-serif text-4xl md:text-5xl text-text-primary mt-2 tracking-wide font-medium">
               Rustic Jewels Catalogue
             </h1>
-            <div className="w-12 h-[1px] bg-gold-500/50 mx-auto mt-4" />
+            <div className="w-12 h-[1px] bg-border mx-auto mt-4" />
           </div>
 
           {/* Search, Filter & Sort Controls Grid */}
-          <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 mb-10 flex flex-col gap-6">
+          <div className="bg-background-secondary border border-border p-6 mb-10 flex flex-col gap-6 rounded-2xl">
             {/* Search Input and Sort Dropdown */}
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Search Form */}
@@ -166,37 +166,37 @@ function CatalogContent() {
                   placeholder="Search by ring, silver, collection..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne pl-10 pr-4 py-2.5 text-sm rounded-none focus:outline-none placeholder:text-brand-champagne/40 font-sans"
+                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm rounded-[10px] focus:outline-none placeholder:text-text-light font-sans"
                 />
-                <Search className="w-4 h-4 text-brand-champagne/50 absolute left-3.5 top-3.5" />
+                <Search className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
                 <button type="submit" className="hidden" />
               </form>
 
               {/* Filters Right Block */}
               <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto justify-end">
                 {/* Sort selector */}
-                <div className="flex items-center gap-2 bg-brand-charcoal border border-brand-charcoal-border px-3 py-2 text-sm font-sans w-full sm:w-auto">
-                  <ArrowUpDown className="w-4 h-4 text-gold-500" />
+                <div className="flex items-center gap-2 bg-[#FFFFFF] border border-border px-3 py-2 text-sm font-sans w-full sm:w-auto rounded-[10px]">
+                  <ArrowUpDown className="w-4 h-4 text-primary" />
                   <select
                     value={sortBy}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value as "newest" | "price-asc" | "price-desc")}
-                    className="bg-transparent text-brand-champagne focus:outline-none text-xs uppercase tracking-widest cursor-pointer pr-4"
+                    className="bg-transparent text-text-primary focus:outline-none text-xs uppercase tracking-widest cursor-pointer pr-4 border-0"
                   >
-                    <option value="newest" className="bg-brand-charcoal text-brand-champagne">Newest Arrivals</option>
-                    <option value="price-asc" className="bg-brand-charcoal text-brand-champagne">Price: Low to High</option>
-                    <option value="price-desc" className="bg-brand-charcoal text-brand-champagne">Price: High to Low</option>
+                    <option value="newest" className="bg-[#FFFFFF] text-text-primary">Newest Arrivals</option>
+                    <option value="price-asc" className="bg-[#FFFFFF] text-text-primary">Price: Low to High</option>
+                    <option value="price-desc" className="bg-[#FFFFFF] text-text-primary">Price: High to Low</option>
                   </select>
                 </div>
 
                 {/* Hide Out of Stock Toggle */}
-                <label className="flex items-center gap-2 cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-brand-charcoal-border bg-brand-charcoal px-4 py-2.5 w-full sm:w-auto justify-center sm:justify-start">
+                <label className="flex items-center gap-2 cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-border bg-[#FFFFFF] px-4 py-2.5 w-full sm:w-auto justify-center sm:justify-start rounded-[10px]">
                   <input
                     type="checkbox"
                     checked={hideOutOfStock}
                     onChange={(e) => setHideOutOfStock(e.target.checked)}
-                    className="accent-gold-500 cursor-pointer h-3.5 w-3.5"
+                    className="accent-primary cursor-pointer h-3.5 w-3.5"
                   />
-                  <span className="text-brand-champagne/80">Available Only</span>
+                  <span className="text-text-primary">Available Only</span>
                 </label>
 
                 {/* Reset button */}
@@ -209,13 +209,13 @@ function CatalogContent() {
             </div>
 
             {/* Category Tabs */}
-            <div className="border-t border-brand-charcoal-border/50 pt-4 flex flex-wrap gap-2">
+            <div className="border-t border-border/50 pt-4 flex flex-wrap gap-2">
               <button
                 onClick={() => handleCategoryChange("All")}
-                className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer ${
+                className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer rounded-[10px] ${
                   activeCategory === "All"
-                    ? "bg-gold-500 border-gold-500 text-brand-charcoal font-semibold"
-                    : "bg-transparent border-brand-charcoal-border hover:border-gold-500/50 text-brand-champagne/80 hover:text-brand-champagne"
+                    ? "bg-primary border-primary text-text-white font-semibold"
+                    : "bg-[#F5F8FC] border-[#DCE5EF] hover:bg-[#EAF0F8] hover:border-primary text-text-secondary hover:text-text-primary"
                 }`}
               >
                 All
@@ -224,10 +224,10 @@ function CatalogContent() {
                 <button
                   key={cat.id}
                   onClick={() => handleCategoryChange(cat.slug)}
-                  className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer ${
+                  className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer rounded-[10px] ${
                     activeCategory === cat.slug
-                      ? "bg-gold-500 border-gold-500 text-brand-charcoal font-semibold"
-                      : "bg-transparent border-brand-charcoal-border hover:border-gold-500/50 text-brand-champagne/80 hover:text-brand-champagne"
+                      ? "bg-primary border-primary text-text-white font-semibold"
+                      : "bg-[#F5F8FC] border-[#DCE5EF] hover:bg-[#EAF0F8] hover:border-primary text-text-secondary hover:text-text-primary"
                   }`}
                 >
                   {cat.name}
@@ -238,11 +238,11 @@ function CatalogContent() {
 
           {/* Featured Filter Info message */}
           {urlFeatured && (
-            <div className="bg-gold-500/10 border border-gold-500/30 p-4 mb-8 flex justify-between items-center text-sm text-gold-400 font-sans">
+            <div className="bg-primary/10 border border-primary/30 p-4 mb-8 flex justify-between items-center text-sm text-primary font-sans rounded-[10px]">
               <span>Showing items from the **Featured Collection** only.</span>
               <button
                 onClick={handleClearFilters}
-                className="underline hover:text-gold-300 font-medium cursor-pointer"
+                className="underline hover:text-primary-hover font-medium cursor-pointer"
               >
                 Show All Items
               </button>
@@ -253,14 +253,14 @@ function CatalogContent() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-brand-charcoal-light aspect-square w-full border border-brand-charcoal-border/50" />
+                <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border rounded-2xl" />
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-24 border border-brand-charcoal-border/50 bg-brand-charcoal-light flex flex-col items-center gap-4">
-              <SlidersHorizontal className="w-8 h-8 text-brand-champagne/40" />
-              <h3 className="font-serif text-xl text-brand-champagne font-medium">No Jewellery Found</h3>
-              <p className="text-sm text-brand-champagne/60 font-sans max-w-sm leading-relaxed">
+            <div className="text-center py-24 border border-border bg-background-secondary flex flex-col items-center gap-4 rounded-2xl">
+              <SlidersHorizontal className="w-8 h-8 text-primary" />
+              <h3 className="font-serif text-xl text-text-primary font-medium">No Jewellery Found</h3>
+              <p className="text-sm text-text-secondary font-sans max-w-sm leading-relaxed">
                 We couldn&apos;t find any items matching your filters. Try clearing search queries or checking other categories.
               </p>
               <Button variant="secondary" size="sm" onClick={handleClearFilters} className="mt-2">

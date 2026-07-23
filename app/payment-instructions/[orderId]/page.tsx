@@ -69,8 +69,8 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
     return (
       <>
         <Navbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-brand-charcoal min-h-screen">
-          <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-[#F8FAFD] min-h-screen">
+          <Loader2 className="w-8 h-8 text-[#7D96B5] animate-spin" />
         </main>
         <Footer />
       </>
@@ -82,11 +82,11 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
       <>
         <Navbar />
         <main className="flex-grow pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-[70vh] flex flex-col justify-center items-center text-center">
-          <div className="flex flex-col items-center gap-4 py-20 border border-brand-charcoal-border/50 bg-brand-charcoal-light w-full max-w-lg">
-            <Info className="w-12 h-12 text-gold-500" />
-            <h2 className="font-serif text-2xl text-brand-champagne">Order Not Found</h2>
-            <p className="text-xs text-brand-champagne/50 font-sans max-w-xs mt-1.5 leading-relaxed">
-              We couldn&apos;t retrieve the details for Order ID: <span className="font-mono text-gold-400 font-semibold">{orderId}</span>.
+          <div className="flex flex-col items-center gap-4 py-20 border border-[#DCE5EF] bg-[#FFFFFF] w-full max-w-lg rounded-2xl shadow-xs">
+            <Info className="w-12 h-12 text-[#7D96B5]" />
+            <h2 className="font-serif text-2xl text-text-primary">Order Not Found</h2>
+            <p className="text-xs text-text-secondary font-sans max-w-xs mt-1.5 leading-relaxed">
+              We couldn&apos;t retrieve the details for Order ID: <span className="font-mono text-primary font-semibold">{orderId}</span>.
             </p>
             <Link href="/catalog" className="mt-4">
               <Button variant="secondary" size="sm">
@@ -110,57 +110,57 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex-grow pt-32 pb-24 bg-brand-charcoal"
+        className="flex-grow pt-32 pb-24 bg-[#F8FAFD]"
       >
         <div className="max-w-3xl mx-auto px-6">
           
           {/* Order Success Card */}
-          <div className="bg-brand-charcoal-light border border-emerald-800/40 p-8 text-center flex flex-col items-center gap-4 mb-8">
-            <CheckCircle2 className="w-12 h-12 text-emerald-400 animate-pulse-subtle" />
+          <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-8 text-center flex flex-col items-center gap-4 mb-8 rounded-2xl">
+            <CheckCircle2 className="w-12 h-12 text-[#59A870]" />
             <div>
-              <h1 className="font-serif text-2xl md:text-3xl text-brand-champagne font-medium">Order Placed Successfully!</h1>
-              <p className="text-xs text-brand-champagne/60 font-sans mt-1.5 leading-relaxed">
-                Thank you for shopping with us. Your order is registered in our database under status <strong className="text-gold-400">Pending Payment</strong>.
+              <h1 className="font-serif text-2xl md:text-3xl text-text-primary font-medium">Order Placed Successfully!</h1>
+              <p className="text-xs text-text-secondary font-sans mt-1.5 leading-relaxed">
+                Thank you for shopping with us. Your order is registered in our database under status <strong className="text-[#C9A96A]">Pending Payment</strong>.
               </p>
             </div>
 
             {/* Display Order ID & Total */}
-            <div className="w-full max-w-md bg-brand-charcoal border border-brand-charcoal-border p-5 mt-4 flex flex-col gap-4">
+            <div className="w-full max-w-md bg-[#F8FAFD] border border-[#E1E8F1] p-5 mt-4 flex flex-col gap-4 rounded-2xl">
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] uppercase tracking-widest text-brand-champagne/40 font-sans text-center">Order ID Reference</span>
-                <div className="flex items-center justify-center gap-2 bg-brand-charcoal-light border border-brand-charcoal-border/50 py-2.5 px-4 max-w-sm mx-auto w-full">
-                  <strong className="text-lg md:text-xl font-mono text-brand-primary-text font-bold select-all tracking-wider">
+                <span className="text-[10px] uppercase tracking-widest text-text-muted font-sans text-center">Order ID Reference</span>
+                <div className="flex items-center justify-center gap-2 bg-[#FFFFFF] border border-[#DCE5EF]/50 py-2.5 px-4 max-w-sm mx-auto w-full rounded-[10px]">
+                  <strong className="text-lg md:text-xl font-mono text-[#7D96B5] font-bold select-all tracking-wider">
                     {order.order_id}
                   </strong>
                   <button
                     onClick={handleCopyId}
-                    className="p-1.5 text-brand-secondary-text hover:text-brand-primary-text transition-colors cursor-pointer"
+                    className="p-1.5 text-text-secondary hover:text-[#7D96B5] transition-colors cursor-pointer"
                     title="Copy Order ID"
                   >
-                    {copied ? <ClipboardCheck className="w-4.5 h-4.5 text-emerald-600" /> : <Copy className="w-4.5 h-4.5" />}
+                    {copied ? <ClipboardCheck className="w-4.5 h-4.5 text-[#59A870]" /> : <Copy className="w-4.5 h-4.5" />}
                   </button>
                 </div>
               </div>
 
-              <div className="border-t border-brand-charcoal-border/50 pt-3.5 flex justify-between items-baseline font-sans text-xs">
-                <span className="text-brand-champagne/50">Total Amount Due</span>
-                <span className="font-serif text-xl font-bold text-gold-300">{formatPrice(order.total)}</span>
+              <div className="border-t border-[#E1E8F1] pt-3.5 flex justify-between items-baseline font-sans text-xs">
+                <span className="text-text-secondary">Total Amount Due</span>
+                <span className="font-serif text-xl font-bold text-[#C9A96A]">{formatPrice(order.total)}</span>
               </div>
             </div>
           </div>
 
           {/* Payment details panel */}
-          <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 sm:p-8 flex flex-col gap-6 mb-8">
-            <h3 className="font-serif text-xl text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 font-medium">
+          <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 sm:p-8 flex flex-col gap-6 mb-8 rounded-2xl">
+            <h3 className="font-serif text-xl text-text-primary border-b border-[#DCE5EF] pb-3 font-medium">
               Payment Transfer Accounts
             </h3>
 
-            <div className="bg-brand-charcoal border border-brand-charcoal-border/60 p-6 flex flex-col gap-5">
+            <div className="bg-[#F8FAFD] border border-[#E1E8F1] p-6 flex flex-col gap-5 rounded-2xl">
               {/* Account Title (Shared) */}
               {settings?.account_title && (
-                <div className="flex justify-between items-center border-b border-brand-charcoal-border/40 pb-4">
-                  <span className="text-[10px] uppercase tracking-widest text-brand-champagne/40 font-sans font-bold">Account Title</span>
-                  <span className="font-serif text-base font-semibold text-gold-300 select-all">{settings.account_title}</span>
+                <div className="flex justify-between items-center border-b border-[#E1E8F1] pb-4">
+                  <span className="text-[10px] uppercase tracking-widest text-text-muted font-sans font-bold">Account Title</span>
+                  <span className="font-serif text-base font-semibold text-[#C9A96A] select-all">{settings.account_title}</span>
                 </div>
               )}
 
@@ -170,20 +170,20 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
                 {/* Bank Transfer Details */}
                 {settings?.bank_name && (
                   <div className="flex flex-col gap-3">
-                    <span className="text-[10px] uppercase tracking-widest text-gold-400 font-bold block border-b border-brand-charcoal-border/30 pb-1">
+                    <span className="text-[10px] uppercase tracking-widest text-[#7D96B5] font-bold block border-b border-[#E1E8F1] pb-1">
                       Bank Transfer Option
                     </span>
                     <dl className="grid grid-cols-3 gap-y-2.5">
-                      <dt className="text-brand-champagne/50">Bank Name:</dt>
-                      <dd className="col-span-2 text-brand-champagne font-medium">{settings.bank_name}</dd>
+                      <dt className="text-text-secondary">Bank Name:</dt>
+                      <dd className="col-span-2 text-text-primary font-medium">{settings.bank_name}</dd>
 
-                      <dt className="text-brand-champagne/50">Account No:</dt>
-                      <dd className="col-span-2 text-gold-300 font-mono font-semibold select-all">{settings.account_number}</dd>
+                      <dt className="text-text-secondary">Account No:</dt>
+                      <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all">{settings.account_number}</dd>
 
                       {settings.iban && (
                         <>
-                          <dt className="text-brand-champagne/50">IBAN:</dt>
-                          <dd className="col-span-2 text-gold-300 font-mono font-semibold select-all text-[11px] break-all">{settings.iban}</dd>
+                          <dt className="text-text-secondary">IBAN:</dt>
+                          <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all text-[11px] break-all">{settings.iban}</dd>
                         </>
                       )}
                     </dl>
@@ -193,20 +193,20 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
                 {/* Mobile Wallet Accounts */}
                 {(settings?.easypaisa_number || settings?.jazzcash_number) && (
                   <div className="flex flex-col gap-3">
-                    <span className="text-[10px] uppercase tracking-widest text-gold-400 font-bold block border-b border-brand-charcoal-border/30 pb-1">
+                    <span className="text-[10px] uppercase tracking-widest text-[#7D96B5] font-bold block border-b border-[#E1E8F1] pb-1">
                       Mobile Wallet Options
                     </span>
                     <dl className="grid grid-cols-3 gap-y-2.5">
                       {settings.easypaisa_number && (
                         <>
-                          <dt className="text-brand-champagne/50">Easypaisa:</dt>
-                          <dd className="col-span-2 text-gold-300 font-mono font-semibold select-all">{settings.easypaisa_number}</dd>
+                          <dt className="text-text-secondary">Easypaisa:</dt>
+                          <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all">{settings.easypaisa_number}</dd>
                         </>
                       )}
                       {settings.jazzcash_number && (
                         <>
-                          <dt className="text-brand-champagne/50">JazzCash:</dt>
-                          <dd className="col-span-2 text-gold-300 font-mono font-semibold select-all">{settings.jazzcash_number}</dd>
+                          <dt className="text-text-secondary">JazzCash:</dt>
+                          <dd className="col-span-2 text-[#C9A96A] font-mono font-semibold select-all">{settings.jazzcash_number}</dd>
                         </>
                       )}
                     </dl>
@@ -216,25 +216,25 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
               </div>
             </div>
             {/* Instructions */}
-            <div className="border-t border-brand-charcoal-border/40 pt-5 text-xs font-sans leading-relaxed">
-              <span className="font-semibold text-brand-champagne uppercase tracking-widest block mb-3 text-[10px]">What to do next:</span>
-              <ol className="list-decimal list-inside flex flex-col gap-2.5 text-brand-champagne/80">
+            <div className="border-t border-[#E1E8F1] pt-5 text-xs font-sans leading-relaxed">
+              <span className="font-semibold text-text-primary uppercase tracking-widest block mb-3 text-[10px]">What to do next:</span>
+              <ol className="list-decimal list-inside flex flex-col gap-2.5 text-text-secondary">
                 <li>Complete your manual payment transfer to one of the accounts listed above.</li>
                 <li>Take a clear **screenshot** or PDF confirmation of the completed payment.</li>
-                <li>Copy your unique Order ID: <span className="font-mono text-gold-400 font-semibold">{order.order_id}</span>.</li>
+                <li>Copy your unique Order ID: <span className="font-mono text-[#C9A96A] font-semibold">{order.order_id}</span>.</li>
                 <li>Click the **Open Instagram** button below to open our Direct Messages.</li>
                 <li>Send us both: **Payment Screenshot** and **Order ID**.</li>
               </ol>
 
               {settings?.payment_instructions && (
-                <p className="mt-4 p-3 bg-brand-charcoal border border-brand-charcoal-border/50 text-brand-champagne/60 italic leading-relaxed text-[11px]">
+                <p className="mt-4 p-3 bg-[#F5F8FC] border border-[#DCE5EF] text-text-secondary italic leading-relaxed text-[11px] rounded-[10px]">
                   Note from Curator: {settings.payment_instructions}
                 </p>
               )}
             </div>
 
             {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-brand-charcoal-border/40">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-[#E1E8F1]">
               <a
                 href={instagramUrl}
                 target="_blank"
