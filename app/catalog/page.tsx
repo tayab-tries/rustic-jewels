@@ -253,11 +253,11 @@ function CatalogContent() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border rounded-2xl" />
+                <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border" />
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-24 border border-border bg-background-secondary flex flex-col items-center gap-4 rounded-2xl">
+            <div className="text-center py-24 border border-border bg-background-secondary flex flex-col items-center gap-4">
               <SlidersHorizontal className="w-8 h-8 text-primary" />
               <h3 className="font-serif text-xl text-text-primary font-medium">No Jewellery Found</h3>
               <p className="text-sm text-text-secondary font-sans max-w-sm leading-relaxed">

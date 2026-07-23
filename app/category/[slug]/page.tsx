@@ -95,11 +95,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border rounded-2xl" />
+                <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border" />
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-20 border border-border bg-background-secondary flex flex-col items-center gap-4 rounded-2xl">
+            <div className="text-center py-20 border border-border bg-background-secondary flex flex-col items-center gap-4">
               <Inbox className="w-10 h-10 text-text-muted" />
               <h2 className="font-serif text-xl text-text-primary">Collection Coming Soon</h2>
               <p className="text-xs text-text-secondary font-sans max-w-xs leading-relaxed">

@@ -67,10 +67,10 @@ export default function Card({ product }: CardProps) {
       transition={{ duration: 0.5 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative flex flex-col bg-[#FFFFFF] border border-[#E1E8F1] hover:border-[#7D96B5] overflow-hidden h-full rounded-2xl shadow-xs hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
+      className="group relative flex flex-col bg-[#FFFFFF] border border-[#E1E8F1] hover:border-[#7D96B5] overflow-hidden h-full shadow-xs hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
     >
       {/* Listing Showcase Image Wrapper */}
-      <Link href={`/products/${listing.slug}`} className="relative aspect-square block w-full overflow-hidden bg-[#EAF2FF] rounded-t-2xl">
+      <Link href={`/products/${listing.slug}`} className="relative aspect-square block w-full overflow-hidden bg-[#EAF2FF]">
         {/* Availability / Sold / Sale Badge */}
         {!hasAvailableItems ? (
           <div className="absolute top-3 left-3 z-10 bg-[#525B66] text-[#FFFFFF] px-3 py-1 text-xs uppercase tracking-widest font-sans font-medium rounded-full">

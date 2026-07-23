@@ -69,10 +69,10 @@ export default function Home() {
         <section className="relative min-h-[95vh] flex items-center justify-center bg-background overflow-hidden pt-20">
           {/* Overlay Background image with low opacity */}
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[#F8FAFD]/90 z-10" />
+            <div className="absolute inset-0 bg-[#F8FAFD]/60 z-10" />
             <motion.img
               initial={{ scale: 1.1, opacity: 0 }}
-              animate={{ scale: 1.05, opacity: 0.20 }}
+              animate={{ scale: 1.05, opacity: 0.45 }}
               transition={{ duration: 1.8, ease: "easeOut" }}
               src={settings?.hero_image || "/bg-pattern-2.png"}
               alt="Luxury Jewellery Background"
@@ -160,7 +160,7 @@ export default function Home() {
                   >
                     <Link
                       href={`/category/${cat.slug}`}
-                      className="group relative flex flex-col justify-end p-5 overflow-hidden border border-border hover:border-primary/50 transition-all duration-300 bg-background-secondary cursor-pointer block rounded-2xl aspect-[3/4]"
+                      className="group relative flex flex-col justify-end p-5 overflow-hidden border border-border hover:border-primary/50 transition-all duration-300 bg-background-secondary cursor-pointer block aspect-[3/4]"
                     >
                       <div className="absolute inset-0 bg-[#202124]/40 z-10 opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
                       {cat.image ? (
@@ -211,11 +211,11 @@ export default function Home() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="animate-pulse bg-background aspect-square border border-border w-full h-96 rounded-2xl" />
+                  <div key={i} className="animate-pulse bg-background aspect-square border border-border w-full h-96" />
                 ))}
               </div>
             ) : newestProducts.length === 0 ? (
-              <div className="text-center py-16 border border-border bg-background rounded-2xl">
+              <div className="text-center py-16 border border-border bg-background">
                 <p className="font-sans text-text-muted text-sm">No arrivals found.</p>
               </div>
             ) : (
@@ -244,11 +244,11 @@ export default function Home() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border rounded-2xl" />
+                  <div key={i} className="animate-pulse bg-background-secondary aspect-square w-full border border-border" />
                 ))}
               </div>
             ) : featuredProducts.length === 0 ? (
-              <div className="text-center py-16 border border-border bg-background-secondary rounded-2xl">
+              <div className="text-center py-16 border border-border bg-background-secondary">
                 <p className="font-sans text-text-muted text-sm">No items found.</p>
               </div>
             ) : (
