@@ -200,8 +200,8 @@ export default function CheckoutPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Form Column (7 cols) */}
-            <div className="lg:col-span-7 bg-[#e4eefe] border border-[#c8d8f8] p-6 sm:p-8 shadow-xs">
-              <h2 className="font-serif text-xl text-[#202124] border-b border-[#E1E8F1] pb-4 mb-6 font-medium flex items-center gap-2">
+            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E1E8F1] p-6 sm:p-8 shadow-xs">
+              <h2 className="font-serif text-xl text-[#e4eefe] border-b border-[#E1E8F1] pb-4 mb-6 font-medium flex items-center gap-2">
                 <Truck className="w-5 h-5 text-[#7D96B5]" />
                 Shipping & Delivery Address
               </h2>
@@ -288,8 +288,8 @@ export default function CheckoutPage() {
             </div>
 
             {/* Checkout Items Summary Column (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#e4eefe] border border-[#c8d8f8] p-6 shadow-xs">
-              <h3 className="font-serif text-lg text-[#202124] border-b border-[#E1E8F1] pb-3 font-medium flex items-center gap-2">
+            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#FFFFFF] border border-[#E1E8F1] p-6 shadow-xs">
+              <h3 className="font-serif text-lg text-[#e4eefe] border-b border-[#E1E8F1] pb-3 font-medium flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-[#7D96B5]" />
                 Order Summary
               </h3>
