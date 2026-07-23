@@ -1,75 +1,50 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color Palette */
-  --color-brand-bg: #0A0F17;              /* Main Website Background */
-  --color-brand-bg-soft: #121B2E;         /* Sections Background */
-  --color-brand-surface: #1E2A44;         /* Surface */
-  --color-brand-surface-hover: #273553;   /* Surface Hover */
-  --color-brand-card: #1A2438;            /* Cards */
-  --color-brand-card-hover: #22304B;       /* Card Hover */
+  /* Brand Color System */
+  --color-brand-bg: #F4F8FF;              /* Background */
+  --color-brand-surface: #EAF2FF;         /* Surface */
+  --color-brand-card: #FFFFFF;            /* Cards */
+  --color-brand-primary-bg: #F4F8FF;
+  --color-brand-secondary-bg: #EAF2FF;
+  --color-brand-accent-bg: #B8CBDD;
+  --color-brand-warm-neutral: #EAF2FF;
 
-  --color-brand-primary-bg: #0A0F17;
-  --color-brand-secondary-bg: #121B2E;
-  --color-brand-accent-bg: #1E2A44;
-  --color-brand-warm-neutral: #1A2438;
+  --color-brand-primary-text: #2D2A2D;    /* Primary Text */
+  --color-brand-secondary-text: #5F5A5A;  /* Secondary Text */
+  --color-brand-accent: #B8CBDD;          /* Accent Sky Blue */
+  --color-brand-accent-hover: #A7BFD5;
+  --color-brand-border: #D8E4F1;          /* Borders */
 
-  /* Accent Blues */
-  --color-brand-primary: #324A6A;         /* Primary Blue */
-  --color-brand-primary-hover: #3E5C85;   /* Primary Blue Hover */
-  --color-brand-accent: #59708E;          /* Accent Blue */
-  --color-brand-accent-light: #7C8CA6;    /* Accent Light */
-  --color-brand-accent-soft: #AAB6C8;     /* Accent Soft */
+  --color-brand-btn: #7F9CB8;             /* Button */
+  --color-brand-btn-hover: #6D8DAA;       /* Button Hover */
 
-  /* Typography Colors */
-  --color-brand-primary-text: #F5F2EC;    /* Primary Text */
-  --color-brand-secondary-text: #C7CFDA;  /* Secondary Text */
-  --color-brand-muted: #9BA8BC;           /* Muted Text */
-  --color-brand-disabled: #66758D;        /* Disabled Text */
-
-  /* Borders & Dividers */
-  --color-brand-border: #2F3C56;          /* Border */
-  --color-brand-border-hover: #43516D;    /* Border Hover */
-  --color-brand-divider: #35445F;         /* Divider */
-
-  /* Luxury Accent (Muted Champagne Gold) */
-  --color-brand-luxury: #C6A870;          /* Prices, Badges, CTAs, Selected */
-  --color-brand-luxury-hover: #D6B882;
-  --color-brand-luxury-light: #E7D3AF;
-
-  /* Buttons */
-  --color-brand-btn: #324A6A;
-  --color-brand-btn-hover: #3E5C85;
-
-  /* Status Colors */
-  --color-brand-status-pending: #D1A95A;
-  --color-brand-status-approved: #63B47C;
-  --color-brand-status-rejected: #C86969;
-  --color-brand-status-cancelled: #8B99AD;
-  --color-brand-status-review: #7C8CA6;
+  --color-brand-success: #6E9B77;         /* Status Success */
+  --color-brand-warning: #C69C58;         /* Status Warning */
+  --color-brand-error: #B86A6A;           /* Status Error */
 
   /* Legacy mappings to preserve compatibility across all component references */
-  --color-brand-charcoal: #0A0F17;
-  --color-brand-charcoal-light: #121B2E;
-  --color-brand-charcoal-border: #2F3C56;
-  --color-brand-champagne: #F5F2EC;
+  --color-brand-charcoal: #F4F8FF;
+  --color-brand-charcoal-light: #EAF2FF;
+  --color-brand-charcoal-border: #D8E4F1;
+  --color-brand-champagne: #2D2A2D;
 
-  --color-brand-emerald: #C6A870;
-  --color-brand-emerald-light: #D6B882;
+  --color-brand-emerald: #7F9CB8;
+  --color-brand-emerald-light: #6D8DAA;
 
-  --color-gold-50: #1A2438;
-  --color-gold-100: #2F3C56;
-  --color-gold-200: #C7CFDA;
-  --color-gold-300: #C6A870;
-  --color-gold-400: #C6A870;
-  --color-gold-500: #C6A870;
-  --color-gold-600: #D6B882;
-  --color-gold-700: #C7CFDA;
-  --color-gold-800: #F5F2EC;
-  --color-gold-900: #FFFFFF;
+  --color-gold-50: #F4F8FF;
+  --color-gold-100: #EAF2FF;
+  --color-gold-200: #D8E4F1;
+  --color-gold-300: #7F9CB8;
+  --color-gold-400: #7F9CB8;
+  --color-gold-500: #7F9CB8;
+  --color-gold-600: #6D8DAA;
+  --color-gold-700: #5F5A5A;
+  --color-gold-800: #2D2A2D;
+  --color-gold-900: #1a181a;
 
-  --color-slate-mist: #C7CFDA;
-  --color-pale-blue: #2F3C56;
+  --color-slate-mist: #5F5A5A;
+  --color-pale-blue: #D8E4F1;
 
   /* Typography variables connected to next/font */
   --font-serif: var(--font-serif);
@@ -77,8 +52,8 @@
 }
 
 :root {
-  --background: #0A0F17; /* Main Website */
-  --foreground: #F5F2EC; /* Primary Text */
+  --background: #F4F8FF; /* Background */
+  --foreground: #2D2A2D; /* Primary Text */
 }
 
 body {
@@ -100,17 +75,17 @@ body::before {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  opacity: 0.025;
+  opacity: 0.035;
   pointer-events: none;
   z-index: -1;
 }
 
 /* Glassmorphism utility */
 .glass {
-  background: rgba(10, 15, 23, 0.95);
+  background: rgba(234, 242, 255, 0.92); /* Soft surface #EAF2FF backdrop */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid #2F3C56;
+  border: 1px solid rgba(216, 228, 241, 0.7);
 }
 
 /* Custom premium scrollbar */
@@ -118,14 +93,14 @@ body::before {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0F17;
+  background: #F4F8FF;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2F3C56;
+  background: #D8E4F1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #59708E;
+  background: #7F9CB8;
 }
 
 /* Global input overrides for consistent form styling */
@@ -136,20 +111,9 @@ input[type="password"],
 input[type="search"],
 select,
 textarea {
-  background-color: #121B2E;
-  color: #F5F2EC;
-  border: 1px solid #2F3C56;
-  border-radius: 10px;
-}
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="number"]:focus,
-input[type="password"]:focus,
-input[type="search"]:focus,
-select:focus,
-textarea:focus {
-  border-color: #59708E;
-  outline: none;
+  background-color: #FFFFFF;
+  color: #2D2A2D;
+  border-color: #D8E4F1;
 }
 input[type="text"]::placeholder,
 input[type="email"]::placeholder,
@@ -157,32 +121,32 @@ input[type="number"]::placeholder,
 input[type="password"]::placeholder,
 input[type="search"]::placeholder,
 textarea::placeholder {
-  color: #66758D;
-  opacity: 1;
+  color: #5F5A5A;
+  opacity: 0.7;
 }
 
 /* Layered Section Patterns */
 .bg-section-pattern-1 {
-  background-color: #0A0F17;
+  background-color: #F4F8FF;
   background-image: none;
 }
 
 .bg-section-pattern-2 {
-  background-color: #121B2E;
+  background-color: #EAF2FF;
   background-image: none;
 }
 
 .bg-section-pattern-3 {
-  background-color: #0A0F17;
+  background-color: #F4F8FF;
   background-image: none;
 }
 
 .bg-section-pattern-4 {
-  background-color: #121B2E;
+  background-color: #EAF2FF;
   background-image: none;
 }
 
 .bg-section-pattern-5 {
-  background-color: #0A0F17;
+  background-color: #F4F8FF;
   background-image: none;
 }

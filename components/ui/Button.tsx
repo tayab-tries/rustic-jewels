@@ -21,13 +21,13 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-[#59708E]/50 rounded-xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-[#7F9CB8]/50 rounded-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-[#324A6A] hover:bg-[#3E5C85] text-[#F5F2EC] font-medium border-0 shadow-sm",
-    secondary: "bg-transparent hover:bg-[#59708E]/15 text-[#F5F2EC] border border-[#43516D]",
-    text: "bg-transparent hover:bg-[#1E2A44] text-[#F5F2EC] border border-[#2F3C56]",
-    danger: "bg-red-950/80 hover:bg-red-900/90 text-red-200 border border-red-800/50"
+    primary: "bg-[#7F9CB8] hover:bg-[#6D8DAA] text-[#FFFFFF] font-semibold border border-[#7F9CB8] hover:border-[#6D8DAA]",
+    secondary: "bg-transparent hover:bg-[#EAF2FF] text-[#2D2A2D] border border-[#D8E4F1] hover:border-[#7F9CB8]",
+    text: "bg-transparent text-[#2D2A2D] hover:text-[#7F9CB8] border border-transparent underline-offset-4 hover:underline",
+    danger: "bg-red-50 hover:bg-red-100 text-[#B86A6A] border border-red-200"
   };
 
   const sizes = {
