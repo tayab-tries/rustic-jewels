@@ -180,7 +180,7 @@ textarea {
   background-color: #FFFFFF;
   color: #202124;
   border: 1px solid #D8E1EB;
-  border-radius: 10px;
+  border-radius: 0;
 }
 input[type="text"]:focus,
 input[type="email"]:focus,
