@@ -581,18 +581,12 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, x: 50, y: -20 }}
                 animate={{ opacity: 1, x: 0, y: 0 }}
                 exit={{ opacity: 0, x: 50 }}
-                className={`flex items-center gap-3 px-5 py-4 border shadow-xl w-72 text-xs font-sans font-semibold rounded-none ${
-                  t.type === "error"
-                    ? "bg-red-950/90 border-red-800 text-red-300"
-                    : t.type === "info"
-                    ? "bg-brand-charcoal-light/95 border-brand-charcoal-border text-gold-400"
-                    : "bg-emerald-950/90 border-emerald-800 text-emerald-300"
-                }`}
+                className="flex items-center gap-3 px-5 py-4 border border-[#c8d8f8] bg-[#e4eefe] shadow-xl w-72 text-xs font-sans font-semibold rounded-none text-[#2d5080]"
               >
                 {t.type === "error" ? (
-                  <XCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
+                  <XCircle className="w-4 h-4 flex-shrink-0 text-[#5D7899]" />
                 ) : (
-                  <CheckCircle className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                  <CheckCircle className="w-4 h-4 flex-shrink-0 text-[#7D96B5]" />
                 )}
                 <span>{t.message}</span>
               </motion.div>
