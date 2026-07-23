@@ -156,7 +156,7 @@ function CatalogContent() {
           </div>
 
           {/* Search, Filter & Sort Controls Grid */}
-          <div className="bg-background-secondary border border-border p-6 mb-10 flex flex-col gap-6 rounded-2xl">
+          <div className="bg-background-secondary border border-border p-6 mb-10 flex flex-col gap-6">
             {/* Search Input and Sort Dropdown */}
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Search Form */}
@@ -166,7 +166,7 @@ function CatalogContent() {
                   placeholder="Search by ring, silver, collection..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm rounded-[10px] focus:outline-none placeholder:text-text-light font-sans"
+                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm focus:outline-none placeholder:text-text-light font-sans"
                 />
                 <Search className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
                 <button type="submit" className="hidden" />
@@ -175,7 +175,7 @@ function CatalogContent() {
               {/* Filters Right Block */}
               <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto justify-end">
                 {/* Sort selector */}
-                <div className="flex items-center gap-2 bg-[#FFFFFF] border border-border px-3 py-2 text-sm font-sans w-full sm:w-auto rounded-[10px]">
+                <div className="flex items-center gap-2 bg-[#FFFFFF] border border-border px-3 py-2 text-sm font-sans w-full sm:w-auto">
                   <ArrowUpDown className="w-4 h-4 text-primary" />
                   <select
                     value={sortBy}
@@ -189,7 +189,7 @@ function CatalogContent() {
                 </div>
 
                 {/* Hide Out of Stock Toggle */}
-                <label className="flex items-center gap-2 cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-border bg-[#FFFFFF] px-4 py-2.5 w-full sm:w-auto justify-center sm:justify-start rounded-[10px]">
+                <label className="flex items-center gap-2 cursor-pointer select-none text-xs uppercase tracking-widest font-sans border border-border bg-[#FFFFFF] px-4 py-2.5 w-full sm:w-auto justify-center sm:justify-start">
                   <input
                     type="checkbox"
                     checked={hideOutOfStock}
@@ -212,7 +212,7 @@ function CatalogContent() {
             <div className="border-t border-border/50 pt-4 flex flex-wrap gap-2">
               <button
                 onClick={() => handleCategoryChange("All")}
-                className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer rounded-[10px] ${
+                className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer ${
                   activeCategory === "All"
                     ? "bg-primary border-primary text-text-white font-semibold"
                     : "bg-[#F5F8FC] border-[#DCE5EF] hover:bg-[#EAF0F8] hover:border-primary text-text-secondary hover:text-text-primary"
@@ -224,7 +224,7 @@ function CatalogContent() {
                 <button
                   key={cat.id}
                   onClick={() => handleCategoryChange(cat.slug)}
-                  className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer rounded-[10px] ${
+                  className={`px-4 py-2 text-xs uppercase tracking-widest font-sans border transition-all duration-200 cursor-pointer ${
                     activeCategory === cat.slug
                       ? "bg-primary border-primary text-text-white font-semibold"
                       : "bg-[#F5F8FC] border-[#DCE5EF] hover:bg-[#EAF0F8] hover:border-primary text-text-secondary hover:text-text-primary"
@@ -238,7 +238,7 @@ function CatalogContent() {
 
           {/* Featured Filter Info message */}
           {urlFeatured && (
-            <div className="bg-primary/10 border border-primary/30 p-4 mb-8 flex justify-between items-center text-sm text-primary font-sans rounded-[10px]">
+            <div className="bg-primary/10 border border-primary/30 p-4 mb-8 flex justify-between items-center text-sm text-primary font-sans">
               <span>Showing items from the **Featured Collection** only.</span>
               <button
                 onClick={handleClearFilters}

@@ -82,7 +82,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
       <>
         <Navbar />
         <main className="flex-grow pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-[70vh] flex flex-col justify-center items-center text-center">
-          <div className="flex flex-col items-center gap-4 py-20 border border-[#DCE5EF] bg-[#FFFFFF] w-full max-w-lg rounded-2xl shadow-xs">
+          <div className="flex flex-col items-center gap-4 py-20 border border-[#DCE5EF] bg-[#FFFFFF] w-full max-w-lg shadow-xs">
             <Info className="w-12 h-12 text-[#7D96B5]" />
             <h2 className="font-serif text-2xl text-text-primary">Order Not Found</h2>
             <p className="text-xs text-text-secondary font-sans max-w-xs mt-1.5 leading-relaxed">
@@ -115,7 +115,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
         <div className="max-w-3xl mx-auto px-6">
           
           {/* Order Success Card */}
-          <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-8 text-center flex flex-col items-center gap-4 mb-8 rounded-2xl">
+          <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-8 text-center flex flex-col items-center gap-4 mb-8">
             <CheckCircle2 className="w-12 h-12 text-[#59A870]" />
             <div>
               <h1 className="font-serif text-2xl md:text-3xl text-text-primary font-medium">Order Placed Successfully!</h1>
@@ -125,10 +125,10 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
             </div>
 
             {/* Display Order ID & Total */}
-            <div className="w-full max-w-md bg-[#F8FAFD] border border-[#E1E8F1] p-5 mt-4 flex flex-col gap-4 rounded-2xl">
+            <div className="w-full max-w-md bg-[#F8FAFD] border border-[#E1E8F1] p-5 mt-4 flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <span className="text-[10px] uppercase tracking-widest text-text-muted font-sans text-center">Order ID Reference</span>
-                <div className="flex items-center justify-center gap-2 bg-[#FFFFFF] border border-[#DCE5EF]/50 py-2.5 px-4 max-w-sm mx-auto w-full rounded-[10px]">
+                <div className="flex items-center justify-center gap-2 bg-[#FFFFFF] border border-[#DCE5EF]/50 py-2.5 px-4 max-w-sm mx-auto w-full">
                   <strong className="text-lg md:text-xl font-mono text-[#7D96B5] font-bold select-all tracking-wider">
                     {order.order_id}
                   </strong>
@@ -150,12 +150,12 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
           </div>
 
           {/* Payment details panel */}
-          <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 sm:p-8 flex flex-col gap-6 mb-8 rounded-2xl">
+          <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 sm:p-8 flex flex-col gap-6 mb-8">
             <h3 className="font-serif text-xl text-text-primary border-b border-[#DCE5EF] pb-3 font-medium">
               Payment Transfer Accounts
             </h3>
 
-            <div className="bg-[#F8FAFD] border border-[#E1E8F1] p-6 flex flex-col gap-5 rounded-2xl">
+            <div className="bg-[#F8FAFD] border border-[#E1E8F1] p-6 flex flex-col gap-5">
               {/* Account Title (Shared) */}
               {settings?.account_title && (
                 <div className="flex justify-between items-center border-b border-[#E1E8F1] pb-4">
@@ -227,7 +227,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
               </ol>
 
               {settings?.payment_instructions && (
-                <p className="mt-4 p-3 bg-[#F5F8FC] border border-[#DCE5EF] text-text-secondary italic leading-relaxed text-[11px] rounded-[10px]">
+                <p className="mt-4 p-3 bg-[#F5F8FC] border border-[#DCE5EF] text-text-secondary italic leading-relaxed text-[11px]">
                   Note from Curator: {settings.payment_instructions}
                 </p>
               )}

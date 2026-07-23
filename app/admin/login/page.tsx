@@ -58,8 +58,8 @@ export default function AdminLogin() {
   return (
     <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6 relative">
       {/* Background design accents */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-primary/5 blur-3xl" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/5 blur-3xl" />
 
       <div className="w-full max-w-md relative z-10 flex flex-col gap-6">
         {/* Branding header */}
@@ -77,7 +77,7 @@ export default function AdminLogin() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-[#FFFFFF] border border-[#DCE5EF] p-8 shadow-2xl rounded-2xl"
+          className="bg-[#FFFFFF] border border-[#DCE5EF] p-8 shadow-2xl"
         >
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
             <Lock className="w-5 h-5 text-primary" />
@@ -88,7 +88,7 @@ export default function AdminLogin() {
 
           {/* Configuration alert banner */}
           {!isSupabaseConfigured && (
-            <div className="mb-6 bg-primary/10 border border-primary/30 p-3 text-xs text-primary font-sans flex items-start gap-2.5 rounded-[10px]">
+            <div className="mb-6 bg-primary/10 border border-primary/30 p-3 text-xs text-primary font-sans flex items-start gap-2.5">
               <KeyRound className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Demo Mode Active:</strong> Log in using the test credentials below:<br />
@@ -102,7 +102,7 @@ export default function AdminLogin() {
 
           {/* General error message banner */}
           {errorMsg && (
-            <div className="mb-6 bg-[#CF6A6A]/10 border border-[#CF6A6A]/30 p-4 text-xs text-[#CF6A6A] font-sans flex items-start gap-2.5 rounded-[10px]">
+            <div className="mb-6 bg-[#CF6A6A]/10 border border-[#CF6A6A]/30 p-4 text-xs text-[#CF6A6A] font-sans flex items-start gap-2.5">
               <AlertTriangle className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#CF6A6A]" />
               <p className="leading-relaxed">{errorMsg}</p>
             </div>
@@ -120,7 +120,7 @@ export default function AdminLogin() {
                   type="email"
                   placeholder="admin@rusticjewels.com"
                   {...register("email")}
-                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm rounded-[10px] focus:outline-none placeholder:text-text-light font-sans"
+                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm focus:outline-none placeholder:text-text-light font-sans"
                 />
                 <Mail className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
               </div>
@@ -141,7 +141,7 @@ export default function AdminLogin() {
                   type="password"
                   placeholder="••••••••"
                   {...register("password")}
-                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm rounded-[10px] focus:outline-none placeholder:text-text-light font-sans"
+                  className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-2.5 text-sm focus:outline-none placeholder:text-text-light font-sans"
                 />
                 <Lock className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
               </div>

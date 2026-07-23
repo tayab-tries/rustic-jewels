@@ -41,14 +41,14 @@ export default function CartPage() {
               <p className="text-xs text-[#525B66] font-sans mt-1">Review your selected items before proceeding to checkout.</p>
             </div>
             {cartItems.length > 0 && (
-              <span className="text-xs uppercase tracking-widest text-[#5D7899] font-sans font-semibold border border-[#DCE5EF] px-3 py-1.5 bg-[#EDF3F9] self-start md:self-auto rounded-full">
+              <span className="text-xs uppercase tracking-widest text-[#5D7899] font-sans font-semibold border border-[#DCE5EF] px-3 py-1.5 bg-[#EDF3F9] self-start md:self-auto">
                 {itemCount} {itemCount === 1 ? "Item" : "Items"} Total
               </span>
             )}
           </div>
 
           {cartItems.length === 0 ? (
-            <div className="text-center py-20 border border-[#E1E8F1] bg-[#FFFFFF] flex flex-col items-center gap-6 shadow-xs rounded-2xl">
+            <div className="text-center py-20 border border-[#E1E8F1] bg-[#FFFFFF] flex flex-col items-center gap-6 shadow-xs">
               <ShoppingBag className="w-16 h-16 text-[#7D96B5]" />
               <div className="flex flex-col gap-2 max-w-md">
                 <h2 className="font-serif text-2xl text-[#202124]">Your Bag is Currently Empty</h2>
@@ -69,13 +69,13 @@ export default function CartPage() {
                 {cartItems.map((item) => (
                   <div
                     key={`${item.listing.id}-${item.selectedItem.item_number}`}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#FFFFFF] border border-[#E1E8F1] hover:border-[#7D96B5] transition-all duration-300 gap-4 shadow-xs rounded-2xl"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#FFFFFF] border border-[#E1E8F1] hover:border-[#7D96B5] transition-all duration-300 gap-4 shadow-xs"
                   >
                     <div className="flex items-center gap-4 flex-grow">
                       <img
                         src={item.listing.featured_image}
                         alt={item.listing.title}
-                        className="w-16 h-16 object-cover border border-[#E1E8F1] bg-[#EAF0F8] flex-shrink-0 rounded-[10px]"
+                        className="w-16 h-16 object-cover border border-[#E1E8F1] bg-[#EAF0F8] flex-shrink-0"
                       />
                       <div className="flex flex-col gap-1">
                         <Link href={`/products/${item.listing.slug}`}>
@@ -84,7 +84,7 @@ export default function CartPage() {
                           </h3>
                         </Link>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[10px] uppercase tracking-widest text-[#5D7899] font-sans font-bold bg-[#EDF3F9] px-2 py-0.5 border border-[#DCE5EF] rounded-full">
+                          <span className="text-[10px] uppercase tracking-widest text-[#5D7899] font-sans font-bold bg-[#EDF3F9] px-2 py-0.5 border border-[#DCE5EF]">
                             Item #{item.selectedItem.item_number}
                           </span>
                           {item.selectedItem.item_name && (
@@ -130,7 +130,7 @@ export default function CartPage() {
               </div>
 
               {/* Order Summary (4 cols) */}
-              <div className="lg:col-span-4 bg-[#FFFFFF] border border-[#E1E8F1] p-6 flex flex-col gap-5 shadow-xs rounded-2xl">
+              <div className="lg:col-span-4 bg-[#FFFFFF] border border-[#E1E8F1] p-6 flex flex-col gap-5 shadow-xs">
                 <h3 className="font-serif text-lg text-[#202124] border-b border-[#E1E8F1] pb-3 font-medium">
                   Summary
                 </h3>
@@ -158,7 +158,7 @@ export default function CartPage() {
                 </Link>
 
                 {/* Info Card */}
-                <div className="glass border border-[#E1E8F1] p-3.5 flex gap-2.5 text-[11px] text-[#525B66] font-sans leading-relaxed mt-2 rounded-2xl">
+                <div className="glass border border-[#E1E8F1] p-3.5 flex gap-2.5 text-[11px] text-[#525B66] font-sans leading-relaxed mt-2">
                   <Info className="w-4 h-4 text-[#7D96B5] flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-[#202124] block mb-0.5">Please Note:</span>

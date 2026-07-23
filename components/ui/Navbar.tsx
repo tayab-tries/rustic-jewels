@@ -105,7 +105,7 @@ export default function Navbar() {
                 placeholder="Search catalogue..."
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] pl-8 pr-3 py-1.5 text-[10px] rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans tracking-wide"
+                className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] pl-8 pr-3 py-1.5 text-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans tracking-wide"
               />
               <Search className="w-3.5 h-3.5 text-[#7D96B5] absolute left-2.5 top-2.5" />
             </form>
@@ -117,7 +117,7 @@ export default function Navbar() {
             >
               <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-[#7D96B5] text-[#FFFFFF] text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-sans">
+                <span className="absolute -top-0.5 -right-0.5 bg-[#7D96B5] text-[#FFFFFF] text-[9px] font-bold h-4 w-4 flex items-center justify-center font-sans">
                   {cartCount}
                 </span>
               )}
@@ -127,7 +127,7 @@ export default function Navbar() {
               href={`https://instagram.com/${instagramUser}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#525B66] hover:text-[#202124] transition-colors duration-200 border border-[#D8E1EB] hover:border-[#7D96B5]/60 px-4 py-2 rounded-[10px] glass"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#525B66] hover:text-[#202124] transition-colors duration-200 border border-[#D8E1EB] hover:border-[#7D96B5]/60 px-4 py-2 glass"
             >
               <Instagram className="w-4 h-4 text-[#7D96B5]" />
               <span>Our Instagram</span>
@@ -142,7 +142,7 @@ export default function Navbar() {
             >
               <ShoppingBag className="w-6 h-6" />
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-[#7D96B5] text-[#FFFFFF] text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-sans">
+                <span className="absolute top-0 right-0 bg-[#7D96B5] text-[#FFFFFF] text-[9px] font-bold h-4 w-4 flex items-center justify-center font-sans">
                   {cartCount}
                 </span>
               )}
@@ -176,7 +176,7 @@ export default function Navbar() {
                   placeholder="Search catalogue..."
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] pl-10 pr-4 py-3 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
+                  className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] pl-10 pr-4 py-3 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                 />
                 <Search className="w-4 h-4 text-[#7D96B5] absolute left-3.5 top-3.5" />
               </form>
@@ -214,7 +214,7 @@ export default function Navbar() {
                   href={`https://instagram.com/${instagramUser}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-3 bg-[#7D96B5] text-[#FFFFFF] py-3 tracking-widest text-xs uppercase font-sans font-semibold hover:bg-[#6D88AA] transition-colors duration-200 rounded-[10px]"
+                  className="w-full flex items-center justify-center gap-3 bg-[#7D96B5] text-[#FFFFFF] py-3 tracking-widest text-xs uppercase font-sans font-semibold hover:bg-[#6D88AA] transition-colors duration-200"
                 >
                   <Instagram className="w-4 h-4" />
                   <span>Visit Instagram</span>

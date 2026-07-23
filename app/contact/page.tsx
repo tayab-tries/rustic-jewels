@@ -263,7 +263,7 @@ export default function ContactPage() {
         title="Message Received"
       >
         <div className="flex flex-col items-center text-center gap-4 py-4 font-sans">
-          <div className="w-12 h-12 bg-gold-500/10 border border-gold-500/40 rounded-full flex items-center justify-center text-gold-400 mb-2">
+          <div className="w-12 h-12 bg-gold-500/10 border border-gold-500/40 rounded-none flex items-center justify-center text-gold-400 mb-2">
             <Check className="w-6 h-6" />
           </div>
           <h3 className="font-serif text-xl text-brand-champagne">Inquiry Sent Successfully</h3>

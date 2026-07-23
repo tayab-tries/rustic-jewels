@@ -317,7 +317,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                   type="text"
                   placeholder="e.g. Vintage Silver Rings Collection"
                   {...register("title")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm focus:outline-none"
                 />
                 {errors.title && <span className="text-xs text-red-400">{errors.title.message}</span>}
               </div>
@@ -331,7 +331,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                   type="text"
                   placeholder="A showcase of handcrafted sterling silver rings..."
                   {...register("short_description")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm focus:outline-none"
                 />
                 {errors.short_description && <span className="text-xs text-red-400">{errors.short_description.message}</span>}
               </div>
@@ -345,7 +345,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                   rows={4}
                   placeholder="Detail the materials or ordering instructions..."
                   {...register("full_description")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne p-4 text-sm rounded-[10px] focus:outline-none resize-none"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne p-4 text-sm focus:outline-none resize-none"
                 />
                 {errors.full_description && <span className="text-xs text-red-400">{errors.full_description.message}</span>}
               </div>
@@ -399,7 +399,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                           placeholder="e.g. 15"
                           value={item.item_number}
                           onChange={(e) => handleUpdateItemRow(idx, "item_number", e.target.value)}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs focus:outline-none"
                         />
                       </div>
 
@@ -416,7 +416,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                             const val = e.target.value;
                             handleUpdateItemRow(idx, "price", val === "" ? null : parseFloat(val));
                           }}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs focus:outline-none"
                         />
                       </div>
 
@@ -454,7 +454,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                           placeholder="Optional Item Title"
                           value={item.item_name || ""}
                           onChange={(e) => handleUpdateItemRow(idx, "item_name", e.target.value)}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-1.5 text-xs rounded-[10px] focus:outline-none"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-1.5 text-xs focus:outline-none"
                         />
                       </div>
                       {/* Optional Notes */}
@@ -464,7 +464,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                           placeholder="Optional Notes (e.g. 18K Gold Plated)"
                           value={item.notes || ""}
                           onChange={(e) => handleUpdateItemRow(idx, "notes", e.target.value)}
-                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-1.5 text-xs rounded-[10px] focus:outline-none"
+                          className="w-full bg-brand-charcoal-light border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-1.5 text-xs focus:outline-none"
                         />
                       </div>
                     </div>
@@ -514,7 +514,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                       <button
                         type="button"
                         onClick={() => removeImage(idx)}
-                        className="absolute top-2 right-2 w-6 h-6 bg-red-950 text-red-200 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        className="absolute top-2 right-2 w-6 h-6 bg-red-950 text-red-200 rounded-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -539,7 +539,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                     type="text"
                     placeholder="e.g. Sterling Silver"
                     {...register("material")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none"
+                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm focus:outline-none"
                   />
                 </div>
 
@@ -551,7 +551,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                     type="text"
                     placeholder="e.g. Vintage Collection"
                     {...register("collection")}
-                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none"
+                    className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm focus:outline-none"
                   />
                 </div>
               </div>
@@ -564,7 +564,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                   type="url"
                   placeholder="https://www.instagram.com/p/..."
                   {...register("instagram_post_url")}
-                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm rounded-[10px] focus:outline-none"
+                  className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-3 text-sm focus:outline-none"
                 />
               </div>
             </div>

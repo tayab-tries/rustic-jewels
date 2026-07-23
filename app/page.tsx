@@ -85,7 +85,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-2 border border-border px-4 py-1.5 bg-[#EDF3F9] text-[#5D7899] text-xs uppercase tracking-widest font-sans rounded-full"
+              className="inline-flex items-center gap-2 border border-border px-4 py-1.5 bg-[#EDF3F9] text-[#5D7899] text-xs uppercase tracking-widest font-sans"
             >
               <Sparkles className="w-3.5 h-3.5 text-[#7D96B5]" />
               <span>New Drop</span>

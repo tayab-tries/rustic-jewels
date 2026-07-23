@@ -71,7 +71,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
           {/* Category Banner Header */}
           {category && (
-            <div className="relative h-64 md:h-80 bg-background-secondary border border-border overflow-hidden mb-12 flex flex-col justify-end p-8 md:p-12 rounded-2xl">
+            <div className="relative h-64 md:h-80 bg-background-secondary border border-border overflow-hidden mb-12 flex flex-col justify-end p-8 md:p-12">
               <div className="absolute inset-0 bg-[#202124]/40 z-10" />
               {category.image && (
                 <img

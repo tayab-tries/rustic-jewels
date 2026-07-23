@@ -73,7 +73,7 @@ export default function Card({ product }: CardProps) {
       <Link href={`/products/${listing.slug}`} className="relative aspect-square block w-full overflow-hidden bg-[#EAF2FF]">
         {/* Availability / Sold / Sale Badge */}
         {!hasAvailableItems ? (
-          <div className="absolute top-3 left-3 z-10 bg-[#525B66] text-[#FFFFFF] px-3 py-1 text-xs uppercase tracking-widest font-sans font-medium rounded-full">
+          <div className="absolute top-3 left-3 z-10 bg-[#525B66] text-[#FFFFFF] px-3 py-1 text-xs uppercase tracking-widest font-sans font-medium">
             {items.length === 1 ? "Sold Out" : "All Items Sold"}
           </div>
         ) : (
@@ -85,14 +85,14 @@ export default function Card({ product }: CardProps) {
         )}
         
         {listing.featured && (
-          <div className="absolute top-3 right-3 z-10 bg-[#7D96B5] text-[#FFFFFF] px-3 py-1 text-xs uppercase tracking-widest font-sans font-bold shadow-xs rounded-full">
+          <div className="absolute top-3 right-3 z-10 bg-[#7D96B5] text-[#FFFFFF] px-3 py-1 text-xs uppercase tracking-widest font-sans font-bold shadow-xs">
             Featured
           </div>
         )}
 
         {/* Numbered items count badge - only shown for multi-item listings (2+) */}
         {items.length > 1 && (
-          <div className="absolute bottom-3 left-3 z-10 bg-[#FFFFFF]/90 border border-[#DCE5EF] text-[#202124]/90 px-2.5 py-1 text-[10px] uppercase tracking-widest font-sans flex items-center gap-1.5 glass rounded-full">
+          <div className="absolute bottom-3 left-3 z-10 bg-[#FFFFFF]/90 border border-[#DCE5EF] text-[#202124]/90 px-2.5 py-1 text-[10px] uppercase tracking-widest font-sans flex items-center gap-1.5 glass">
             <Layers className="w-3 h-3 text-[#7D96B5]" />
             <span>{items.length} Items</span>
           </div>
@@ -102,7 +102,7 @@ export default function Card({ product }: CardProps) {
         <div className="absolute inset-0 bg-[#202124]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center gap-4">
           <motion.div
             whileHover={{ scale: 1.1 }}
-            className="w-10 h-10 rounded-full bg-[#7D96B5] text-[#FFFFFF] flex items-center justify-center shadow-lg"
+            className="w-10 h-10 bg-[#7D96B5] text-[#FFFFFF] flex items-center justify-center shadow-lg"
           >
             <Eye className="w-5 h-5" />
           </motion.div>
@@ -152,7 +152,7 @@ export default function Card({ product }: CardProps) {
                   <span className="line-through text-[#9EA8B5] text-xs font-normal">
                     {prefix}{formattedOriginal}
                   </span>
-                  <span className="bg-[#7D96B5]/15 text-[#7D96B5] border border-[#7D96B5]/30 px-1 py-0.5 text-[8px] font-bold font-sans uppercase tracking-wide rounded">
+                  <span className="bg-[#7D96B5]/15 text-[#7D96B5] border border-[#7D96B5]/30 px-1 py-0.5 text-[8px] font-bold font-sans uppercase tracking-wide">
                     {discountPercent}% OFF
                   </span>
                 </div>

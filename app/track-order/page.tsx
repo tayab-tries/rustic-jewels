@@ -140,7 +140,7 @@ function OrderTrackingContent() {
   const getStatusStyle = (status: OrderStatus) => {
     switch (status) {
       case "Pending Payment":
-        return "bg-[#D8A949]/15 border-[#D8A949]/30 text-[#D8A949]";
+        return "bg-[#7D96B5]/15 border-[#7D96B5]/30 text-[#7D96B5]";
       case "Payment Under Review":
         return "bg-[#7D96B5]/15 border-[#7D96B5]/30 text-[#7D96B5]";
       case "Approved":
@@ -157,7 +157,7 @@ function OrderTrackingContent() {
 
   // Reusable Order Details Card Component
   const OrderDetailsCard = ({ ord }: { ord: Order }) => (
-    <div key={ord.id} className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 flex flex-col gap-5 rounded-2xl">
+    <div key={ord.id} className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 flex flex-col gap-5">
       {/* Header Info */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#DCE5EF] pb-4 gap-3">
         <div className="flex flex-col gap-0.5">
@@ -177,7 +177,7 @@ function OrderTrackingContent() {
         </div>
 
         {/* Status Badge */}
-        <span className={`px-3 py-1.5 text-[9px] uppercase tracking-widest font-sans font-bold border rounded-full ${getStatusStyle(ord.status)}`}>
+        <span className={`px-3 py-1.5 text-[9px] uppercase tracking-widest font-sans font-bold border ${getStatusStyle(ord.status)}`}>
           {ord.status}
         </span>
       </div>
@@ -213,7 +213,7 @@ function OrderTrackingContent() {
                   <img
                     src={oi.listing_image}
                     alt={oi.listing_title || "Jewelry piece"}
-                    className="w-10 h-10 object-cover border border-border bg-background flex-shrink-0 rounded-[10px]"
+                    className="w-10 h-10 object-cover border border-border bg-background flex-shrink-0"
                   />
                 )}
                 <div className="flex flex-col gap-0.5">
@@ -232,7 +232,7 @@ function OrderTrackingContent() {
 
       {/* Rejection notice box */}
       {ord.status === "Rejected" && ord.rejection_reason && (
-        <div className="bg-[#CF6A6A]/10 border border-[#CF6A6A]/30 p-4 text-xs text-[#CF6A6A] font-sans flex gap-3 items-start mt-2 rounded-[10px]">
+        <div className="bg-[#CF6A6A]/10 border border-[#CF6A6A]/30 p-4 text-xs text-[#CF6A6A] font-sans flex gap-3 items-start mt-2">
           <ShieldAlert className="w-5 h-5 text-[#CF6A6A] flex-shrink-0 mt-0.5" />
           <div>
             <span className="font-bold uppercase tracking-wider block mb-1">Rejection Reason:</span>
@@ -244,7 +244,7 @@ function OrderTrackingContent() {
 
       {/* Payment instructions reminder on Pending */}
       {ord.status === "Pending Payment" && (
-        <div className="bg-[#F5F8FC] border border-[#DCE5EF] p-4 text-xs text-text-secondary font-sans flex gap-3 items-start mt-2 rounded-2xl">
+        <div className="bg-[#F5F8FC] border border-[#DCE5EF] p-4 text-xs text-text-secondary font-sans flex gap-3 items-start mt-2">
           <Info className="w-5 h-5 text-[#7D96B5] flex-shrink-0 mt-0.5" />
           <div>
             <span className="font-semibold text-text-primary block mb-0.5">Payment Required</span>
@@ -277,7 +277,7 @@ function OrderTrackingContent() {
       </div>
 
       {/* Search form box */}
-      <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 flex flex-col gap-4 mb-10 rounded-2xl">
+      <div className="bg-[#FFFFFF] border border-[#DCE5EF] p-6 flex flex-col gap-4 mb-10">
         <span className="text-xs uppercase tracking-widest text-text-muted font-sans font-semibold">Track My Order</span>
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-grow">
@@ -286,7 +286,7 @@ function OrderTrackingContent() {
               placeholder="Enter Order ID (e.g. RJ-2026-000001), Phone Number, or Email..."
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
-              className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-3 text-xs rounded-[10px] focus:outline-none placeholder:text-text-light font-sans font-medium"
+              className="w-full bg-[#FFFFFF] border border-border focus:border-primary text-text-primary pl-10 pr-4 py-3 text-xs focus:outline-none placeholder:text-text-light font-sans font-medium"
             />
             <Search className="w-4 h-4 text-primary absolute left-3.5 top-3.5" />
           </div>
@@ -301,7 +301,7 @@ function OrderTrackingContent() {
 
       {/* Search results list */}
       {loading ? (
-        <div className="py-20 flex justify-center border border-[#DCE5EF] bg-[#FFFFFF] mb-10 rounded-2xl">
+        <div className="py-20 flex justify-center border border-[#DCE5EF] bg-[#FFFFFF] mb-10">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : orders.length > 0 ? (
@@ -316,7 +316,7 @@ function OrderTrackingContent() {
           </div>
         </div>
       ) : initialQuery && (
-        <div className="text-center py-12 border border-[#DCE5EF] bg-[#FFFFFF] text-text-secondary text-xs font-sans mb-10 rounded-2xl">
+        <div className="text-center py-12 border border-[#DCE5EF] bg-[#FFFFFF] text-text-secondary text-xs font-sans mb-10">
           No records found matching tracking lookup: <strong className="text-primary font-mono">{initialQuery}</strong>
         </div>
       )}

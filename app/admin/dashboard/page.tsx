@@ -553,18 +553,18 @@ export default function AdminDashboard() {
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case "Pending Payment":
-        return "bg-status-pending/15 border-status-pending/30 text-status-pending rounded-full";
+        return "bg-status-pending/15 border-status-pending/30 text-status-pending";
       case "Payment Under Review":
-        return "bg-status-review/15 border-status-review/30 text-status-review rounded-full";
+        return "bg-status-review/15 border-status-review/30 text-status-review";
       case "Approved":
       case "Completed":
-        return "bg-status-approved/15 border-status-approved/30 text-status-approved rounded-full";
+        return "bg-status-approved/15 border-status-approved/30 text-status-approved";
       case "Rejected":
-        return "bg-status-rejected/15 border-status-rejected/30 text-status-rejected rounded-full";
+        return "bg-status-rejected/15 border-status-rejected/30 text-status-rejected";
       case "Cancelled":
-        return "bg-status-cancelled/15 border-status-cancelled/30 text-status-cancelled rounded-full";
+        return "bg-status-cancelled/15 border-status-cancelled/30 text-status-cancelled";
       default:
-        return "bg-status-review/15 border-status-review/30 text-status-review rounded-full";
+        return "bg-status-review/15 border-status-review/30 text-status-review";
     }
   };
 
@@ -891,7 +891,7 @@ export default function AdminDashboard() {
                       placeholder="Search orders (ID, Name, Phone)..."
                       value={orderSearchQuery}
                       onChange={handleOrderSearchChange}
-                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/30 font-sans"
+                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne pl-9 pr-4 py-2 text-xs focus:outline-none placeholder:text-brand-champagne/30 font-sans"
                     />
                     <Search className="w-3.5 h-3.5 text-brand-champagne/40 absolute left-3 top-2.5" />
                   </div>
@@ -1015,7 +1015,7 @@ export default function AdminDashboard() {
                       placeholder="Search inventory..."
                       value={searchQuery}
                       onChange={handleSearchChange}
-                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/30 font-sans"
+                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne pl-9 pr-4 py-2 text-xs focus:outline-none placeholder:text-brand-champagne/30 font-sans"
                     />
                     <Search className="w-3.5 h-3.5 text-brand-champagne/40 absolute left-3 top-2.5" />
                   </div>
@@ -1147,7 +1147,7 @@ export default function AdminDashboard() {
                           type="text"
                           placeholder="e.g. Brooches"
                           {...registerCat("name", { onChange: handleCategoryNameChange })}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                         />
                         {errorsCat.name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.name.message}</span>}
                       </div>
@@ -1159,7 +1159,7 @@ export default function AdminDashboard() {
                           type="text"
                           placeholder="e.g. brooches"
                           {...registerCat("slug")}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans font-mono"
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs focus:outline-none placeholder:text-brand-champagne/20 font-sans font-mono"
                         />
                         {errorsCat.slug && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.slug.message}</span>}
                       </div>
@@ -1184,7 +1184,7 @@ export default function AdminDashboard() {
                               <button
                                 type="button"
                                 onClick={() => setCategoryImage(null)}
-                                className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
+                                className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white rounded-none flex items-center justify-center cursor-pointer shadow-md"
                               >
                                 <X className="w-2.5 h-2.5" />
                               </button>
@@ -1202,7 +1202,7 @@ export default function AdminDashboard() {
                           min="0"
                           max="100"
                           {...registerCat("discount_percentage", { valueAsNumber: true })}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-3 py-2 text-xs focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                         />
                         {errorsCat.discount_percentage && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.discount_percentage.message}</span>}
                       </div>
@@ -1328,7 +1328,7 @@ export default function AdminDashboard() {
                             type="text"
                             placeholder="Rustic Jewels"
                             {...registerSet("business_name")}
-                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                           />
                           {errorsSet.business_name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.business_name.message}</span>}
                         </div>
@@ -1340,7 +1340,7 @@ export default function AdminDashboard() {
                             type="text"
                             placeholder="Timeless Elegance Handcrafted for You"
                             {...registerSet("hero_title")}
-                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                           />
                           {errorsSet.hero_title && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_title.message}</span>}
                         </div>
@@ -1352,7 +1352,7 @@ export default function AdminDashboard() {
                             rows={2}
                             placeholder="Browse our curated collection of fine artisan jewellery..."
                             {...registerSet("hero_subtitle")}
-                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-primary text-brand-champagne px-4 py-2.5 text-xs focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
                           />
                           {errorsSet.hero_subtitle && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_subtitle.message}</span>}
                         </div>
@@ -1377,7 +1377,7 @@ export default function AdminDashboard() {
                                 <button
                                   type="button"
                                   onClick={() => setSettingsImage(null)}
-                                  className="absolute -top-1 -right-1 w-4 h-4 bg-red-650 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
+                                  className="absolute -top-1 -right-1 w-4 h-4 bg-red-650 text-white rounded-none flex items-center justify-center cursor-pointer shadow-md"
                                 >
                                   <X className="w-2.5 h-2.5" />
                                 </button>

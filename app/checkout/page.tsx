@@ -155,7 +155,7 @@ export default function CheckoutPage() {
       <>
         <Navbar />
         <main className="flex-grow pt-32 pb-24 max-w-4xl mx-auto px-6 min-h-[70vh] flex flex-col justify-center items-center text-center">
-          <div className="flex flex-col items-center gap-4 py-20 border border-[#E1E8F1] bg-[#FFFFFF] w-full max-w-lg shadow-xs rounded-2xl">
+          <div className="flex flex-col items-center gap-4 py-20 border border-[#E1E8F1] bg-[#FFFFFF] w-full max-w-lg shadow-xs">
             <AlertCircle className="w-12 h-12 text-[#7D96B5]" />
             <h2 className="font-serif text-2xl text-[#202124]">Your Cart is Empty</h2>
             <p className="text-xs text-[#525B66] font-sans max-w-xs mt-1.5 leading-relaxed">
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Form Column (7 cols) */}
-            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E1E8F1] p-6 sm:p-8 shadow-xs rounded-2xl">
+            <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#E1E8F1] p-6 sm:p-8 shadow-xs">
               <h2 className="font-serif text-xl text-[#202124] border-b border-[#E1E8F1] pb-4 mb-6 font-medium flex items-center gap-2">
                 <Truck className="w-5 h-5 text-[#7D96B5]" />
                 Shipping & Delivery Address
@@ -214,7 +214,7 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="e.g. Ayesha Khan"
                     {...register("customer_name")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
                   {errors.customer_name && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.customer_name.message}</span>}
                 </div>
@@ -226,7 +226,7 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="e.g. 03001234567"
                     {...register("phone")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
                   {errors.phone && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.phone.message}</span>}
                 </div>
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                     type="email"
                     placeholder="name@example.com"
                     {...register("email")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
                   {errors.email && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.email.message}</span>}
                 </div>
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                     rows={3}
                     placeholder="House/Apartment #, Street #, Block/Sector, Area"
                     {...register("shipping_address")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none"
                   />
                   {errors.shipping_address && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.shipping_address.message}</span>}
                 </div>
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="e.g. Lahore, Karachi, Islamabad"
                     {...register("city")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans"
                   />
                   {errors.city && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.city.message}</span>}
                 </div>
@@ -274,7 +274,7 @@ export default function CheckoutPage() {
                     rows={2}
                     placeholder="Special requests or instructions for shipping..."
                     {...register("notes")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs rounded-[10px] focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none"
+                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none"
                   />
                   {errors.notes && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.notes.message}</span>}
                 </div>
@@ -288,7 +288,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Checkout Items Summary Column (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#FFFFFF] border border-[#E1E8F1] p-6 shadow-xs rounded-2xl">
+            <div className="lg:col-span-5 flex flex-col gap-5 bg-[#FFFFFF] border border-[#E1E8F1] p-6 shadow-xs">
               <h3 className="font-serif text-lg text-[#202124] border-b border-[#E1E8F1] pb-3 font-medium flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-[#7D96B5]" />
                 Order Summary
@@ -299,7 +299,7 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => (
                   <div key={`${item.listing.id}-${item.selectedItem.item_number}`} className="py-3 flex items-center justify-between gap-3 text-xs font-sans first:pt-0 last:pb-0">
                     <div className="flex items-center gap-3">
-                      <img src={item.listing.featured_image} alt={item.listing.title} className="w-10 h-10 object-cover border border-[#E1E8F1] bg-[#EAF0F8] flex-shrink-0 rounded-[10px]" />
+                      <img src={item.listing.featured_image} alt={item.listing.title} className="w-10 h-10 object-cover border border-[#E1E8F1] bg-[#EAF0F8] flex-shrink-0" />
                       <div className="flex flex-col gap-0.5">
                         <span className="font-semibold text-[#202124] line-clamp-1">{item.listing.title}</span>
                         <span className="text-[9px] text-[#7D96B5] uppercase tracking-widest font-semibold">Item #{item.selectedItem.item_number}</span>
