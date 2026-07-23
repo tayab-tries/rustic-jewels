@@ -3,11 +3,11 @@ import { Listing, ListingInput, Category, Settings, ListingItem } from "@/types"
 
 // Seed Data for Demo Mode Categories
 const SEED_CATEGORIES: Category[] = [
-  { id: "c1", slug: "rings", name: "Rings", image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&auto=format&fit=crop&q=80" },
-  { id: "c2", slug: "necklaces", name: "Necklaces", image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&auto=format&fit=crop&q=80" },
-  { id: "c3", slug: "bracelets", name: "Bracelets", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&auto=format&fit=crop&q=80" },
-  { id: "c4", slug: "earrings", name: "Earrings", image: "https://images.unsplash.com/photo-1635767798638-3e25273a8236?w=400&auto=format&fit=crop&q=80" },
-  { id: "c5", slug: "brooches", name: "Brooches", image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop&q=80" }
+  { id: "c1", slug: "rings", name: "Rings", image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&auto=format&fit=crop&q=80", discount_percentage: 0 },
+  { id: "c2", slug: "necklaces", name: "Necklaces", image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&auto=format&fit=crop&q=80", discount_percentage: 0 },
+  { id: "c3", slug: "bracelets", name: "Bracelets", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&auto=format&fit=crop&q=80", discount_percentage: 0 },
+  { id: "c4", slug: "earrings", name: "Earrings", image: "https://images.unsplash.com/photo-1635767798638-3e25273a8236?w=400&auto=format&fit=crop&q=80", discount_percentage: 0 },
+  { id: "c5", slug: "brooches", name: "Brooches", image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop&q=80", discount_percentage: 0 }
 ];
 
 // Seed Data for Demo Mode Multi-Item Listings
@@ -120,8 +120,15 @@ const SEED_SETTINGS: Settings = {
   hero_title: "Shop All",
   hero_subtitle: "Browse our Collection",
   hero_image: "/bg-pattern-2.png",
-  instagram_url: "https://instagram.com/rustic_jewels_instagram",
-  email: "contact@rusticjewels.com"
+  instagram_url: "https://instagram.com/rusticjewels_",
+  email: "contact@rusticjewels.com",
+  bank_name: "Habib Bank Limited (HBL)",
+  account_title: "Tayab Tries",
+  account_number: "12345678901234",
+  iban: "PK00HABB01234567890123",
+  easypaisa_number: "03001234567",
+  jazzcash_number: "03009876543",
+  payment_instructions: "Please make the manual bank transfer or mobile deposit to one of our accounts. Once completed, take a screenshot of your transaction confirmation, copy your Order ID, and send both to our Instagram Direct Message for manual verification. We will process your order as soon as payment is confirmed."
 };
 
 const LOCAL_LISTINGS_KEY = "rustic_db_listings";
@@ -136,17 +143,48 @@ function getLocalCategories(): Category[] {
     localStorage.setItem(LOCAL_CATEGORIES_KEY, JSON.stringify(SEED_CATEGORIES));
     return SEED_CATEGORIES;
   }
-  try { return JSON.parse(stored); } catch { return SEED_CATEGORIES; }
+  try {
+    const parsed = JSON.parse(stored);
+    return parsed.map((cat: any) => ({
+      discount_percentage: 0,
+      ...cat
+    }));
+  } catch {
+    return SEED_CATEGORIES;
+  }
 }
 
 function getLocalListings(): Listing[] {
   if (typeof window === "undefined") return SEED_LISTINGS;
   const stored = localStorage.getItem(LOCAL_LISTINGS_KEY);
+  let listings: Listing[] = [];
   if (!stored) {
     localStorage.setItem(LOCAL_LISTINGS_KEY, JSON.stringify(SEED_LISTINGS));
-    return SEED_LISTINGS;
+    listings = SEED_LISTINGS;
+  } else {
+    try {
+      listings = JSON.parse(stored);
+    } catch {
+      listings = SEED_LISTINGS;
+    }
   }
-  try { return JSON.parse(stored); } catch { return SEED_LISTINGS; }
+
+  // Synchronize category details dynamically from latest local categories
+  try {
+    const latestCategories = getLocalCategories();
+    return listings.map((listing) => {
+      const syncedCats = (listing.categories || []).map((listingCat) => {
+        const fresh = latestCategories.find((c) => c.id === listingCat.id || c.slug === listingCat.slug);
+        return fresh ? fresh : listingCat;
+      });
+      return {
+        ...listing,
+        categories: syncedCats,
+      };
+    });
+  } catch {
+    return listings;
+  }
 }
 
 function setLocalListings(list: Listing[]) {
@@ -161,7 +199,12 @@ function getLocalSettings(): Settings {
     localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(SEED_SETTINGS));
     return SEED_SETTINGS;
   }
-  try { return JSON.parse(stored); } catch { return SEED_SETTINGS; }
+  try {
+    const parsed = JSON.parse(stored);
+    return { ...SEED_SETTINGS, ...parsed };
+  } catch {
+    return SEED_SETTINGS;
+  }
 }
 
 export const productService = {
@@ -178,7 +221,7 @@ export const productService = {
     return data || [];
   },
 
-  async createCategory(input: { name: string; slug: string; image?: string | null }): Promise<Category | null> {
+  async createCategory(input: { name: string; slug: string; image?: string | null; discount_percentage?: number }): Promise<Category | null> {
     const slugValue = input.slug.toLowerCase().trim();
     if (!isSupabaseConfigured) {
       const list = getLocalCategories();
@@ -187,6 +230,7 @@ export const productService = {
         slug: slugValue,
         name: input.name,
         image: input.image || null,
+        discount_percentage: input.discount_percentage || 0,
       };
       list.push(newCat);
       localStorage.setItem(LOCAL_CATEGORIES_KEY, JSON.stringify(list));
@@ -194,7 +238,7 @@ export const productService = {
     }
     const { data, error } = await supabase
       .from("categories")
-      .insert([{ name: input.name, slug: slugValue, image: input.image || null }])
+      .insert([{ name: input.name, slug: slugValue, image: input.image || null, discount_percentage: input.discount_percentage || 0 }])
       .select()
       .single();
     if (error) {
@@ -204,7 +248,7 @@ export const productService = {
     return data;
   },
 
-  async updateCategory(id: string, input: Partial<{ name: string; slug: string; image?: string | null }>): Promise<Category | null> {
+  async updateCategory(id: string, input: Partial<{ name: string; slug: string; image?: string | null; discount_percentage?: number }>): Promise<Category | null> {
     if (!isSupabaseConfigured) {
       const list = getLocalCategories();
       const idx = list.findIndex((c) => c.id === id);
@@ -222,6 +266,7 @@ export const productService = {
     if (input.name !== undefined) updateData.name = input.name;
     if (input.slug !== undefined) updateData.slug = input.slug.toLowerCase().trim();
     if (input.image !== undefined) updateData.image = input.image;
+    if (input.discount_percentage !== undefined) updateData.discount_percentage = input.discount_percentage;
 
     const { data, error } = await supabase
       .from("categories")
@@ -373,7 +418,8 @@ export const productService = {
           id,
           slug,
           name,
-          image
+          image,
+          discount_percentage
         )
       )
     `);
@@ -450,7 +496,8 @@ export const productService = {
             id,
             slug,
             name,
-            image
+            image,
+            discount_percentage
           )
         )
       `)
@@ -503,7 +550,8 @@ export const productService = {
             id,
             slug,
             name,
-            image
+            image,
+            discount_percentage
           )
         )
       `)

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState, useTransition, Suspense } from "react";
+import React, { useEffect, useState, useTransition, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -41,6 +41,7 @@ function SearchContent() {
 
   // Update searchQuery input when URL changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchQuery(rawQuery);
   }, [rawQuery]);
 

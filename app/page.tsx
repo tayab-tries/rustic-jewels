@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Eye } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Instagram } from "@/components/ui/Icons";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -72,7 +72,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-b from-brand-charcoal/80 via-brand-charcoal/90 to-brand-charcoal z-10" />
             <motion.img
               initial={{ scale: 1.1, opacity: 0 }}
-              animate={{ scale: 1.05, opacity: 0.35 }}
+              animate={{ scale: 1.05, opacity: 0.20 }}
               transition={{ duration: 1.8, ease: "easeOut" }}
               src={settings?.hero_image || "/bg-pattern-2.png"}
               alt="Luxury Jewellery Background"

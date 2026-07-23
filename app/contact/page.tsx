@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, ArrowRight, Check, Send, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { Mail, Check, Send, AlertCircle } from "lucide-react";
 import { Instagram } from "@/components/ui/Icons";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -58,7 +58,7 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = async (values: ContactFormValues) => {
+  const onSubmit = async (_values: ContactFormValues) => {
     setErrorMsg(null);
     setSubmitting(true);
     try {
@@ -66,7 +66,7 @@ export default function ContactPage() {
       await new Promise((resolve) => setTimeout(resolve, 1200));
       setSuccessModalOpen(true);
       reset();
-    } catch (err) {
+    } catch (_err) {
       setErrorMsg("Something went wrong. Please try again later.");
     } finally {
       setSubmitting(false);

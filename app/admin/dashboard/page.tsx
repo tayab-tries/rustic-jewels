@@ -26,19 +26,27 @@ import {
   AlertTriangle,
   Upload,
   Loader2,
-  Mail
+  Mail,
+  ShoppingCart,
+  ClipboardList,
+  Calendar,
+  Check,
+  RotateCcw,
+  Menu
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import { productService } from "@/services/productService";
+import { orderService } from "@/services/orderService";
 import { authService } from "@/services/authService";
-import { Product, Listing, Category, Settings } from "@/types";
+import { Product, Listing, Category, Settings, Order, OrderStatus } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Validation schemas
 const categoryFormSchema = zod.object({
   name: zod.string().min(1, "Name is required").max(60, "Name is too long"),
   slug: zod.string().min(1, "Slug is required").max(60, "Slug is too long"),
+  discount_percentage: zod.number().min(0, "Discount cannot be negative").max(100, "Discount cannot exceed 100%"),
 });
 
 const settingsFormSchema = zod.object({
@@ -47,6 +55,13 @@ const settingsFormSchema = zod.object({
   hero_subtitle: zod.string().min(1, "Hero subtitle is required"),
   instagram_url: zod.string().min(1, "Instagram URL is required").url("Must be a valid URL"),
   email: zod.string().min(1, "Email is required").email("Must be a valid email"),
+  bank_name: zod.string().nullable().optional(),
+  account_title: zod.string().nullable().optional(),
+  account_number: zod.string().nullable().optional(),
+  iban: zod.string().nullable().optional(),
+  easypaisa_number: zod.string().nullable().optional(),
+  jazzcash_number: zod.string().nullable().optional(),
+  payment_instructions: zod.string().nullable().optional(),
 });
 
 type CategoryFormValues = zod.infer<typeof categoryFormSchema>;
@@ -59,15 +74,19 @@ interface Toast {
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "products" | "categories" | "settings">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "orders" | "products" | "categories" | "settings">("dashboard");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Search & Filtering
   const [searchQuery, setSearchQuery] = useState("");
+  const [orderSearchQuery, setOrderSearchQuery] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState<string>("all");
 
   // Modals state
   const [deleteProductModalOpen, setDeleteProductModalOpen] = useState(false);
@@ -80,6 +99,16 @@ export default function AdminDashboard() {
 
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [productToPreview, setProductToPreview] = useState<Product | null>(null);
+
+  // Order Details Modal
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [orderDetailModalOpen, setOrderDetailModalOpen] = useState(false);
+  const [updatingOrderStatus, setUpdatingOrderStatus] = useState(false);
+
+  // Rejection Reason Modal
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [rejectError, setRejectError] = useState("");
 
   // Category Edit state
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -112,7 +141,7 @@ export default function AdminDashboard() {
     formState: { errors: errorsCat },
   } = useForm<CategoryFormValues>({
     resolver: zodResolver(categoryFormSchema),
-    defaultValues: { name: "", slug: "" },
+    defaultValues: { name: "", slug: "", discount_percentage: 0 },
   });
 
   const {
@@ -131,15 +160,17 @@ export default function AdminDashboard() {
       const email = await authService.getCurrentUserEmail();
       setUserEmail(email);
 
-      const [productsList, categoriesList, settingsConfig] = await Promise.all([
+      const [productsList, categoriesList, settingsConfig, ordersList] = await Promise.all([
         productService.getListings({ includeDrafts: true }),
         productService.getCategories(),
         productService.getSettings(),
+        orderService.getAdminOrders(),
       ]);
 
       setProducts(productsList);
       setCategories(categoriesList);
       setSettings(settingsConfig);
+      setOrders(ordersList);
 
       // Populate Settings form
       resetSet({
@@ -148,6 +179,13 @@ export default function AdminDashboard() {
         hero_subtitle: settingsConfig.hero_subtitle,
         instagram_url: settingsConfig.instagram_url,
         email: settingsConfig.email,
+        bank_name: settingsConfig.bank_name || "",
+        account_title: settingsConfig.account_title || "",
+        account_number: settingsConfig.account_number || "",
+        iban: settingsConfig.iban || "",
+        easypaisa_number: settingsConfig.easypaisa_number || "",
+        jazzcash_number: settingsConfig.jazzcash_number || "",
+        payment_instructions: settingsConfig.payment_instructions || "",
       });
       setSettingsImage(settingsConfig.hero_image);
     } catch (err) {
@@ -162,6 +200,22 @@ export default function AdminDashboard() {
     loadDashboardData();
   }, [resetSet]);
 
+  // Listen for storage events (to synchronize tabs automatically in Demo Mode)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (
+        e.key === "rustic_db_orders" ||
+        e.key === "rustic_db_listings" ||
+        e.key === "rustic_db_categories" ||
+        e.key === "rustic_db_settings"
+      ) {
+        loadDashboardData();
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
@@ -170,6 +224,33 @@ export default function AdminDashboard() {
       setProducts(list);
     } catch (err) {
       console.error("Failed to query catalog", err);
+    }
+  };
+
+  const handleOrderSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setOrderSearchQuery(value);
+    try {
+      const list = await orderService.getAdminOrders({
+        search: value,
+        status: orderStatusFilter === "all" ? undefined : orderStatusFilter,
+      });
+      setOrders(list);
+    } catch (err) {
+      console.error("Failed to query orders", err);
+    }
+  };
+
+  const handleOrderStatusFilterChange = async (status: string) => {
+    setOrderStatusFilter(status);
+    try {
+      const list = await orderService.getAdminOrders({
+        search: orderSearchQuery,
+        status: status === "all" ? undefined : status,
+      });
+      setOrders(list);
+    } catch (err) {
+      console.error("Failed to query orders by status", err);
     }
   };
 
@@ -230,6 +311,7 @@ export default function AdminDashboard() {
           name: values.name,
           slug: values.slug,
           image: categoryImage,
+          discount_percentage: values.discount_percentage,
         });
         if (res) {
           addToast(`Updated category "${values.name}" successfully.`);
@@ -244,6 +326,7 @@ export default function AdminDashboard() {
           name: values.name,
           slug: values.slug,
           image: categoryImage,
+          discount_percentage: values.discount_percentage,
         });
         if (res) {
           addToast(`Created category "${values.name}" successfully.`);
@@ -266,13 +349,14 @@ export default function AdminDashboard() {
     resetCat({
       name: cat.name,
       slug: cat.slug,
+      discount_percentage: cat.discount_percentage || 0,
     });
     setCategoryImage(cat.image);
   };
 
   const cancelCategoryEdit = () => {
     setEditingCategory(null);
-    resetCat({ name: "", slug: "" });
+    resetCat({ name: "", slug: "", discount_percentage: 0 });
     setCategoryImage(null);
   };
 
@@ -334,6 +418,13 @@ export default function AdminDashboard() {
         instagram_url: values.instagram_url,
         email: values.email,
         hero_image: settingsImage,
+        bank_name: values.bank_name || null,
+        account_title: values.account_title || null,
+        account_number: values.account_number || null,
+        iban: values.iban || null,
+        easypaisa_number: values.easypaisa_number || null,
+        jazzcash_number: values.jazzcash_number || null,
+        payment_instructions: values.payment_instructions || null,
       });
 
       if (res) {
@@ -366,6 +457,67 @@ export default function AdminDashboard() {
     }
   };
 
+  // Order Status Updates
+  const handleUpdateStatus = async (status: OrderStatus) => {
+    if (!selectedOrder) return;
+    
+    // If status is rejected, open secondary modal instead
+    if (status === "Rejected") {
+      setRejectionReason("");
+      setRejectError("");
+      setRejectModalOpen(true);
+      return;
+    }
+
+    setUpdatingOrderStatus(true);
+    try {
+      const updated = await orderService.updateOrderStatus(selectedOrder.id, status);
+      if (updated) {
+        setSelectedOrder(updated);
+        setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+        addToast(`Order ${updated.order_id} marked as ${status}.`, "success");
+      } else {
+        addToast("Failed to update order status.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      addToast("Error updating order status.", "error");
+    } finally {
+      setUpdatingOrderStatus(false);
+    }
+  };
+
+  const handleRejectOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOrder) return;
+    if (!rejectionReason.trim()) {
+      setRejectError("Rejection reason is required.");
+      return;
+    }
+
+    setUpdatingOrderStatus(true);
+    try {
+      const updated = await orderService.updateOrderStatus(
+        selectedOrder.id,
+        "Rejected",
+        rejectionReason.trim()
+      );
+      if (updated) {
+        setSelectedOrder(updated);
+        setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+        addToast(`Order ${updated.order_id} marked as Rejected.`, "success");
+        setRejectModalOpen(false);
+      } else {
+        addToast("Failed to update order status.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      addToast("Error updating order status.", "error");
+    } finally {
+      setUpdatingOrderStatus(false);
+    }
+  };
+
   // Price formatter helper
   const formatPrice = (items?: Listing["items"]) => {
     if (!items || items.length === 0) return "Price on Inquiry";
@@ -378,6 +530,43 @@ export default function AdminDashboard() {
       maximumFractionDigits: 0,
     }).format(minPrice);
     return `From ${formatted}`;
+  };
+
+  const formatRawPrice = (price: number) => {
+    return new Intl.NumberFormat("en-PK", {
+      style: "currency",
+      currency: "PKR",
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getStatusBadge = (status: OrderStatus) => {
+    switch (status) {
+      case "Pending Payment":
+        return "bg-amber-950/40 border-amber-800/40 text-amber-400";
+      case "Payment Under Review":
+        return "bg-blue-950/40 border-blue-800/40 text-blue-400";
+      case "Approved":
+        return "bg-emerald-950/40 border-emerald-800/40 text-emerald-400";
+      case "Rejected":
+        return "bg-red-950/40 border-red-800/40 text-red-400";
+      case "Completed":
+        return "bg-zinc-900 border-zinc-700 text-zinc-300";
+      case "Cancelled":
+        return "bg-zinc-950 border-zinc-800 text-zinc-500";
+      default:
+        return "bg-zinc-900 border-zinc-750 text-zinc-300";
+    }
   };
 
   return (
@@ -412,16 +601,54 @@ export default function AdminDashboard() {
           </AnimatePresence>
         </div>
 
-        {/* SIDEBAR NAVIGATION (LEFT SECTION) */}
-        <aside className="w-64 bg-brand-charcoal-light border-r border-brand-charcoal-border flex flex-col fixed top-0 bottom-0 left-0 z-30">
-          {/* Logo brand box */}
-          <div className="p-6 border-b border-brand-charcoal-border flex flex-col">
-            <span className="font-serif text-lg tracking-widest text-brand-champagne uppercase font-light">
+        {/* Mobile Header (visible on mobile/tablet) */}
+        <header className="lg:hidden w-full h-16 bg-brand-charcoal-light border-b border-brand-charcoal-border flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-40">
+          <div className="flex flex-col">
+            <span className="font-serif text-sm tracking-widest text-brand-champagne uppercase font-light">
               Rustic <span className="font-normal text-gold-500">Jewels</span>
             </span>
-            <span className="text-[8px] uppercase tracking-[0.2em] text-gold-500/80 -mt-1 font-sans">
+            <span className="text-[7px] uppercase tracking-[0.2em] text-gold-500/80 -mt-1 font-sans">
               Admin Workspace
             </span>
+          </div>
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2 text-brand-champagne hover:text-gold-400 focus:outline-none cursor-pointer"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </header>
+
+        {/* Mobile menu backdrop */}
+        {mobileMenuOpen && (
+          <div
+            onClick={() => setMobileMenuOpen(false)}
+            className="lg:hidden fixed inset-0 bg-black/60 z-40 transition-opacity duration-300"
+          />
+        )}
+
+        {/* SIDEBAR NAVIGATION (LEFT SECTION) */}
+        <aside
+          className={`w-64 bg-brand-charcoal-light border-r border-brand-charcoal-border flex flex-col fixed top-0 bottom-0 left-0 z-50 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+            mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {/* Logo brand box */}
+          <div className="p-6 border-b border-brand-charcoal-border flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="font-serif text-lg tracking-widest text-brand-champagne uppercase font-light">
+                Rustic <span className="font-normal text-gold-500">Jewels</span>
+              </span>
+              <span className="text-[8px] uppercase tracking-[0.2em] text-gold-500/80 -mt-1 font-sans">
+                Admin Workspace
+              </span>
+            </div>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden p-1 text-brand-champagne hover:text-red-400 focus:outline-none cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           {/* User profile session summary */}
@@ -436,6 +663,7 @@ export default function AdminDashboard() {
           <nav className="flex-grow p-4 flex flex-col gap-1.5 mt-2">
             {[
               { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+              { id: "orders", label: "Orders", icon: ShoppingCart },
               { id: "products", label: "Products", icon: ShoppingBag },
               { id: "categories", label: "Categories", icon: Grid },
               { id: "settings", label: "Settings", icon: SettingsIcon },
@@ -448,6 +676,7 @@ export default function AdminDashboard() {
                   onClick={() => {
                     setActiveTab(tab.id as any);
                     cancelCategoryEdit();
+                    setMobileMenuOpen(false);
                   }}
                   className={`w-full flex items-center gap-3.5 px-4.5 py-3 text-xs uppercase tracking-widest font-sans border transition-all duration-150 cursor-pointer ${
                     isActive
@@ -465,7 +694,10 @@ export default function AdminDashboard() {
           {/* Logout Action Footer */}
           <div className="p-4 border-t border-brand-charcoal-border">
             <button
-              onClick={handleSignOut}
+              onClick={() => {
+                handleSignOut();
+                setMobileMenuOpen(false);
+              }}
               className="w-full flex items-center gap-3.5 px-4.5 py-3 text-xs uppercase tracking-widest font-sans border border-transparent hover:border-red-900/30 text-brand-champagne/60 hover:text-red-400 hover:bg-red-950/10 transition-colors duration-150 cursor-pointer"
             >
               <LogOut className="w-4 h-4 text-brand-champagne/40" />
@@ -475,8 +707,8 @@ export default function AdminDashboard() {
         </aside>
 
         {/* WORKSPACE AREA CONTENT PANEL (RIGHT SECTION) */}
-        <main className="flex-grow pl-64 min-h-screen flex flex-col">
-          <div className="p-8 sm:p-10 max-w-6xl w-full mx-auto flex-grow flex flex-col">
+        <main className="flex-grow lg:pl-64 pt-16 lg:pt-0 min-h-screen flex flex-col min-w-0 overflow-x-hidden">
+          <div className="p-4 sm:p-8 max-w-6xl w-full mx-auto flex-grow flex flex-col min-w-0 overflow-hidden">
 
             {/* TAB CONTAINER 1: OVERVIEW STATISTICS PANEL */}
             {activeTab === "dashboard" && (
@@ -487,22 +719,33 @@ export default function AdminDashboard() {
                     Dashboard Overview
                   </h1>
                   <p className="text-xs text-brand-champagne/50 font-sans mt-1">
-                    Snapshot details of catalog items, collections, and featured publications.
+                    Snapshot details of orders, catalog items, collections, and configurations.
                   </p>
                 </div>
 
                 {/* Counter Metric badges grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  {/* Badge 1: Total items */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Badge 1: Pending Orders */}
                   <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col justify-between gap-4">
-                    <span className="text-[10px] uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold">Total Catalogue Products</span>
+                    <span className="text-[10px] uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold">Pending Payments</span>
+                    <div className="flex items-baseline gap-2">
+                      <strong className="text-4xl font-serif text-amber-400 font-normal">
+                        {orders.filter((o) => o.status === "Pending Payment" || o.status === "Payment Under Review").length}
+                      </strong>
+                      <span className="text-[10px] text-brand-champagne/40 font-sans">awaiting review</span>
+                    </div>
+                  </div>
+
+                  {/* Badge 2: Total Listings */}
+                  <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col justify-between gap-4">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold">Catalogue Products</span>
                     <div className="flex items-baseline gap-2">
                       <strong className="text-4xl font-serif text-gold-400 font-normal">{products.length}</strong>
                       <span className="text-[10px] text-brand-champagne/40 font-sans">published & drafts</span>
                     </div>
                   </div>
 
-                  {/* Badge 2: Featured items */}
+                  {/* Badge 3: Featured items */}
                   <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col justify-between gap-4">
                     <span className="text-[10px] uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold">Featured Showcase Pieces</span>
                     <div className="flex items-baseline gap-2">
@@ -513,7 +756,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* Badge 3: Categories count */}
+                  {/* Badge 4: Categories count */}
                   <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col justify-between gap-4">
                     <span className="text-[10px] uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold">Dynamic Collections</span>
                     <div className="flex items-baseline gap-2">
@@ -523,66 +766,230 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Recently Added items listing */}
-                <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
-                  <div className="flex items-center justify-between border-b border-brand-charcoal-border/50 pb-3 mb-2">
-                    <h2 className="font-serif text-xl text-brand-champagne font-medium">Recently Added Pieces</h2>
-                    <button
-                      onClick={() => setActiveTab("products")}
-                      className="text-xs uppercase tracking-widest text-gold-400 hover:text-gold-300 font-sans cursor-pointer transition-colors"
-                    >
-                      View All Products →
-                    </button>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Recently Added items listing */}
+                  <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
+                    <div className="flex items-center justify-between border-b border-brand-charcoal-border/50 pb-3 mb-2">
+                      <h2 className="font-serif text-xl text-brand-champagne font-medium">Recently Added Pieces</h2>
+                      <button
+                        onClick={() => setActiveTab("products")}
+                        className="text-xs uppercase tracking-widest text-gold-400 hover:text-gold-300 font-sans cursor-pointer transition-colors"
+                      >
+                        View All Products →
+                      </button>
+                    </div>
+
+                    {loading ? (
+                      <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-gold-500" /></div>
+                    ) : products.length === 0 ? (
+                      <div className="py-10 text-center text-xs text-brand-champagne/40 font-sans">No products found.</div>
+                    ) : (
+                      <div className="flex flex-col divide-y divide-brand-charcoal-border/40">
+                        {products.slice(0, 4).map((p) => (
+                          <div key={p.id} className="py-3.5 flex items-center justify-between gap-4 text-xs font-sans first:pt-0 last:pb-0">
+                            <div className="flex items-center gap-3">
+                              <img src={p.featured_image} alt={p.title} className="w-10 h-10 object-cover border border-brand-charcoal-border flex-shrink-0 bg-brand-charcoal" />
+                              <div className="flex flex-col gap-0.5">
+                                <span className="font-semibold text-brand-champagne">{p.title}</span>
+                                <span className="text-[10px] text-brand-champagne/40">
+                                  {p.categories?.map((c) => c.name).join(", ") || "No Category"}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-6">
+                              <span className="font-medium text-gold-400/80">{formatPrice(p.items)}</span>
+                              <div className="flex items-center gap-3.5">
+                                <button
+                                  onClick={() => {
+                                    setProductToPreview(p);
+                                    setPreviewModalOpen(true);
+                                  }}
+                                  className="text-brand-champagne/50 hover:text-gold-400 p-1 cursor-pointer transition-colors"
+                                  title="Quick Preview"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </button>
+                                <Link
+                                  href={`/admin/dashboard/edit/${p.id}`}
+                                  className="text-brand-champagne/50 hover:text-gold-400 p-1 cursor-pointer transition-colors"
+                                  title="Edit Product"
+                                >
+                                  <Edit2 className="w-4 h-4" />
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  {loading ? (
-                    <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-gold-500" /></div>
-                  ) : products.length === 0 ? (
-                    <div className="py-10 text-center text-xs text-brand-champagne/40 font-sans">No products found.</div>
-                  ) : (
-                    <div className="flex flex-col divide-y divide-brand-charcoal-border/40">
-                      {products.slice(0, 4).map((p) => (
-                        <div key={p.id} className="py-3.5 flex items-center justify-between gap-4 text-xs font-sans first:pt-0 last:pb-0">
-                          <div className="flex items-center gap-3">
-                            <img src={p.featured_image} alt={p.title} className="w-10 h-10 object-cover border border-brand-charcoal-border flex-shrink-0 bg-brand-charcoal" />
+                  {/* Recent Orders Overview */}
+                  <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4">
+                    <div className="flex items-center justify-between border-b border-brand-charcoal-border/50 pb-3 mb-2">
+                      <h2 className="font-serif text-xl text-brand-champagne font-medium">Recent Orders</h2>
+                      <button
+                        onClick={() => setActiveTab("orders")}
+                        className="text-xs uppercase tracking-widest text-gold-400 hover:text-gold-300 font-sans cursor-pointer transition-colors"
+                      >
+                        View All Orders →
+                      </button>
+                    </div>
+
+                    {loading ? (
+                      <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-gold-500" /></div>
+                    ) : orders.length === 0 ? (
+                      <div className="py-10 text-center text-xs text-brand-champagne/40 font-sans">No orders registered yet.</div>
+                    ) : (
+                      <div className="flex flex-col divide-y divide-brand-charcoal-border/40">
+                        {orders.slice(0, 4).map((o) => (
+                          <div
+                            key={o.id}
+                            onClick={() => {
+                              setSelectedOrder(o);
+                              setOrderDetailModalOpen(true);
+                            }}
+                            className="py-3.5 flex items-center justify-between gap-4 text-xs font-sans first:pt-0 last:pb-0 cursor-pointer hover:bg-brand-charcoal/10 px-2 transition-all"
+                          >
                             <div className="flex flex-col gap-0.5">
-                              <span className="font-semibold text-brand-champagne">{p.title}</span>
+                              <span className="font-mono font-semibold text-brand-champagne">{o.order_id}</span>
                               <span className="text-[10px] text-brand-champagne/40">
-                                {p.categories?.map((c) => c.name).join(", ") || "No Category"}
+                                By {o.customer_name} • {formatDate(o.created_at)}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-6">
+                              <span className="font-medium text-gold-300">{formatRawPrice(o.total)}</span>
+                              <span className={`px-2 py-0.5 text-[8px] uppercase tracking-widest font-semibold border ${getStatusBadge(o.status)}`}>
+                                {o.status.split(" ")[0]}
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-6">
-                            <span className="font-medium text-gold-400/80">{formatPrice(p.items)}</span>
-                            <div className="flex items-center gap-3.5">
-                              <button
-                                onClick={() => {
-                                  setProductToPreview(p);
-                                  setPreviewModalOpen(true);
-                                }}
-                                className="text-brand-champagne/50 hover:text-gold-400 p-1 cursor-pointer transition-colors"
-                                title="Quick Preview"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                              <Link
-                                href={`/admin/dashboard/edit/${p.id}`}
-                                className="text-brand-champagne/50 hover:text-gold-400 p-1 cursor-pointer transition-colors"
-                                title="Edit Product"
-                              >
-                                <Edit2 className="w-4 h-4" />
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* TAB CONTAINER 2: INVENTORY PRODUCTS LISTING TABLE */}
+            {/* TAB CONTAINER 2: ORDERS MANAGEMENT */}
+            {activeTab === "orders" && (
+              <div className="flex flex-col gap-8 flex-grow">
+                <div>
+                  <h1 className="font-serif text-3xl text-brand-champagne tracking-wide font-medium">
+                    Order Transactions
+                  </h1>
+                  <p className="text-xs text-brand-champagne/50 font-sans mt-1">
+                    Manage manual billing verifications, process approvals, or cancel customer checkout carts.
+                  </p>
+                </div>
+
+                {/* Filter and search controls */}
+                <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="relative w-full md:max-w-xs">
+                    <input
+                      type="text"
+                      placeholder="Search orders (ID, Name, Phone)..."
+                      value={orderSearchQuery}
+                      onChange={handleOrderSearchChange}
+                      className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne pl-9 pr-4 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/30 font-sans"
+                    />
+                    <Search className="w-3.5 h-3.5 text-brand-champagne/40 absolute left-3 top-2.5" />
+                  </div>
+
+                  <div className="flex items-center gap-2.5 w-full md:w-auto overflow-x-auto py-1">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-champagne/45 font-sans font-bold flex-shrink-0">Filter Status:</span>
+                    <div className="flex gap-1">
+                      {["all", "Pending Payment", "Payment Under Review", "Approved", "Rejected", "Completed", "Cancelled"].map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => handleOrderStatusFilterChange(status)}
+                          className={`px-3 py-1.5 text-[9px] uppercase tracking-wider font-sans border transition-all cursor-pointer whitespace-nowrap ${
+                            orderStatusFilter === status
+                              ? "bg-gold-500 border-gold-500 text-brand-charcoal font-bold"
+                              : "bg-brand-charcoal border-brand-charcoal-border hover:border-gold-500/50 text-brand-champagne/70"
+                          }`}
+                        >
+                          {status}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Orders table */}
+                {loading ? (
+                  <div className="flex justify-center py-20 border border-brand-charcoal-border/50 bg-brand-charcoal-light">
+                    <Loader2 className="w-6 h-6 animate-spin text-gold-500" />
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div className="text-center py-20 border border-brand-charcoal-border/50 bg-brand-charcoal-light flex flex-col items-center gap-4">
+                    <span className="font-serif text-lg text-brand-champagne/50">No orders found</span>
+                    <p className="text-xs text-brand-champagne/40 font-sans max-w-xs leading-relaxed">
+                      Verify that status filters or search parameters match active transaction requests.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="border border-brand-charcoal-border bg-brand-charcoal-light overflow-x-auto w-full max-w-full">
+                    <table className="w-full text-left border-collapse min-w-[650px]">
+                      <thead>
+                        <tr className="border-b border-brand-charcoal-border/70 text-[10px] sm:text-xs font-sans uppercase tracking-widest text-brand-champagne/55 bg-brand-charcoal/50">
+                          <th className="p-2.5 sm:p-4 pl-3 sm:pl-6 w-24 sm:w-32">Order ID</th>
+                          <th className="p-2.5 sm:p-4">Customer Details</th>
+                          <th className="p-2.5 sm:p-4 w-24 sm:w-32">Date</th>
+                          <th className="p-2.5 sm:p-4 w-24 sm:w-28">Amount</th>
+                          <th className="p-2.5 sm:p-4 w-28 sm:w-36 text-center">Status</th>
+                          <th className="p-2.5 sm:p-4 w-20 sm:w-24 text-right pr-3 sm:pr-6">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-brand-charcoal-border/40 text-xs font-sans">
+                        {orders.map((o) => (
+                          <tr
+                            key={o.id}
+                            className="hover:bg-brand-charcoal/20 transition-all cursor-pointer"
+                            onClick={() => {
+                              setSelectedOrder(o);
+                              setOrderDetailModalOpen(true);
+                            }}
+                          >
+                            <td className="p-2.5 sm:p-4 pl-3 sm:pl-6 font-mono font-semibold text-gold-300">{o.order_id}</td>
+                            <td className="p-2.5 sm:p-4">
+                              <div className="flex flex-col gap-0.5">
+                                <span className="font-medium text-brand-champagne">{o.customer_name}</span>
+                                <span className="text-[9px] sm:text-[10px] text-brand-champagne/45 font-mono">
+                                  Phone: {o.phone}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="p-2.5 sm:p-4 text-brand-champagne/70">{formatDate(o.created_at)}</td>
+                            <td className="p-2.5 sm:p-4 text-gold-400 font-semibold">{formatRawPrice(o.total)}</td>
+                            <td className="p-2.5 sm:p-4 text-center">
+                              <span className={`px-2 py-0.5 text-[9px] uppercase font-sans font-bold border whitespace-nowrap ${getStatusBadge(o.status)}`}>
+                                {o.status}
+                              </span>
+                            </td>
+                            <td className="p-2.5 sm:p-4 text-right pr-3 sm:pr-6">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedOrder(o);
+                                  setOrderDetailModalOpen(true);
+                                }}
+                                className="text-xs uppercase tracking-widest text-gold-400 hover:text-gold-300 font-sans border border-brand-charcoal-border/60 hover:border-gold-500/50 bg-brand-charcoal px-3 py-1.5 transition-all cursor-pointer"
+                              >
+                                Review
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB CONTAINER 3: INVENTORY PRODUCTS LISTING TABLE */}
             {activeTab === "products" && (
               <div className="flex flex-col gap-8 flex-grow">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -631,44 +1038,44 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                 ) : (
-                  <div className="border border-brand-charcoal-border bg-brand-charcoal-light overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[700px]">
+                  <div className="border border-brand-charcoal-border bg-brand-charcoal-light overflow-x-auto w-full max-w-full">
+                    <table className="w-full text-left border-collapse min-w-[580px]">
                       <thead>
-                        <tr className="border-b border-brand-charcoal-border/70 text-xs font-sans uppercase tracking-widest text-brand-champagne/55 bg-brand-charcoal/50">
-                          <th className="p-4 pl-6 w-20">Preview</th>
-                          <th className="p-4">Item Details</th>
-                          <th className="p-4 w-28">Category</th>
-                          <th className="p-4 w-28">Price</th>
-                          <th className="p-4 w-24 text-center">Featured</th>
-                          <th className="p-4 w-24 text-center">Status</th>
-                          <th className="p-4 w-32 text-right pr-6">Actions</th>
+                        <tr className="border-b border-brand-charcoal-border/70 text-[10px] sm:text-xs font-sans uppercase tracking-widest text-brand-champagne/55 bg-brand-charcoal/50">
+                          <th className="p-2.5 sm:p-4 pl-3 sm:pl-6 w-16 sm:w-20">Preview</th>
+                          <th className="p-2.5 sm:p-4">Item Details</th>
+                          <th className="p-2.5 sm:p-4 w-20 sm:w-28">Category</th>
+                          <th className="p-2.5 sm:p-4 w-20 sm:w-28">Price</th>
+                          <th className="p-2.5 sm:p-4 w-20 sm:w-24 text-center">Featured</th>
+                          <th className="p-2.5 sm:p-4 w-20 sm:w-24 text-center">Status</th>
+                          <th className="p-2.5 sm:p-4 w-24 sm:w-32 text-right pr-3 sm:pr-6">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-brand-charcoal-border/40 text-xs font-sans">
                         {products.map((p) => (
                           <tr key={p.id} className="hover:bg-brand-charcoal/20 transition-colors duration-150">
-                            <td className="p-4 pl-6">
-                              <img src={p.featured_image} alt={p.title} className="w-12 h-12 object-cover border border-brand-charcoal-border bg-brand-charcoal" />
+                            <td className="p-2.5 sm:p-4 pl-3 sm:pl-6">
+                              <img src={p.featured_image} alt={p.title} className="w-10 h-10 sm:w-12 sm:h-12 object-cover border border-brand-charcoal-border bg-brand-charcoal" />
                             </td>
-                            <td className="p-4">
+                            <td className="p-2.5 sm:p-4">
                               <div className="flex flex-col gap-0.5">
                                 <span className="font-serif text-sm font-semibold text-brand-champagne line-clamp-1">{p.title}</span>
-                                <span className="text-[10px] text-brand-champagne/40 line-clamp-1 max-w-xs">
-                                  {p.material || "No Materials"} • {p.collection || "No Collection"}
+                                <span className="text-[10px] text-brand-champagne/44 line-clamp-1 max-w-xs">
+                                  {p.material || "No Materials"} {p.collection ? `• ${p.collection}` : ""}
                                 </span>
                               </div>
                             </td>
-                            <td className="p-4 text-brand-champagne/80 font-medium">
+                            <td className="p-2.5 sm:p-4 text-brand-champagne/80 font-medium">
                               {p.categories?.map((c) => c.name).join(", ") || "None"}
                             </td>
-                            <td className="p-4 text-gold-400 font-medium">{formatPrice(p.items)}</td>
-                            <td className="p-4 text-center">
+                            <td className="p-2.5 sm:p-4 text-gold-400 font-medium">{formatPrice(p.items)}</td>
+                            <td className="p-2.5 sm:p-4 text-center">
                               <div className="flex justify-center">
                                 {p.featured ? <Sparkles className="w-4 h-4 text-gold-400" /> : <span className="text-brand-champagne/20">—</span>}
                               </div>
                             </td>
-                            <td className="p-4 text-center">
-                              <span className={`px-2.5 py-1 text-[9px] uppercase font-sans font-bold border ${
+                            <td className="p-2.5 sm:p-4 text-center">
+                              <span className={`px-2 py-0.5 text-[9px] uppercase font-sans font-bold border ${
                                 p.published 
                                   ? "bg-emerald-950/30 border-emerald-800/40 text-emerald-400" 
                                   : "bg-amber-950/30 border-amber-800/40 text-amber-400"
@@ -676,7 +1083,7 @@ export default function AdminDashboard() {
                                 {p.published ? "Published" : "Draft"}
                               </span>
                             </td>
-                            <td className="p-4 text-right pr-6">
+                            <td className="p-2.5 sm:p-4 text-right pr-3 sm:pr-6">
                               <div className="flex justify-end gap-2.5">
                                 <button
                                   onClick={() => {
@@ -714,7 +1121,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* TAB CONTAINER 3: CATEGORY CRUD MANAGEMENT PANELS */}
+            {/* TAB CONTAINER 4: CATEGORY CRUD MANAGEMENT PANELS */}
             {activeTab === "categories" && (
               <div className="flex flex-col gap-8 flex-grow">
                 <div>
@@ -778,13 +1185,27 @@ export default function AdminDashboard() {
                               <button
                                 type="button"
                                 onClick={() => setCategoryImage(null)}
-                                className="absolute -top-1 -right-1 w-4 h-4 bg-red-650 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
+                                className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
                               >
                                 <X className="w-2.5 h-2.5" />
                               </button>
                             </div>
                           )}
                         </div>
+                      </div>
+ 
+                      {/* Discount input */}
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Category Discount (%)</label>
+                        <input
+                          type="number"
+                          placeholder="e.g. 15"
+                          min="0"
+                          max="100"
+                          {...registerCat("discount_percentage", { valueAsNumber: true })}
+                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-3 py-2 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                        />
+                        {errorsCat.discount_percentage && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsCat.discount_percentage.message}</span>}
                       </div>
 
                       {/* Buttons Action */}
@@ -815,7 +1236,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Right Side: Category Table List (7 cols) */}
-                  <div className="lg:col-span-7 bg-brand-charcoal-light border border-brand-charcoal-border p-6 flex flex-col gap-4 overflow-x-auto">
+                  <div className="lg:col-span-7 bg-brand-charcoal-light border border-brand-charcoal-border p-4 sm:p-6 flex flex-col gap-4 overflow-x-auto w-full max-w-full">
                     <h2 className="font-serif text-lg text-brand-champagne border-b border-brand-charcoal-border/50 pb-3 font-medium">
                       Active Collections
                     </h2>
@@ -823,30 +1244,37 @@ export default function AdminDashboard() {
                     {categories.length === 0 ? (
                       <div className="text-center py-10 text-xs text-brand-champagne/45 font-sans">No categories found.</div>
                     ) : (
-                      <table className="w-full text-left border-collapse min-w-[450px]">
+                      <table className="w-full text-left border-collapse min-w-[360px]">
                         <thead>
                           <tr className="border-b border-brand-charcoal-border/70 text-[10px] font-sans uppercase tracking-widest text-brand-champagne/55 bg-brand-charcoal/50">
-                            <th className="p-3 pl-4 w-16">Cover</th>
-                            <th className="p-3">Category Info</th>
-                            <th className="p-3 w-40">Slug</th>
-                            <th className="p-3 w-24 text-right pr-4">Actions</th>
+                            <th className="p-2 pl-3 w-14">Cover</th>
+                            <th className="p-2">Category Info</th>
+                            <th className="p-2 w-32">Slug</th>
+                            <th className="p-2 w-20 text-right pr-3">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-brand-charcoal-border/40 text-xs font-sans">
                           {categories.map((cat) => (
                             <tr key={cat.id} className="hover:bg-brand-charcoal/20 transition-all">
-                              <td className="p-3 pl-4">
+                              <td className="p-2 pl-3">
                                 {cat.image ? (
-                                  <img src={cat.image} alt={cat.name} className="w-10 h-10 object-cover border border-brand-charcoal-border bg-brand-charcoal" />
+                                  <img src={cat.image} alt={cat.name} className="w-8 h-8 object-cover border border-brand-charcoal-border bg-brand-charcoal" />
                                 ) : (
-                                  <div className="w-10 h-10 border border-brand-charcoal-border bg-brand-charcoal/30 flex items-center justify-center text-[10px] text-brand-champagne/20">None</div>
+                                  <div className="w-8 h-8 border border-brand-charcoal-border bg-brand-charcoal/30 flex items-center justify-center text-[9px] text-brand-champagne/20">None</div>
                                 )}
                               </td>
-                              <td className="p-3">
-                                <span className="font-semibold text-brand-champagne text-sm">{cat.name}</span>
+                              <td className="p-2">
+                                <div className="flex flex-col gap-0.5">
+                                  <span className="font-semibold text-brand-champagne text-sm">{cat.name}</span>
+                                  {cat.discount_percentage ? (
+                                    <span className="text-[9px] text-red-400 font-semibold uppercase">
+                                      {cat.discount_percentage}% OFF
+                                    </span>
+                                  ) : null}
+                                </div>
                               </td>
-                              <td className="p-3 font-mono text-[10px] text-brand-champagne/50">{cat.slug}</td>
-                              <td className="p-3 text-right pr-4">
+                              <td className="p-2 font-mono text-[10px] text-brand-champagne/50">{cat.slug}</td>
+                              <td className="p-2 text-right pr-3">
                                 <div className="flex justify-end gap-2">
                                   <button
                                     onClick={() => startCategoryEdit(cat)}
@@ -874,108 +1302,209 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* TAB CONTAINER 4: BRAND GLOBAL SETTINGS EDIT FORM */}
+            {/* TAB CONTAINER 5: BRAND GLOBAL SETTINGS EDIT FORM */}
             {activeTab === "settings" && (
               <div className="flex flex-col gap-8 flex-grow">
                 <div>
                   <h1 className="font-serif text-3xl text-brand-champagne tracking-wide font-medium">
-                    Global Settings
+                    Global Settings & Manual Billing
                   </h1>
                   <p className="text-xs text-brand-champagne/50 font-sans mt-1">
-                    Manage catalogue branding configurations, hero sliders, and inquiries credentials.
+                    Manage brand configurations, visual sliders, manual bank information, and Instagram credentials.
                   </p>
                 </div>
 
                 <div className="bg-brand-charcoal-light border border-brand-charcoal-border p-8 sm:p-10 max-w-3xl">
                   <form onSubmit={handleSubmitSet(onSaveSettingsSubmit)} className="flex flex-col gap-6">
-                    {/* Business Name */}
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Business name *</label>
-                      <input
-                        type="text"
-                        placeholder="Rustic Jewels"
-                        {...registerSet("business_name")}
-                        className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
-                      />
-                      {errorsSet.business_name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.business_name.message}</span>}
-                    </div>
-
-                    {/* Hero Title */}
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Hero banner title *</label>
-                      <input
-                        type="text"
-                        placeholder="Timeless Elegance Handcrafted for You"
-                        {...registerSet("hero_title")}
-                        className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
-                      />
-                      {errorsSet.hero_title && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_title.message}</span>}
-                    </div>
-
-                    {/* Hero Subtitle */}
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Hero banner subtitle *</label>
-                      <textarea
-                        rows={3}
-                        placeholder="Browse our curated collection of fine artisan jewellery..."
-                        {...registerSet("hero_subtitle")}
-                        className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
-                      />
-                      {errorsSet.hero_subtitle && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_subtitle.message}</span>}
-                    </div>
-
-                    {/* Hero Image file uploader */}
-                    <div className="flex flex-col gap-2">
-                      <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Hero cover background photo *</label>
-                      <div className="flex items-center gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer border border-brand-charcoal-border bg-brand-charcoal hover:border-gold-500/50 px-4 py-3 text-xs uppercase tracking-widest font-sans text-brand-champagne/70 hover:text-brand-champagne transition-all">
+                    {/* General Section */}
+                    <div>
+                      <h3 className="font-serif text-base text-brand-champagne border-b border-brand-charcoal-border/50 pb-2 mb-4 font-semibold">
+                        General Settings
+                      </h3>
+                      <div className="flex flex-col gap-4">
+                        {/* Business Name */}
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Business name *</label>
                           <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleSettingsImageChange}
-                            className="hidden"
+                            type="text"
+                            placeholder="Rustic Jewels"
+                            {...registerSet("business_name")}
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
                           />
-                          {uploadingSettingsImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                          <span>Upload new background</span>
-                        </label>
-                        {settingsImage && (
-                          <div className="relative w-16 h-12 border border-brand-charcoal-border bg-brand-charcoal flex-shrink-0">
-                            <img src={settingsImage} alt="hero background" className="w-full h-full object-cover" />
-                            <button
-                              type="button"
-                              onClick={() => setSettingsImage(null)}
-                              className="absolute -top-1 -right-1 w-4 h-4 bg-red-650 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
-                            >
-                              <X className="w-2.5 h-2.5" />
-                            </button>
+                          {errorsSet.business_name && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.business_name.message}</span>}
+                        </div>
+
+                        {/* Hero Title */}
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Hero banner title *</label>
+                          <input
+                            type="text"
+                            placeholder="Timeless Elegance Handcrafted for You"
+                            {...registerSet("hero_title")}
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                          />
+                          {errorsSet.hero_title && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_title.message}</span>}
+                        </div>
+
+                        {/* Hero Subtitle */}
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Hero banner subtitle *</label>
+                          <textarea
+                            rows={2}
+                            placeholder="Browse our curated collection of fine artisan jewellery..."
+                            {...registerSet("hero_subtitle")}
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                          />
+                          {errorsSet.hero_subtitle && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.hero_subtitle.message}</span>}
+                        </div>
+
+                        {/* Hero Image file uploader */}
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Hero cover background photo *</label>
+                          <div className="flex items-center gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer border border-brand-charcoal-border bg-brand-charcoal hover:border-gold-500/50 px-4 py-3 text-xs uppercase tracking-widest font-sans text-brand-champagne/70 hover:text-brand-champagne transition-all">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleSettingsImageChange}
+                                className="hidden"
+                              />
+                              {uploadingSettingsImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                              <span>Upload new background</span>
+                            </label>
+                            {settingsImage && (
+                              <div className="relative w-16 h-12 border border-brand-charcoal-border bg-brand-charcoal flex-shrink-0">
+                                <img src={settingsImage} alt="hero background" className="w-full h-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => setSettingsImage(null)}
+                                  className="absolute -top-1 -right-1 w-4 h-4 bg-red-650 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md"
+                                >
+                                  <X className="w-2.5 h-2.5" />
+                                </button>
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {/* Instagram link */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Instagram Profile URL *</label>
+                            <input
+                              type="text"
+                              placeholder="https://instagram.com/..."
+                              {...registerSet("instagram_url")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            />
+                            {errorsSet.instagram_url && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.instagram_url.message}</span>}
+                          </div>
+
+                          {/* Email address */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Inquiries Email *</label>
+                            <input
+                              type="email"
+                              placeholder="contact@rusticjewels.com"
+                              {...registerSet("email")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            />
+                            {errorsSet.email && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.email.message}</span>}
+                          </div>
+                        </div>
+
+                        {/* Settings Form Footer Spacer */}
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Instagram link */}
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Instagram Profile URL *</label>
-                        <input
-                          type="text"
-                          placeholder="https://instagram.com/..."
-                          {...registerSet("instagram_url")}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
-                        />
-                        {errorsSet.instagram_url && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.instagram_url.message}</span>}
-                      </div>
+                    {/* Payment / Accounts Section */}
+                    <div className="mt-6 pt-6 border-t border-brand-charcoal-border/50">
+                      <h3 className="font-serif text-base text-brand-champagne border-b border-brand-charcoal-border/50 pb-2 mb-4 font-semibold">
+                        Manual Payment Accounts
+                      </h3>
+                      <div className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {/* Bank Name */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Bank Name</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Habib Bank Limited"
+                              {...registerSet("bank_name")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            />
+                          </div>
 
-                      {/* Email address */}
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Inquiries Email *</label>
-                        <input
-                          type="email"
-                          placeholder="contact@rusticjewels.com"
-                          {...registerSet("email")}
-                          className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
-                        />
-                        {errorsSet.email && <span className="text-[10px] text-red-400 font-sans mt-0.5">{errorsSet.email.message}</span>}
+                          {/* Account Title */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Account Title</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Rustic Jewels"
+                              {...registerSet("account_title")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {/* Account Number */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Account Number</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. 1234567890123"
+                              {...registerSet("account_number")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            />
+                          </div>
+
+                          {/* IBAN */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">IBAN Number</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. PK00HABB01234..."
+                              {...registerSet("iban")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {/* Easypaisa */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Easypaisa Mobile Wallet No.</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. 03001234567"
+                              {...registerSet("easypaisa_number")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans font-mono"
+                            />
+                          </div>
+
+                          {/* JazzCash */}
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">JazzCash Mobile Wallet No.</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. 03009876543"
+                              {...registerSet("jazzcash_number")}
+                              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Payment Instructions */}
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs uppercase tracking-widest text-brand-champagne/60 font-sans font-semibold">Buyer Payment Instructions</label>
+                          <textarea
+                            rows={3}
+                            placeholder="Please transfer manual payments to bank or mobile wallets..."
+                            {...registerSet("payment_instructions")}
+                            className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-gold-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 font-sans resize-none"
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -1159,6 +1688,231 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* FULL DETAIL REVIEW MODAL: ORDER MANIFEST */}
+      <Modal
+        isOpen={orderDetailModalOpen}
+        onClose={() => setOrderDetailModalOpen(false)}
+        title={`Review Transaction: ${selectedOrder?.order_id}`}
+      >
+        {selectedOrder && (
+          <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-1 text-brand-champagne font-sans pt-2">
+            
+            {/* Status Summary & Quick Actions */}
+            <div className="bg-brand-charcoal p-5 border border-brand-charcoal-border/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-widest text-brand-champagne/40">Current Transaction Status</span>
+                <span className={`px-3 py-1 text-xs uppercase tracking-widest font-bold border mt-1.5 w-max ${getStatusBadge(selectedOrder.status)}`}>
+                  {selectedOrder.status}
+                </span>
+              </div>
+
+              {/* Status Actions buttons group */}
+              <div className="flex flex-wrap gap-2 items-center">
+                {selectedOrder.status === "Pending Payment" && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleUpdateStatus("Payment Under Review")}
+                    isLoading={updatingOrderStatus}
+                    className="cursor-pointer"
+                  >
+                    Mark Under Review
+                  </Button>
+                )}
+
+                {(selectedOrder.status === "Pending Payment" || selectedOrder.status === "Payment Under Review") && (
+                  <>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleUpdateStatus("Approved")}
+                      isLoading={updatingOrderStatus}
+                      className="cursor-pointer"
+                    >
+                      Approve (Mark Sold)
+                    </Button>
+                    <button
+                      onClick={() => handleUpdateStatus("Rejected")}
+                      disabled={updatingOrderStatus}
+                      className="px-3 py-2 text-[10px] uppercase tracking-widest font-semibold bg-red-950/40 border border-red-800 text-red-400 hover:bg-red-900/10 transition-all cursor-pointer"
+                    >
+                      Reject Order
+                    </button>
+                  </>
+                )}
+
+                {selectedOrder.status === "Approved" && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleUpdateStatus("Completed")}
+                    isLoading={updatingOrderStatus}
+                    className="cursor-pointer"
+                  >
+                    Mark Completed
+                  </Button>
+                )}
+
+                {selectedOrder.status !== "Cancelled" && selectedOrder.status !== "Completed" && (
+                  <Button
+                    variant="text"
+                    size="sm"
+                    onClick={() => handleUpdateStatus("Cancelled")}
+                    isLoading={updatingOrderStatus}
+                    className="text-brand-champagne/40 hover:text-red-400 hover:bg-red-950/10 cursor-pointer"
+                  >
+                    Cancel Order
+                  </Button>
+                )}
+
+                {(selectedOrder.status === "Cancelled" || selectedOrder.status === "Completed" || selectedOrder.status === "Rejected") && (
+                  <button
+                    onClick={() => handleUpdateStatus("Pending Payment")}
+                    disabled={updatingOrderStatus}
+                    className="px-3 py-2 text-[10px] uppercase tracking-widest font-semibold border border-brand-charcoal-border hover:border-gold-500/30 text-brand-champagne/60 hover:text-gold-400 flex items-center gap-1 transition-all cursor-pointer"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Reset status
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Rejection comments warning */}
+            {selectedOrder.status === "Rejected" && selectedOrder.rejection_reason && (
+              <div className="bg-red-950/15 border border-red-900/30 p-4 text-xs text-red-300 font-sans flex gap-3 items-start">
+                <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold uppercase tracking-wider block mb-1">Rejection comments (Visible to client):</span>
+                  <p className="leading-relaxed">{selectedOrder.rejection_reason}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Customer Details Box */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-brand-charcoal/30 border border-brand-charcoal-border/50 p-5 font-sans">
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] uppercase tracking-widest text-brand-champagne/40 font-bold border-b border-brand-charcoal-border/50 pb-1.5">Shipping Destination</span>
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="font-semibold text-brand-champagne text-sm">{selectedOrder.customer_name}</span>
+                  <span className="text-brand-champagne/80 mt-0.5">{selectedOrder.shipping_address}</span>
+                  <span className="text-brand-champagne/70 font-semibold">{selectedOrder.city}</span>
+                  <span className="text-brand-champagne/60 mt-1">Phone: <a href={`tel:${selectedOrder.phone}`} className="underline text-gold-400">{selectedOrder.phone}</a></span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] uppercase tracking-widest text-brand-champagne/40 font-bold border-b border-brand-charcoal-border/50 pb-1.5">Contact Details & Remarks</span>
+                <div className="flex flex-col gap-1 text-xs">
+                  <span className="font-semibold text-gold-300">Instagram Handle: @{selectedOrder.instagram_username}</span>
+                  {selectedOrder.email && <span className="text-brand-champagne/70 mt-0.5">Email: {selectedOrder.email}</span>}
+                  <span className="text-[10px] text-brand-champagne/40 mt-1">Date Created:</span>
+                  <span className="text-brand-champagne/60">{formatDate(selectedOrder.created_at)}</span>
+                  {selectedOrder.notes && (
+                    <div className="mt-2 p-2.5 bg-brand-charcoal border border-brand-charcoal-border/40 italic text-brand-champagne/50">
+                      Notes: &ldquo;{selectedOrder.notes}&rdquo;
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Product Items Table */}
+            <div className="flex flex-col gap-2.5">
+              <span className="text-[10px] uppercase tracking-widest text-brand-champagne/40 font-bold border-b border-brand-charcoal-border/50 pb-1.5">Ordered Listings</span>
+              <div className="border border-brand-charcoal-border/50 bg-brand-charcoal/20">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-brand-charcoal-border/55 bg-brand-charcoal/60 text-[10px] uppercase tracking-widest text-brand-champagne/40">
+                      <th className="p-3 pl-4">Showcase Title</th>
+                      <th className="p-3 w-32">Selected Item No.</th>
+                      <th className="p-3 w-32">Price Paid</th>
+                      <th className="p-3 w-20 text-center">Qty</th>
+                      <th className="p-3 w-28 text-right pr-4">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-charcoal-border/30">
+                    {selectedOrder.items && selectedOrder.items.map((oi) => (
+                      <tr key={oi.id} className="hover:bg-brand-charcoal/10">
+                        <td className="p-3 pl-4 font-semibold text-brand-champagne">{oi.listing_title}</td>
+                        <td className="p-3 font-mono font-bold text-gold-400">#{oi.item_number}</td>
+                        <td className="p-3 text-brand-champagne/80">{formatRawPrice(oi.price)}</td>
+                        <td className="p-3 text-center text-brand-champagne/70">{oi.quantity}</td>
+                        <td className="p-3 text-right pr-4 text-gold-300 font-semibold">{formatRawPrice(oi.price * oi.quantity)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Grand Total */}
+              <div className="flex justify-between items-baseline font-sans text-xs mt-2 px-1">
+                <span className="text-brand-champagne/45 uppercase tracking-widest font-bold">Subtotal Amount Due</span>
+                <span className="font-serif text-xl font-bold text-gold-300">{formatRawPrice(selectedOrder.total)}</span>
+              </div>
+            </div>
+
+            {/* Close */}
+            <div className="border-t border-brand-charcoal-border/50 pt-5 flex justify-end mt-2">
+              <Button variant="secondary" size="sm" onClick={() => setOrderDetailModalOpen(false)}>
+                Close Manifest
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* REJECTION REASON DIALOG MODAL */}
+      <Modal
+        isOpen={rejectModalOpen}
+        onClose={() => setRejectModalOpen(false)}
+        title="Reject Transaction Billing"
+      >
+        <form onSubmit={handleRejectOrderSubmit} className="flex flex-col gap-4 text-xs font-sans py-1">
+          <div className="flex gap-3 items-start bg-red-950/20 border border-red-900/30 p-4 mb-1 text-red-300">
+            <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold uppercase tracking-wider block mb-0.5">Customer Visibility Notice</span>
+              This rejection comment will be immediately visible to the customer on their order status tracking page. Explain clearly why their billing transaction was rejected (e.g. invalid payment screenshot, missing details, incorrect amount).
+            </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60 font-semibold">Rejection Comment / Feedback *</label>
+            <textarea
+              rows={4}
+              placeholder="e.g. We did not receive a corresponding transfer in our account title. Please make sure the screenshot matches the bank transfer receipt transaction code..."
+              value={rejectionReason}
+              onChange={(e) => {
+                setRejectionReason(e.target.value);
+                setRejectError("");
+              }}
+              className="w-full bg-brand-charcoal border border-brand-charcoal-border focus:border-red-500 text-brand-champagne px-4 py-2.5 text-xs rounded-none focus:outline-none placeholder:text-brand-champagne/20 resize-none"
+            />
+            {rejectError && <span className="text-[10px] text-red-400 font-semibold mt-0.5">{rejectError}</span>}
+          </div>
+
+          <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-brand-charcoal-border/50">
+            <Button
+              variant="text"
+              size="sm"
+              type="button"
+              onClick={() => setRejectModalOpen(false)}
+              disabled={updatingOrderStatus}
+            >
+              Cancel
+            </Button>
+            <button
+              type="submit"
+              disabled={updatingOrderStatus}
+              className="px-4 py-2 text-xs uppercase tracking-widest font-semibold bg-red-950 border border-red-800 text-red-300 hover:bg-red-900/10 flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              {updatingOrderStatus ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
+              <span>Reject Transaction</span>
+            </button>
+          </div>
+        </form>
       </Modal>
     </>
   );

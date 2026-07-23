@@ -1,27 +1,43 @@
 @import "tailwindcss";
 
 @theme {
-  /* Premium Brand Color System - Midnight Sapphire & Denim Accents */
-  --color-gold-50: #f4f6fb;
-  --color-gold-100: #d9e3f4;
-  --color-gold-200: #b1c6e7;
-  --color-gold-300: #AAB6C8; /* Pale Blue */
-  --color-gold-400: #59708E; /* Steel Blue */
-  --color-gold-500: #324A6A; /* Dusty Blue (Primary CTA) */
-  --color-gold-600: #1E2A44; /* Indigo Blue */
-  --color-gold-700: #121B2E; /* Deep Navy */
-  --color-gold-800: #0A0F17; /* Midnight */
-  --color-gold-900: #05080c;
+  /* Dark Luxury Boutique Color System */
+  --color-brand-bg: #171515;              /* Background */
+  --color-brand-surface: #242120;         /* Surface */
+  --color-brand-card: #2E2A29;            /* Cards */
+  --color-brand-primary-bg: #171515;
+  --color-brand-secondary-bg: #242120;
+  --color-brand-accent-bg: #3A3433;
+  --color-brand-warm-neutral: #2E2A29;
   
-  --color-brand-emerald: #121B2E; /* Deep Navy */
-  --color-brand-emerald-light: #1E2A44; /* Indigo Blue */
-  --color-brand-champagne: #E6E4DF; /* Soft Ivory */
-  --color-brand-charcoal: #0A0F17; /* Midnight */
-  --color-brand-charcoal-light: #121B2E; /* Deep Navy background secondary */
-  --color-brand-charcoal-border: #1E2A44; /* Indigo Blue borders */
+  --color-brand-primary-text: #F5F2EE;    /* Primary Text */
+  --color-brand-secondary-text: #B7ADA4;  /* Secondary Text */
+  --color-brand-accent: #B88746;          /* Accent Gold */
+  --color-brand-accent-hover: #A2753A;
+  --color-brand-border: #3A3433;          /* Borders */
 
-  --color-slate-mist: #7C8CA6;
-  --color-pale-blue: #AAB6C8;
+  /* Legacy mappings to preserve full compatibility across all components */
+  --color-brand-charcoal: #171515;
+  --color-brand-charcoal-light: #242120;
+  --color-brand-charcoal-border: #3A3433;
+  --color-brand-champagne: #F5F2EE;
+
+  --color-brand-emerald: #B88746;
+  --color-brand-emerald-light: #A2753A;
+
+  --color-gold-50: #2E2A29;
+  --color-gold-100: #3A3433;
+  --color-gold-200: #B7ADA4;
+  --color-gold-300: #B88746;
+  --color-gold-400: #B88746;
+  --color-gold-500: #B88746;
+  --color-gold-600: #A2753A;
+  --color-gold-700: #242120;
+  --color-gold-800: #171515;
+  --color-gold-900: #0e0d0d;
+
+  --color-slate-mist: #B7ADA4;
+  --color-pale-blue: #3A3433;
 
   /* Typography variables connected to next/font */
   --font-serif: var(--font-serif);
@@ -29,8 +45,8 @@
 }
 
 :root {
-  --background: #0A0F17; /* Midnight background */
-  --foreground: #E6E4DF; /* Soft Ivory text */
+  --background: #171515; /* Background */
+  --foreground: #F5F2EE; /* Primary Text */
 }
 
 body {
@@ -41,7 +57,6 @@ body {
   position: relative;
 }
 
-/* Subtle cute botanical lace texture overlay for the entire site */
 body::before {
   content: "";
   position: fixed;
@@ -50,19 +65,21 @@ body::before {
   right: 0;
   bottom: 0;
   background-image: url('/bg-pattern-1.png');
-  background-repeat: repeat;
-  background-size: 350px;
-  opacity: 0.035;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
   pointer-events: none;
-  z-index: 10;
+  z-index: 0;
 }
 
 /* Glassmorphism utility */
 .glass {
-  background: rgba(10, 15, 23, 0.94); /* Block scrolled content overlaps on mobile */
+  background: rgba(36, 33, 32, 0.88); /* Dark surface #242120 backdrop */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 42, 68, 0.35);
+  border: 1px solid rgba(58, 52, 51, 0.6);
 }
 
 /* Custom premium scrollbar */
@@ -70,44 +87,60 @@ body::before {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0F17;
+  background: #171515;
 }
 ::-webkit-scrollbar-thumb {
-  background: #324A6A;
+  background: #3A3433;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #59708E;
+  background: #B88746;
 }
 
-/* Layered Section Patterns with opacity-controlled color overlays */
+/* Global input overrides for consistent form styling */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+select,
+textarea {
+  background-color: #242120;
+  color: #F5F2EE;
+  border-color: #3A3433;
+}
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="number"]::placeholder,
+input[type="password"]::placeholder,
+input[type="search"]::placeholder,
+textarea::placeholder {
+  color: #B7ADA4;
+  opacity: 0.7;
+}
+
+/* Layered Section Patterns */
 .bg-section-pattern-1 {
-  background-image: linear-gradient(rgba(10, 15, 23, 0.96), rgba(10, 15, 23, 0.96)), url('/bg-pattern-1.png');
-  background-repeat: repeat;
-  background-size: 350px;
+  background-color: #171515;
+  background-image: none;
 }
 
 .bg-section-pattern-2 {
-  background-image: linear-gradient(rgba(10, 15, 23, 0.93), rgba(10, 15, 23, 0.93)), url('/bg-pattern-2.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  background-color: #242120;
+  background-image: none;
 }
 
 .bg-section-pattern-3 {
-  background-image: linear-gradient(rgba(10, 15, 23, 0.95), rgba(10, 15, 23, 0.95)), url('/bg-pattern-3.png');
-  background-repeat: repeat;
-  background-size: 450px;
+  background-color: #171515;
+  background-image: none;
 }
 
 .bg-section-pattern-4 {
-  background-image: linear-gradient(rgba(18, 27, 46, 0.95), rgba(18, 27, 46, 0.95)), url('/bg-pattern-4.png');
-  background-repeat: repeat;
-  background-size: 350px;
+  background-color: #242120;
+  background-image: none;
 }
 
 .bg-section-pattern-5 {
-  background-image: linear-gradient(rgba(10, 15, 23, 0.96), rgba(10, 15, 23, 0.96)), url('/bg-pattern-5.png');
-  background-repeat: repeat;
-  background-size: 300px;
+  background-color: #171515;
+  background-image: none;
 }

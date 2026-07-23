@@ -4,14 +4,14 @@ import React, { use, useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, AlertCircle, Info, ChevronLeft, ChevronRight, Share2, Check, ExternalLink, Hash, CheckCircle2, XCircle } from "lucide-react";
-import { Instagram } from "@/components/ui/Icons";
+import { ArrowLeft, AlertCircle, Info, ChevronLeft, ChevronRight, Share2, Check, ExternalLink, Hash, CheckCircle2, XCircle, ShoppingCart } from "lucide-react";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { productService } from "@/services/productService";
-import { Listing, ListingItem, Settings } from "@/types";
+import { Listing, ListingItem, getListingItemPrice } from "@/types";
+import { useCart } from "@/context/CartContext";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -29,33 +29,19 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
   const [listing, setListing] = useState<Listing | null>(null);
   const [selectedItem, setSelectedItem] = useState<ListingItem | null>(null);
-  const [settings, setSettings] = useState<Settings | null>(null);
   const [relatedListings, setRelatedListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [shareCopied, setShareCopied] = useState(false);
   const [, startTransition] = useTransition();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       try {
-        const [item, config] = await Promise.all([
-          productService.getListingBySlug(slug),
-          productService.getSettings()
-        ]);
-        
+        const item = await productService.getListingBySlug(slug);
         setListing(item);
-        setSettings(config);
-        
-        if (item && item.items && item.items.length > 0) {
-          // If URL has an item query, match it; otherwise auto-select first available item
-          let matched = item.items.find((i) => i.item_number === initialItemNum);
-          if (!matched) {
-            matched = item.items.find((i) => i.is_available) || item.items[0];
-          }
-          setSelectedItem(matched);
-        }
         
         if (item) {
           const catSlugs = item.categories?.map((c) => c.slug) || [];
@@ -73,6 +59,18 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     }
     loadData();
   }, [slug]);
+
+  // Sync selected item when initialItemNum or listing changes
+  useEffect(() => {
+    if (listing && listing.items && listing.items.length > 0) {
+      let matched = listing.items.find((i) => i.item_number === initialItemNum);
+      if (!matched) {
+        matched = listing.items.find((i) => i.is_available) || listing.items[0];
+      }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedItem(matched);
+    }
+  }, [listing, initialItemNum]);
 
   // Handle selecting a item number
   const handleSelectItem = (item: ListingItem) => {
@@ -159,14 +157,12 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const hasNumberedItems = items.some((i) => i.item_number && i.item_number.trim() !== "");
   const isSingleProduct = items.length <= 1 || !hasNumberedItems;
 
-  // inquiry message prefill with required item selection
-  const inquiryMessage = selectedItem
-    ? selectedItem.item_number && selectedItem.item_number.trim() !== ""
-      ? `Hi! I am inquiring about "${listing.title}" (Item Number: ${selectedItem.item_number}) listed in your catalogue. Is this piece available?`
-      : `Hi! I am inquiring about "${listing.title}" listed in your catalogue. Is this piece available?`
-    : `Hi! I am inquiring about "${listing.title}" listed in your catalogue. Is this piece available?`;
-    
-  const instagramInquiryUrl = settings?.instagram_url || "https://instagram.com/rustic_jewels_instagram";
+  // Cart actions helper
+  const handleAddToCart = () => {
+    if (listing && selectedItem) {
+      addToCart(listing, selectedItem, 1);
+    }
+  };
 
   const nextImage = () => {
     if (imagesList.length <= 1) return;
@@ -337,24 +333,59 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
                 {/* ITEM DETAILS DISPLAY */}
                 {selectedItem ? (
-                  <div className={`flex flex-col gap-2 ${!isSingleProduct ? "mt-2 pt-4 border-t border-brand-charcoal-border/60" : ""}`}>
-                    {selectedItem.item_name && (
-                      <h4 className="font-serif text-lg text-brand-champagne font-medium">
-                        {selectedItem.item_name}
-                      </h4>
-                    )}
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-xs uppercase tracking-widest text-brand-champagne/50 font-sans">Price</span>
-                      <span className="font-serif text-2xl text-gold-300 font-semibold">
-                        {formatPrice(selectedItem.price)}
-                      </span>
-                    </div>
-                    {selectedItem.notes && (
-                      <p className="text-xs text-gold-400/90 font-sans italic bg-brand-charcoal/60 p-2.5 border border-brand-charcoal-border/40 mt-1">
-                        Notes: {selectedItem.notes}
-                      </p>
-                    )}
-                  </div>
+                  (() => {
+                    const originalPrice = selectedItem.price || 0;
+                    const discountedPrice = getListingItemPrice(selectedItem, listing?.categories) || 0;
+                    const hasDiscount = discountedPrice < originalPrice && originalPrice > 0;
+                    const discountPercent = hasDiscount
+                      ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
+                      : 0;
+
+                    return (
+                      <div className={`flex flex-col gap-2 ${!isSingleProduct ? "mt-2 pt-4 border-t border-brand-charcoal-border/60" : ""}`}>
+                        {selectedItem.item_name && (
+                          <h4 className="font-serif text-lg text-brand-champagne font-medium">
+                            {selectedItem.item_name}
+                          </h4>
+                        )}
+                        <div className="flex flex-col gap-2 mt-1">
+                          <span className="text-xs uppercase tracking-widest text-brand-champagne/50 font-sans">
+                            Price
+                          </span>
+                          <div className="flex items-baseline gap-3 flex-wrap">
+                            {hasDiscount ? (
+                              <>
+                                <span className="font-serif text-3xl text-gold-300 font-bold tracking-wide">
+                                  {formatPrice(discountedPrice)}
+                                </span>
+                                <span className="font-serif text-base text-brand-champagne/40 line-through font-normal">
+                                  {formatPrice(originalPrice)}
+                                </span>
+                                <span className="bg-red-950/80 text-red-400 border border-red-800/40 text-[10px] uppercase font-sans font-extrabold px-2.5 py-1 tracking-wider shadow-sm">
+                                  {discountPercent}% OFF
+                                </span>
+                              </>
+                            ) : (
+                              <span className="font-serif text-3xl text-gold-300 font-bold tracking-wide">
+                                {formatPrice(originalPrice)}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {hasDiscount && (
+                            <div className="text-[11px] text-emerald-400 font-sans font-medium tracking-wide flex items-center gap-1.5 bg-emerald-950/20 border border-emerald-950/40 px-3 py-1.5 w-fit">
+                              <span>You save {formatPrice(originalPrice - discountedPrice)} ({discountPercent}% OFF)</span>
+                            </div>
+                          )}
+                        </div>
+                        {selectedItem.notes && (
+                          <p className="text-xs text-gold-400/90 font-sans italic bg-brand-charcoal/60 p-2.5 border border-brand-charcoal-border/40 mt-1">
+                            Notes: {selectedItem.notes}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()
                 ) : (
                   <p className="text-xs text-amber-400 font-sans">Please select an item number above to view details and inquire.</p>
                 )}
@@ -396,30 +427,26 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </dl>
               </div>
 
-              {/* Dynamic Inquiry Dual Action Buttons */}
+              {/* Dynamic Cart & Action Buttons */}
               <div className="border-t border-brand-charcoal-border/50 pt-6 flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
-                  {/* Primary DM Inquiry button */}
-                  <a
-                    href={instagramInquiryUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full block"
+                  {/* Add to Cart button */}
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    icon={ShoppingCart}
+                    disabled={!selectedItem || !selectedItem.is_available}
+                    onClick={handleAddToCart}
+                    className="w-full text-center cursor-pointer"
                   >
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      icon={Instagram}
-                      disabled={!selectedItem}
-                      className="w-full text-center"
-                    >
-                      {selectedItem
-                        ? isSingleProduct || !selectedItem.item_number || selectedItem.item_number.trim() === ""
-                          ? "Inquire on Instagram"
-                          : `Inquire for Item #${selectedItem.item_number}`
-                        : "Select Item to Inquire"}
-                    </Button>
-                  </a>
+                    {selectedItem
+                      ? !selectedItem.is_available
+                        ? "Sold Out"
+                        : isSingleProduct || !selectedItem.item_number || selectedItem.item_number.trim() === ""
+                        ? "Add to Cart"
+                        : `Add Item #${selectedItem.item_number} to Cart`
+                      : "Select Item to Add"}
+                  </Button>
 
                   {/* Dynamic Secondary "View Instagram Post" link */}
                   {listing.instagram_post_url && (
@@ -433,7 +460,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                         variant="secondary"
                         size="lg"
                         icon={ExternalLink}
-                        className="w-full text-center"
+                        className="w-full text-center cursor-pointer"
                       >
                         View Instagram Post
                       </Button>
@@ -446,7 +473,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     size="md"
                     icon={shareCopied ? Check : Share2}
                     onClick={handleShare}
-                    className="w-full border border-brand-charcoal-border hover:border-gold-500/25 py-2.5"
+                    className="w-full border border-brand-charcoal-border hover:border-gold-500/25 py-2.5 cursor-pointer"
                   >
                     {shareCopied ? "Item Link Copied!" : "Share Item Link"}
                   </Button>
@@ -456,12 +483,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 <div className="glass border border-gold-500/10 p-4 flex gap-3 text-xs text-brand-champagne/70 font-sans leading-relaxed">
                   <Info className="w-5 h-5 text-gold-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-gold-400 block mb-1">How to Inquire:</span>
-                    When you click the primary button, you will navigate to our Instagram profile. 
-                    Copy the template message below and paste it into our Direct Messages:
-                    <strong className="block text-brand-champagne mt-1.5 bg-brand-charcoal/60 p-3 font-mono select-all border border-brand-charcoal-border/50 rounded-none text-[11px] leading-normal">
-                      {inquiryMessage}
-                    </strong>
+                    <span className="font-semibold text-gold-400 block mb-1">Manual Payment Checkout:</span>
+                    Add your desired items to the cart and click checkout. You will be provided bank details and mobile accounts to manually transfer funds, and you will track your order using a generated Order ID.
                   </div>
                 </div>
               </div>

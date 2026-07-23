@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
     slug TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     image TEXT, -- Path or URL to category thumbnail
+    discount_percentage INTEGER NOT NULL DEFAULT 0 CHECK (discount_percentage >= 0 AND discount_percentage <= 100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -71,8 +72,54 @@ CREATE TABLE IF NOT EXISTS public.settings (
     hero_image TEXT NOT NULL DEFAULT '/bg-pattern-2.png',
     instagram_url TEXT NOT NULL DEFAULT 'https://instagram.com/rustic_jewels_instagram',
     email TEXT NOT NULL DEFAULT 'contact@rusticjewels.com',
+    bank_name TEXT,
+    account_title TEXT,
+    account_number TEXT,
+    iban TEXT,
+    easypaisa_number TEXT,
+    jazzcash_number TEXT,
+    payment_instructions TEXT,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- G. Orders Table
+CREATE TABLE IF NOT EXISTS public.orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id TEXT UNIQUE NOT NULL,
+    customer_name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    instagram_username TEXT,
+    email TEXT,
+    shipping_address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    notes TEXT,
+    subtotal NUMERIC NOT NULL,
+    total NUMERIC NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Pending Payment',
+    rejection_reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- H. Order Items Table
+CREATE TABLE IF NOT EXISTS public.order_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+    listing_id UUID NOT NULL REFERENCES public.listings(id) ON DELETE CASCADE,
+    item_number TEXT NOT NULL,
+    price NUMERIC NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Ensure settings columns exist (for existing DB migrations)
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS bank_name TEXT;
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS account_title TEXT;
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS account_number TEXT;
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS iban TEXT;
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS easypaisa_number TEXT;
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS jazzcash_number TEXT;
+ALTER TABLE public.settings ADD COLUMN IF NOT EXISTS payment_instructions TEXT;
 
 ---------------------------------------------------------
 -- 2. Create Trigger Functions & Triggers
@@ -103,6 +150,11 @@ CREATE TRIGGER update_settings_updated_at
     BEFORE UPDATE ON public.settings
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_orders_updated_at ON public.orders;
+CREATE TRIGGER update_orders_updated_at
+    BEFORE UPDATE ON public.orders
+    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
 -- Function & Trigger to auto-register new Supabase Auth users into public.admins table
 CREATE OR REPLACE FUNCTION public.handle_new_admin_user()
 RETURNS TRIGGER AS $$
@@ -128,6 +180,10 @@ CREATE INDEX IF NOT EXISTS idx_listings_featured ON public.listings(featured);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
 CREATE INDEX IF NOT EXISTS idx_listing_items_listing_id ON public.listing_items(listing_id);
 CREATE INDEX IF NOT EXISTS idx_listing_items_item_number ON public.listing_items(item_number);
+CREATE INDEX IF NOT EXISTS idx_orders_order_id ON public.orders(order_id);
+CREATE INDEX IF NOT EXISTS idx_orders_phone ON public.orders(phone);
+CREATE INDEX IF NOT EXISTS idx_orders_email ON public.orders(email);
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items(order_id);
 
 ---------------------------------------------------------
 -- 4. Enable Row Level Security (RLS)
@@ -138,6 +194,8 @@ ALTER TABLE public.listings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.listing_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.listing_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 
 ---------------------------------------------------------
 -- 5. Helper Function & RLS Policies
@@ -214,6 +272,84 @@ CREATE POLICY "Allow admin update access to settings"
 ON public.settings FOR UPDATE TO authenticated 
 USING (public.is_admin()) WITH CHECK (public.is_admin());
 
+-- Orders Policies
+DROP POLICY IF EXISTS "Allow authenticated admins read/write access to orders" ON public.orders;
+CREATE POLICY "Allow authenticated admins read/write access to orders" 
+ON public.orders FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow anyone to insert orders" ON public.orders;
+CREATE POLICY "Allow anyone to insert orders" 
+ON public.orders FOR INSERT WITH CHECK (true);
+
+-- Order Items Policies
+DROP POLICY IF EXISTS "Allow authenticated admins read/write access to order_items" ON public.order_items;
+CREATE POLICY "Allow authenticated admins read/write access to order_items" 
+ON public.order_items FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow anyone to insert order_items" ON public.order_items;
+CREATE POLICY "Allow anyone to insert order_items" 
+ON public.order_items FOR INSERT WITH CHECK (true);
+
+-- Order tracking search function (Aggregates order items and listing info securely)
+CREATE OR REPLACE FUNCTION public.get_orders_by_search(p_order_id text, p_phone text, p_email text)
+RETURNS TABLE (
+    id UUID,
+    order_id TEXT,
+    customer_name TEXT,
+    phone TEXT,
+    instagram_username TEXT,
+    email TEXT,
+    shipping_address TEXT,
+    city TEXT,
+    notes TEXT,
+    subtotal NUMERIC,
+    total NUMERIC,
+    status TEXT,
+    rejection_reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE,
+    items JSONB
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        o.id,
+        o.order_id,
+        o.customer_name,
+        o.phone,
+        o.instagram_username,
+        o.email,
+        o.shipping_address,
+        o.city,
+        o.notes,
+        o.subtotal,
+        o.total,
+        o.status,
+        o.rejection_reason,
+        o.created_at,
+        COALESCE(
+            (SELECT jsonb_agg(jsonb_build_object(
+                'id', oi.id,
+                'listing_id', oi.listing_id,
+                'item_number', oi.item_number,
+                'price', oi.price,
+                'quantity', oi.quantity,
+                'listing_title', l.title,
+                'listing_image', l.featured_image
+            ))
+             FROM public.order_items oi
+             LEFT JOIN public.listings l ON l.id = oi.listing_id
+             WHERE oi.order_id = o.id
+            ), 
+            '[]'::jsonb
+        ) AS items
+    FROM public.orders o
+    WHERE (p_order_id <> '' AND o.order_id = p_order_id)
+       OR (p_phone <> '' AND o.phone = p_phone)
+       OR (p_email <> '' AND o.email = p_email)
+    ORDER BY o.created_at DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 ---------------------------------------------------------
 -- 6. Storage Bucket Policies
 ---------------------------------------------------------
@@ -249,3 +385,4 @@ WITH CHECK (bucket_id = 'category-images' AND public.is_admin());
 INSERT INTO public.settings (id, business_name, hero_title, hero_subtitle)
 VALUES (true, 'Rustic Jewels', 'Shop All', 'Browse our Collection')
 ON CONFLICT (id) DO NOTHING;
+

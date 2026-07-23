@@ -258,7 +258,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
     <main className="min-h-screen bg-brand-charcoal pt-28 pb-24 text-brand-champagne font-sans">
       <div className="max-w-5xl mx-auto px-6">
         {/* Header Breadcrumb */}
-        <div className="flex items-center justify-between mb-8 pb-6 border-b border-brand-charcoal-border">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 pb-6 border-b border-brand-charcoal-border">
           <div>
             <Link
               href="/admin/dashboard"
@@ -267,20 +267,23 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Dashboard</span>
             </Link>
-            <h1 className="font-serif text-3xl text-brand-champagne font-medium tracking-wide">
+            <h1 className="font-serif text-2xl sm:text-3xl text-brand-champagne font-medium tracking-wide">
               Edit Multi-Item Listing
             </h1>
           </div>
-
-          <Button
-            variant="primary"
-            size="md"
-            icon={Save}
-            onClick={handleSubmit(onSubmit)}
-            isLoading={saving}
-          >
-            Update Listing
-          </Button>
+ 
+          <div className="w-full sm:w-auto">
+            <Button
+              variant="primary"
+              size="md"
+              icon={Save}
+              onClick={handleSubmit(onSubmit)}
+              isLoading={saving}
+              className="w-full sm:w-auto"
+            >
+              Update Listing
+            </Button>
+          </div>
         </div>
 
         {/* Global Error Notice */}
@@ -387,7 +390,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
 
                     <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
                       {/* Item Number */}
-                      <div className="sm:col-span-3 flex flex-col gap-1">
+                      <div className="sm:col-span-2 flex flex-col gap-1">
                         <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
                           Number #
                         </label>
@@ -401,7 +404,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                       </div>
 
                       {/* Price */}
-                      <div className="sm:col-span-4 flex flex-col gap-1">
+                      <div className="sm:col-span-6 flex flex-col gap-1">
                         <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
                           Price (PKR)
                         </label>
@@ -418,7 +421,7 @@ export default function EditListing({ params }: { params: Promise<{ id: string }
                       </div>
 
                       {/* Status Toggle */}
-                      <div className="sm:col-span-5 flex flex-col gap-1 justify-end">
+                      <div className="sm:col-span-4 flex flex-col gap-1 justify-end">
                         <label className="text-[10px] uppercase tracking-widest text-brand-champagne/60">
                           Availability Status
                         </label>

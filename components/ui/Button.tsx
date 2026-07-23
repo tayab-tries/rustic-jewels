@@ -21,12 +21,12 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-gold-500/50 rounded-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-brand-accent/50 rounded-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-gold-500 hover:bg-gold-400 text-brand-charcoal border border-gold-500 hover:border-gold-400",
-    secondary: "bg-transparent hover:bg-gold-500/10 text-gold-400 border border-gold-500/40 hover:border-gold-500",
-    text: "bg-transparent text-brand-champagne hover:text-gold-400 border border-transparent underline-offset-4 hover:underline",
+    primary: "bg-brand-accent hover:bg-brand-accent-hover text-[#171515] font-semibold border border-brand-accent hover:border-brand-accent-hover",
+    secondary: "bg-transparent hover:bg-brand-card text-brand-primary-text border border-brand-border hover:border-brand-accent",
+    text: "bg-transparent text-brand-primary-text hover:text-brand-accent border border-transparent underline-offset-4 hover:underline",
     danger: "bg-red-950/80 hover:bg-red-900/90 text-red-200 border border-red-800/50"
   };
 
