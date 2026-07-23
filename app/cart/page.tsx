@@ -69,7 +69,7 @@ export default function CartPage() {
                 {cartItems.map((item) => (
                   <div
                     key={`${item.listing.id}-${item.selectedItem.item_number}`}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#FFFFFF] border border-[#E1E8F1] hover:border-[#7D96B5] transition-all duration-300 gap-4 shadow-xs"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#e4eefe] border border-[#c8d8f8] hover:border-[#7D96B5] transition-all duration-300 gap-4 shadow-xs"
                   >
                     <div className="flex items-center gap-4 flex-grow">
                       <img
@@ -79,7 +79,7 @@ export default function CartPage() {
                       />
                       <div className="flex flex-col gap-1">
                         <Link href={`/products/${item.listing.slug}`}>
-                          <h3 className="font-serif text-base text-[#e4eefe] hover:text-[#7D96B5] transition-colors font-medium">
+                          <h3 className="font-serif text-base text-[#202124] hover:text-[#7D96B5] transition-colors font-medium">
                             {item.listing.title}
                           </h3>
                         </Link>
@@ -122,7 +122,7 @@ export default function CartPage() {
                 {/* Back to catalog button */}
                 <Link
                   href="/catalog"
-                  className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#f2f6fe] hover:text-[#7D96B5] font-sans transition-colors duration-150 mt-4 cursor-pointer bg-[#f2f6fe] border border-[#c8d8f8] px-4 py-2.5"
+                  className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#525B66] hover:text-[#7D96B5] font-sans transition-colors duration-150 mt-4 cursor-pointer bg-[#f2f6fe] border border-[#c8d8f8] px-4 py-2.5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Continue Shopping</span>
@@ -130,8 +130,8 @@ export default function CartPage() {
               </div>
 
               {/* Order Summary (4 cols) */}
-              <div className="lg:col-span-4 bg-[#FFFFFF] border border-[#E1E8F1] p-6 flex flex-col gap-5 shadow-xs">
-                <h3 className="font-serif text-lg text-[#e4eefe] border-b border-[#E1E8F1] pb-3 font-medium">
+              <div className="lg:col-span-4 bg-[#e4eefe] border border-[#c8d8f8] p-6 flex flex-col gap-5 shadow-xs">
+                <h3 className="font-serif text-lg text-[#202124] border-b border-[#E1E8F1] pb-3 font-medium">
                   Summary
                 </h3>
 
