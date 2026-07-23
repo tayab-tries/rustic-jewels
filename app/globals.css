@@ -1,43 +1,50 @@
 @import "tailwindcss";
 
 @theme {
-  /* Dark Luxury Boutique Color System */
-  --color-brand-bg: #171515;              /* Background */
-  --color-brand-surface: #242120;         /* Surface */
-  --color-brand-card: #2E2A29;            /* Cards */
-  --color-brand-primary-bg: #171515;
-  --color-brand-secondary-bg: #242120;
-  --color-brand-accent-bg: #3A3433;
-  --color-brand-warm-neutral: #2E2A29;
-  
-  --color-brand-primary-text: #F5F2EE;    /* Primary Text */
-  --color-brand-secondary-text: #B7ADA4;  /* Secondary Text */
-  --color-brand-accent: #B88746;          /* Accent Gold */
-  --color-brand-accent-hover: #A2753A;
-  --color-brand-border: #3A3433;          /* Borders */
+  /* Brand Color System */
+  --color-brand-bg: #F4F8FF;              /* Background */
+  --color-brand-surface: #EAF2FF;         /* Surface */
+  --color-brand-card: #FFFFFF;            /* Cards */
+  --color-brand-primary-bg: #F4F8FF;
+  --color-brand-secondary-bg: #EAF2FF;
+  --color-brand-accent-bg: #B8CBDD;
+  --color-brand-warm-neutral: #EAF2FF;
 
-  /* Legacy mappings to preserve full compatibility across all components */
-  --color-brand-charcoal: #171515;
-  --color-brand-charcoal-light: #242120;
-  --color-brand-charcoal-border: #3A3433;
-  --color-brand-champagne: #F5F2EE;
+  --color-brand-primary-text: #2D2A2D;    /* Primary Text */
+  --color-brand-secondary-text: #5F5A5A;  /* Secondary Text */
+  --color-brand-accent: #B8CBDD;          /* Accent Sky Blue */
+  --color-brand-accent-hover: #A7BFD5;
+  --color-brand-border: #D8E4F1;          /* Borders */
 
-  --color-brand-emerald: #B88746;
-  --color-brand-emerald-light: #A2753A;
+  --color-brand-btn: #7F9CB8;             /* Button */
+  --color-brand-btn-hover: #6D8DAA;       /* Button Hover */
 
-  --color-gold-50: #2E2A29;
-  --color-gold-100: #3A3433;
-  --color-gold-200: #B7ADA4;
-  --color-gold-300: #B88746;
-  --color-gold-400: #B88746;
-  --color-gold-500: #B88746;
-  --color-gold-600: #A2753A;
-  --color-gold-700: #242120;
-  --color-gold-800: #171515;
-  --color-gold-900: #0e0d0d;
+  --color-brand-success: #6E9B77;         /* Status Success */
+  --color-brand-warning: #C69C58;         /* Status Warning */
+  --color-brand-error: #B86A6A;           /* Status Error */
 
-  --color-slate-mist: #B7ADA4;
-  --color-pale-blue: #3A3433;
+  /* Legacy mappings to preserve compatibility across all component references */
+  --color-brand-charcoal: #F4F8FF;
+  --color-brand-charcoal-light: #EAF2FF;
+  --color-brand-charcoal-border: #D8E4F1;
+  --color-brand-champagne: #2D2A2D;
+
+  --color-brand-emerald: #7F9CB8;
+  --color-brand-emerald-light: #6D8DAA;
+
+  --color-gold-50: #F4F8FF;
+  --color-gold-100: #EAF2FF;
+  --color-gold-200: #D8E4F1;
+  --color-gold-300: #7F9CB8;
+  --color-gold-400: #7F9CB8;
+  --color-gold-500: #7F9CB8;
+  --color-gold-600: #6D8DAA;
+  --color-gold-700: #5F5A5A;
+  --color-gold-800: #2D2A2D;
+  --color-gold-900: #1a181a;
+
+  --color-slate-mist: #5F5A5A;
+  --color-pale-blue: #D8E4F1;
 
   /* Typography variables connected to next/font */
   --font-serif: var(--font-serif);
@@ -45,8 +52,8 @@
 }
 
 :root {
-  --background: #171515; /* Background */
-  --foreground: #F5F2EE; /* Primary Text */
+  --background: #F4F8FF; /* Background */
+  --foreground: #2D2A2D; /* Primary Text */
 }
 
 body {
@@ -68,17 +75,17 @@ body::before {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  opacity: 0.04;
+  opacity: 0.035;
   pointer-events: none;
   z-index: -1;
 }
 
 /* Glassmorphism utility */
 .glass {
-  background: rgba(36, 33, 32, 0.88); /* Dark surface #242120 backdrop */
+  background: rgba(234, 242, 255, 0.92); /* Soft surface #EAF2FF backdrop */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(58, 52, 51, 0.6);
+  border: 1px solid rgba(216, 228, 241, 0.7);
 }
 
 /* Custom premium scrollbar */
@@ -86,14 +93,14 @@ body::before {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #171515;
+  background: #F4F8FF;
 }
 ::-webkit-scrollbar-thumb {
-  background: #3A3433;
+  background: #D8E4F1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B88746;
+  background: #7F9CB8;
 }
 
 /* Global input overrides for consistent form styling */
@@ -104,9 +111,9 @@ input[type="password"],
 input[type="search"],
 select,
 textarea {
-  background-color: #242120;
-  color: #F5F2EE;
-  border-color: #3A3433;
+  background-color: #FFFFFF;
+  color: #2D2A2D;
+  border-color: #D8E4F1;
 }
 input[type="text"]::placeholder,
 input[type="email"]::placeholder,
@@ -114,32 +121,32 @@ input[type="number"]::placeholder,
 input[type="password"]::placeholder,
 input[type="search"]::placeholder,
 textarea::placeholder {
-  color: #B7ADA4;
+  color: #5F5A5A;
   opacity: 0.7;
 }
 
 /* Layered Section Patterns */
 .bg-section-pattern-1 {
-  background-color: #171515;
+  background-color: #F4F8FF;
   background-image: none;
 }
 
 .bg-section-pattern-2 {
-  background-color: #242120;
+  background-color: #EAF2FF;
   background-image: none;
 }
 
 .bg-section-pattern-3 {
-  background-color: #171515;
+  background-color: #F4F8FF;
   background-image: none;
 }
 
 .bg-section-pattern-4 {
-  background-color: #242120;
+  background-color: #EAF2FF;
   background-image: none;
 }
 
 .bg-section-pattern-5 {
-  background-color: #171515;
+  background-color: #F4F8FF;
   background-image: none;
 }

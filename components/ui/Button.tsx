@@ -21,13 +21,13 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-brand-accent/50 rounded-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-[#7F9CB8]/50 rounded-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-brand-accent hover:bg-brand-accent-hover text-[#171515] font-semibold border border-brand-accent hover:border-brand-accent-hover",
-    secondary: "bg-transparent hover:bg-brand-card text-brand-primary-text border border-brand-border hover:border-brand-accent",
-    text: "bg-transparent text-brand-primary-text hover:text-brand-accent border border-transparent underline-offset-4 hover:underline",
-    danger: "bg-red-950/80 hover:bg-red-900/90 text-red-200 border border-red-800/50"
+    primary: "bg-[#7F9CB8] hover:bg-[#6D8DAA] text-[#FFFFFF] font-semibold border border-[#7F9CB8] hover:border-[#6D8DAA]",
+    secondary: "bg-transparent hover:bg-[#EAF2FF] text-[#2D2A2D] border border-[#D8E4F1] hover:border-[#7F9CB8]",
+    text: "bg-transparent text-[#2D2A2D] hover:text-[#7F9CB8] border border-transparent underline-offset-4 hover:underline",
+    danger: "bg-red-50 hover:bg-red-100 text-[#B86A6A] border border-red-200"
   };
 
   const sizes = {
