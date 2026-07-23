@@ -162,7 +162,7 @@ export default function Home() {
                       href={`/category/${cat.slug}`}
                       className="group relative flex flex-col justify-end p-5 overflow-hidden border border-border hover:border-primary/50 transition-all duration-300 bg-background-secondary cursor-pointer block aspect-[4/3]"
                     >
-                      <div className="absolute inset-0 bg-[#202124]/40 z-10 opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0.5)] to-[rgba(255,255,255,0.15)] opacity-100 group-hover:opacity-0 group-focus-within:opacity-0 group-active:opacity-0 transition-opacity duration-500 ease-in-out pointer-events-none z-10" />
                       {cat.image ? (
                         <img
                           src={cat.image}
@@ -175,10 +175,10 @@ export default function Home() {
                         </div>
                       )}
                       <div className="relative z-20">
-                        <h3 className="font-serif text-lg text-text-white tracking-wide group-hover:text-primary transition-colors">
+                        <h3 className="font-serif text-lg text-text-primary tracking-wide group-hover:text-primary transition-colors">
                           {cat.name}
                         </h3>
-                        <span className="text-[10px] uppercase tracking-widest text-text-white/80 font-sans mt-1 block opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <span className="text-[10px] uppercase tracking-widest text-text-secondary font-sans mt-1 block opacity-0 group-hover:opacity-100 transition-all duration-300">
                           View Gallery →
                         </span>
                       </div>
