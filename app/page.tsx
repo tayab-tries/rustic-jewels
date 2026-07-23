@@ -69,10 +69,10 @@ export default function Home() {
         <section className="relative min-h-[95vh] flex items-center justify-center bg-background overflow-hidden pt-20">
           {/* Overlay Background image with low opacity */}
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[#F8FAFD]/60 z-10" />
+            <div className="absolute inset-0 bg-[#F8FAFD]/40 z-10" />
             <motion.img
               initial={{ scale: 1.1, opacity: 0 }}
-              animate={{ scale: 1.05, opacity: 0.45 }}
+              animate={{ scale: 1.05, opacity: 0.6 }}
               transition={{ duration: 1.8, ease: "easeOut" }}
               src={settings?.hero_image || "/bg-pattern-2.png"}
               alt="Luxury Jewellery Background"
