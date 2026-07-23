@@ -68,7 +68,7 @@ export default function Navbar() {
               Rustic <span className="font-normal text-[#7D96B5]">Jewels</span>
             </span>
             <span className="text-[9px] uppercase tracking-[0.3em] text-[#525B66] -mt-1 font-sans text-right font-medium">
-              Digital Catalog
+              Digital Catalogue
             </span>
           </Link>
 

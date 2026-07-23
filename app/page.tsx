@@ -286,21 +286,21 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full max-w-3xl mt-8">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-10 h-10 border border-border flex items-center justify-center text-primary font-serif text-lg font-bold rounded-full">
+                <div className="w-10 h-10 border border-border flex items-center justify-center text-primary font-serif text-lg font-bold">
                   1
                 </div>
                 <h4 className="font-serif text-text-primary text-base">Browse Jewellery</h4>
                 <p className="text-xs text-text-secondary font-sans">Explore our catalog of custom artisan pieces and collections.</p>
               </div>
               <div className="flex flex-col items-center gap-3">
-                <div className="w-10 h-10 border border-border flex items-center justify-center text-primary font-serif text-lg font-bold rounded-full">
+                <div className="w-10 h-10 border border-border flex items-center justify-center text-primary font-serif text-lg font-bold">
                   2
                 </div>
                 <h4 className="font-serif text-text-primary text-base">Press Inquire</h4>
                 <p className="text-xs text-text-secondary font-sans">Open any product page and click the prominent Instagram DM link.</p>
               </div>
               <div className="flex flex-col items-center gap-3">
-                <div className="w-10 h-10 border border-border flex items-center justify-center text-primary font-serif text-lg font-bold rounded-full">
+                <div className="w-10 h-10 border border-border flex items-center justify-center text-primary font-serif text-lg font-bold">
                   3
                 </div>
                 <h4 className="font-serif text-text-primary text-base">Chat & Order</h4>

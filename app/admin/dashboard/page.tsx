@@ -604,9 +604,9 @@ export default function AdminDashboard() {
         <header className="lg:hidden w-full h-16 bg-brand-charcoal-light border-b border-brand-charcoal-border flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-40">
           <div className="flex flex-col">
             <span className="font-serif text-sm tracking-widest text-brand-champagne uppercase font-light">
-              Rustic <span className="font-normal text-gold-500">Jewels</span>
+              Rustic <span className="font-normal text-[#7D96B5]">Jewels</span>
             </span>
-            <span className="text-[7px] uppercase tracking-[0.2em] text-gold-500/80 -mt-1 font-sans">
+            <span className="text-[7px] uppercase tracking-[0.2em] text-[#7D96B5]/70 -mt-1 font-sans">
               Admin Workspace
             </span>
           </div>
@@ -636,9 +636,9 @@ export default function AdminDashboard() {
           <div className="p-6 border-b border-brand-charcoal-border flex items-center justify-between">
             <div className="flex flex-col">
               <span className="font-serif text-lg tracking-widest text-brand-champagne uppercase font-light">
-                Rustic <span className="font-normal text-gold-500">Jewels</span>
+                Rustic <span className="font-normal text-[#7D96B5]">Jewels</span>
               </span>
-              <span className="text-[8px] uppercase tracking-[0.2em] text-gold-500/80 -mt-1 font-sans">
+              <span className="text-[8px] uppercase tracking-[0.2em] text-[#7D96B5]/70 -mt-1 font-sans">
                 Admin Workspace
               </span>
             </div>

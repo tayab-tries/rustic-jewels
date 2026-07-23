@@ -21,11 +21,11 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#7D96B5]/20 rounded-[10px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#7D96B5]/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
     primary: "bg-[#7D96B5] hover:bg-[#6D88AA] active:bg-[#5D7899] text-[#FFFFFF] font-medium border-0 shadow-xs",
-    secondary: "bg-transparent hover:bg-[#EDF3F9] text-[#7D96B5] border border-[#7D96B5] hover:border-[#6D88AA]",
+    secondary: "bg-transparent hover:bg-[#F3F6FA] text-[#202124] border border-[#202124] hover:border-[#525B66] hover:text-[#525B66]",
     text: "bg-transparent hover:bg-[#F3F6FA] text-[#525B66] hover:text-[#202124] border-0",
     danger: "bg-red-50 hover:bg-red-100 text-[#CF6A6A] border border-red-200"
   };

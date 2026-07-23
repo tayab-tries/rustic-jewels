@@ -342,22 +342,26 @@ export const productService = {
 
   // --- SETTINGS ---
   async getSettings(): Promise<Settings> {
+    const local = getLocalSettings();
     if (!isSupabaseConfigured) {
-      return getLocalSettings();
+      return local;
     }
     const { data, error } = await supabase.from("settings").select("*").eq("id", true).maybeSingle();
     if (error || !data) {
-      return SEED_SETTINGS;
+      return local;
     }
-    return data;
+    return { ...local, ...data };
   },
 
   async updateSettings(input: Partial<Settings>): Promise<Settings | null> {
+    const currentLocal = getLocalSettings();
+    const updatedLocal = { ...currentLocal, ...input };
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(updatedLocal));
+    }
+
     if (!isSupabaseConfigured) {
-      const current = getLocalSettings();
-      const updated = { ...current, ...input };
-      localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(updated));
-      return updated;
+      return updatedLocal;
     }
 
     const { data, error } = await supabase
@@ -368,10 +372,30 @@ export const productService = {
       .single();
 
     if (error) {
-      console.error("Error updating settings", error);
-      return null;
+      console.error("Error updating settings in Supabase:", error);
+      // If error is due to missing columns (e.g. PGRST204), try updating only original fields
+      if (error.code === "PGRST204" || error.message?.includes("column")) {
+        const { business_name, hero_title, hero_subtitle, hero_image, instagram_url, email } = input;
+        const fallbackPayload: any = {};
+        if (business_name !== undefined) fallbackPayload.business_name = business_name;
+        if (hero_title !== undefined) fallbackPayload.hero_title = hero_title;
+        if (hero_subtitle !== undefined) fallbackPayload.hero_subtitle = hero_subtitle;
+        if (hero_image !== undefined) fallbackPayload.hero_image = hero_image;
+        if (instagram_url !== undefined) fallbackPayload.instagram_url = instagram_url;
+        if (email !== undefined) fallbackPayload.email = email;
+
+        const { data: fallbackData } = await supabase
+          .from("settings")
+          .update(fallbackPayload)
+          .eq("id", true)
+          .select()
+          .single();
+
+        return { ...updatedLocal, ...(fallbackData || {}) };
+      }
+      return updatedLocal;
     }
-    return data;
+    return { ...updatedLocal, ...data };
   },
 
   // --- LISTINGS & MULTI-ITEM OPERATIONS ---
