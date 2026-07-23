@@ -160,7 +160,7 @@ export default function Home() {
                   >
                     <Link
                       href={`/category/${cat.slug}`}
-                      className="group relative flex flex-col justify-end p-5 overflow-hidden border border-border hover:border-primary/50 transition-all duration-300 bg-background-secondary cursor-pointer block aspect-[3/4]"
+                      className="group relative flex flex-col justify-end p-5 overflow-hidden border border-border hover:border-primary/50 transition-all duration-300 bg-background-secondary cursor-pointer block aspect-[4/3]"
                     >
                       <div className="absolute inset-0 bg-[#202124]/40 z-10 opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
                       {cat.image ? (
