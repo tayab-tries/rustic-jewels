@@ -32,7 +32,7 @@ export default function CartPage() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex-grow pt-32 pb-24 bg-[#FFFFFF] min-h-[75vh]"
+        className="flex-grow pt-32 pb-24 bg-[#F4F6FE] min-h-[75vh]"
       >
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E1E8F1] pb-6 mb-8">
@@ -158,7 +158,7 @@ export default function CartPage() {
                 </Link>
 
                 {/* Info Card */}
-                <div className="glass border border-[#E1E8F1] p-3.5 flex gap-2.5 text-[11px] text-[#525B66] font-sans leading-relaxed mt-2">
+                <div className="bg-[#e4eefe] border border-[#c8d8f8] p-3.5 flex gap-2.5 text-[11px] text-[#525B66] font-sans leading-relaxed mt-2">
                   <Info className="w-4 h-4 text-[#7D96B5] flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-[#202124] block mb-0.5">Please Note:</span>

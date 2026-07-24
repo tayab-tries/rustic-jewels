@@ -142,7 +142,7 @@ function CatalogContent() {
     <>
       <Navbar />
       
-      <main className="flex-grow pt-32 pb-24 bg-background">
+      <main className="flex-grow pt-32 pb-24 bg-[#f2f5fd]">
         <div className="max-w-7xl mx-auto px-6">
           {/* Header Title */}
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -156,7 +156,7 @@ function CatalogContent() {
           </div>
 
           {/* Search, Filter & Sort Controls Grid */}
-          <div className="bg-background-secondary border border-border p-6 mb-10 flex flex-col gap-6">
+          <div className="bg-[#e4eefe] border border-[#c8d8f8] p-6 mb-10 flex flex-col gap-6">
             {/* Search Input and Sort Dropdown */}
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Search Form */}
@@ -257,7 +257,7 @@ function CatalogContent() {
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-24 border border-border bg-background-secondary flex flex-col items-center gap-4">
+            <div className="text-center py-24 border border-[#c8d8f8] bg-[#e4eefe] flex flex-col items-center gap-4">
               <SlidersHorizontal className="w-8 h-8 text-primary" />
               <h3 className="font-serif text-xl text-text-primary font-medium">No Jewellery Found</h3>
               <p className="text-sm text-text-secondary font-sans max-w-sm leading-relaxed">

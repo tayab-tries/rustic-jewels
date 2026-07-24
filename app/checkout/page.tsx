@@ -209,7 +209,7 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="e.g. Ayesha Khan"
                     {...register("customer_name")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
+                    className="w-full bg-[#f4f6fa] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
                   />
                   {errors.customer_name && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.customer_name.message}</span>}
                 </div>
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="e.g. 03001234567"
                     {...register("phone")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
+                    className="w-full bg-[#f4f6fa] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
                   />
                   {errors.phone && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.phone.message}</span>}
                 </div>
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
                     type="email"
                     placeholder="name@example.com"
                     {...register("email")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
+                    className="w-full bg-[#f4f6fa] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
                   />
                   {errors.email && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.email.message}</span>}
                 </div>
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
                     rows={3}
                     placeholder="House/Apartment #, Street #, Block/Sector, Area"
                     {...register("shipping_address")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none rounded-none"
+                    className="w-full bg-[#f4f6fa] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none rounded-none"
                   />
                   {errors.shipping_address && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.shipping_address.message}</span>}
                 </div>
@@ -257,7 +257,7 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="e.g. Lahore, Karachi, Islamabad"
                     {...register("city")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
+                    className="w-full bg-[#f4f6fa] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans rounded-none appearance-none"
                   />
                   {errors.city && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.city.message}</span>}
                 </div>
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                     rows={2}
                     placeholder="Special requests or instructions for shipping..."
                     {...register("notes")}
-                    className="w-full bg-[#FFFFFF] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none rounded-none appearance-none"
+                    className="w-full bg-[#f4f6fa] border border-[#D8E1EB] focus:border-[#7D96B5] text-[#202124] px-4 py-2.5 text-xs focus:outline-none placeholder:text-[#9EA8B5] font-sans resize-none rounded-none appearance-none"
                   />
                   {errors.notes && <span className="text-[10px] text-[#CF6A6A] font-sans mt-0.5">{errors.notes.message}</span>}
                 </div>

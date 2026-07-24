@@ -111,8 +111,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     return (
       <>
         <Navbar />
-        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-brand-charcoal min-h-screen">
-          <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+        <main className="flex-grow pt-32 pb-24 flex items-center justify-center bg-[#f2f6fa] min-h-screen">
+          <Loader2 className="w-8 h-8 text-[#7D96B5] animate-spin" />
         </main>
         <Footer />
       </>
@@ -123,11 +123,11 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     return (
       <>
         <Navbar />
-        <main className="flex-grow pt-32 pb-24 max-w-7xl mx-auto px-6 text-center min-h-[70vh] flex flex-col justify-center items-center">
-          <div className="flex flex-col items-center gap-4 py-20 border border-brand-charcoal-border/50 bg-brand-charcoal-light w-full max-w-xl">
-            <AlertCircle className="w-12 h-12 text-gold-500" />
-            <h2 className="font-serif text-2xl text-brand-champagne">Catalogue Listing Not Found</h2>
-            <p className="text-sm text-brand-champagne/60 font-sans max-w-md">
+        <main className="flex-grow pt-32 pb-24 max-w-7xl mx-auto px-6 text-center min-h-[70vh] flex flex-col justify-center items-center bg-[#f2f6fa]">
+          <div className="flex flex-col items-center gap-4 py-20 border border-[#c8d8f8] bg-white w-full max-w-xl shadow-xs">
+            <AlertCircle className="w-12 h-12 text-[#7D96B5]" />
+            <h2 className="font-serif text-2xl text-[#202124]">Catalogue Listing Not Found</h2>
+            <p className="text-sm text-[#525B66] font-sans max-w-md">
               The listing you are looking for might have been removed, or the slug link is incorrect.
             </p>
             <Link href="/catalog" className="mt-2">
@@ -187,13 +187,13 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
         initial="initial"
         animate="animate"
         variants={pageVariants}
-        className="flex-grow pt-32 pb-24 bg-brand-charcoal"
+        className="flex-grow pt-32 pb-24 bg-[#f2f6fa]"
       >
         <div className="max-w-7xl mx-auto px-6">
           {/* Back Navigation Button */}
           <Link
             href="/catalog"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand-champagne/70 hover:text-gold-400 font-sans transition-colors duration-150 mb-8 cursor-pointer"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#525B66] hover:text-[#7D96B5] font-sans transition-colors duration-150 mb-8 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Catalogue</span>
@@ -204,7 +204,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             {/* Gallery Column (7 cols) */}
             <div className="lg:col-span-7 flex flex-col gap-4">
               {/* Showcase Image View */}
-              <div className="relative aspect-square bg-brand-charcoal-light border border-brand-charcoal-border overflow-hidden">
+              <div className="relative aspect-square bg-white border border-[#E1E8F1] overflow-hidden shadow-xs">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={activeImageIdx}
@@ -223,13 +223,13 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   <>
                     <button
                       onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-charcoal/80 text-brand-champagne hover:text-gold-400 flex items-center justify-center border border-brand-charcoal-border transition-colors cursor-pointer"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 text-[#525B66] hover:text-[#7D96B5] flex items-center justify-center border border-[#E1E8F1] transition-colors cursor-pointer"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
                     <button
                       onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-charcoal/80 text-brand-champagne hover:text-gold-400 flex items-center justify-center border border-brand-charcoal-border transition-colors cursor-pointer"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 text-[#525B66] hover:text-[#7D96B5] flex items-center justify-center border border-[#E1E8F1] transition-colors cursor-pointer"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>
@@ -238,8 +238,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
                 {/* Selected Item badge floating overlay */}
                 {selectedItem && (
-                  <div className="absolute top-4 left-4 bg-brand-charcoal/90 text-gold-300 border border-gold-500/30 px-3.5 py-1.5 text-xs uppercase tracking-widest font-sans font-semibold flex items-center gap-2 glass">
-                    <Hash className="w-3.5 h-3.5 text-gold-400" />
+                  <div className="absolute top-4 left-4 bg-white/90 text-[#7D96B5] border border-[#c8d8f8] px-3.5 py-1.5 text-xs uppercase tracking-widest font-sans font-semibold flex items-center gap-2 shadow-xs">
+                    <Hash className="w-3.5 h-3.5 text-[#7D96B5]" />
                     <span>Item Number #{selectedItem.item_number}</span>
                   </div>
                 )}
@@ -253,7 +253,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                       key={idx}
                       onClick={() => setActiveImageIdx(idx)}
                       className={`relative aspect-square border overflow-hidden transition-colors cursor-pointer ${
-                        activeImageIdx === idx ? "border-gold-500" : "border-brand-charcoal-border opacity-60 hover:opacity-100"
+                        activeImageIdx === idx ? "border-[#7D96B5]" : "border-[#E1E8F1] opacity-60 hover:opacity-100"
                       }`}
                     >
                       <img src={img} alt={`thumbnail-${idx}`} className="w-full h-full object-cover" />
@@ -267,22 +267,22 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             <div className="lg:col-span-5 flex flex-col gap-6" id="items">
               {/* Breadcrumb & Title */}
               <div>
-                <span className="text-xs uppercase tracking-widest text-gold-500 font-sans font-semibold">
+                <span className="text-xs uppercase tracking-widest text-[#7D96B5] font-sans font-semibold">
                   {listing.categories?.map((c) => c.name).join(", ") || "Fine Jewellery"}
                 </span>
-                <h1 className="font-serif text-3xl md:text-4xl text-brand-champagne mt-1 tracking-wide leading-snug font-medium">
+                <h1 className="font-serif text-3xl md:text-4xl text-[#202124] mt-1 tracking-wide leading-snug font-medium">
                   {listing.title}
                 </h1>
               </div>
 
               {/* ITEM DETAILS & SELECTOR SECTION */}
-              <div className="border-t border-b border-brand-charcoal-border p-5 bg-brand-charcoal-light flex flex-col gap-4">
+              <div className="border border-[#c8d8f8] p-5 bg-[#e2edff] flex flex-col gap-4 shadow-xs">
                 {/* Show Item Selector Header & Chips ONLY if listing has 2 or more items */}
                 {!isSingleProduct && (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs uppercase tracking-widest text-gold-400 font-sans font-semibold flex items-center gap-1.5">
-                        <Hash className="w-4 h-4 text-gold-500" />
+                      <span className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold flex items-center gap-1.5">
+                        <Hash className="w-4 h-4 text-[#7D96B5]" />
                         Select Item Number:
                       </span>
                       {selectedItem && (
@@ -311,10 +311,10 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                               onClick={() => handleSelectItem(item)}
                               className={`px-3 py-2 text-xs uppercase tracking-wider font-sans font-medium border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                                 isSelected
-                                  ? "bg-gold-500 border-gold-500 text-brand-charcoal font-bold shadow-lg"
+                                  ? "bg-[#7D96B5] border-[#7D96B5] text-white font-bold shadow-sm"
                                   : item.is_available
-                                  ? "bg-brand-charcoal border-brand-charcoal-border hover:border-gold-500/50 text-brand-champagne"
-                                  : "bg-brand-charcoal/40 border-brand-charcoal-border/40 text-brand-champagne/30 cursor-pointer line-through"
+                                  ? "bg-white border-[#DCE5EF] hover:border-[#7D96B5] text-[#202124]"
+                                  : "bg-[#F4F6FE]/40 border-[#DCE5EF]/40 text-[#525B66]/30 cursor-not-allowed line-through"
                               }`}
                             >
                               <span>#{item.item_number}</span>
@@ -342,14 +342,14 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                       : 0;
 
                     return (
-                      <div className={`flex flex-col gap-2 ${!isSingleProduct ? "mt-2 pt-4 border-t border-brand-charcoal-border/60" : ""}`}>
+                      <div className={`flex flex-col gap-2 ${!isSingleProduct ? "mt-2 pt-4 border-t border-[#c8d8f8]/60" : ""}`}>
                         {selectedItem.item_name && (
-                          <h4 className="font-serif text-lg text-brand-champagne font-medium">
+                          <h4 className="font-serif text-lg text-[#202124] font-medium">
                             {selectedItem.item_name}
                           </h4>
                         )}
                         <div className="flex flex-col gap-2 mt-1">
-                          <span className="text-xs uppercase tracking-widest text-brand-champagne/50 font-sans">
+                          <span className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold">
                             Price
                           </span>
                           <div className="flex items-baseline gap-3 flex-wrap">
@@ -358,7 +358,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                                 <span className="font-serif text-3xl text-[#7D96B5] font-bold tracking-wide">
                                   {formatPrice(discountedPrice)}
                                 </span>
-                                <span className="font-serif text-base text-brand-champagne/40 line-through font-normal">
+                                <span className="font-serif text-base text-[#525B66]/50 line-through font-normal">
                                   {formatPrice(originalPrice)}
                                 </span>
                                 <span className="bg-[#FFFFFF] text-[#CF6A6A] border border-[#CF6A6A]/30 text-[10px] uppercase font-sans font-extrabold px-2.5 py-1 tracking-wider shadow-xs">
@@ -379,7 +379,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                           )}
                         </div>
                         {selectedItem.notes && (
-                          <p className="text-xs text-gold-400/90 font-sans italic bg-brand-charcoal/60 p-2.5 border border-brand-charcoal-border/40 mt-1">
+                          <p className="text-xs text-[#7D96B5] font-sans italic bg-[#F4F6FE] p-2.5 border border-[#c8d8f8] mt-1">
                             Notes: {selectedItem.notes}
                           </p>
                         )}
@@ -387,48 +387,48 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     );
                   })()
                 ) : (
-                  <p className="text-xs text-amber-400 font-sans">Please select an item number above to view details and inquire.</p>
+                  <p className="text-xs text-amber-600 font-sans">Please select an item number above to view details and inquire.</p>
                 )}
               </div>
 
               {/* Listing Description */}
               <div>
-                <h3 className="text-xs uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold mb-2">
+                <h3 className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold mb-2">
                   Showcase Overview
                 </h3>
-                <p className="text-sm text-brand-champagne/80 font-sans leading-relaxed whitespace-pre-line font-light mb-3">
+                <p className="text-sm text-[#202124] font-sans leading-relaxed whitespace-pre-line font-light mb-3">
                   {listing.short_description}
                 </p>
                 {listing.full_description && (
-                  <p className="text-sm text-brand-champagne/60 font-sans leading-relaxed whitespace-pre-line font-light">
+                  <p className="text-sm text-[#525B66] font-sans leading-relaxed whitespace-pre-line font-light">
                     {listing.full_description}
                   </p>
                 )}
               </div>
 
               {/* Listing specifications table */}
-              <div className="border-t border-brand-charcoal-border/50 pt-6">
-                <h3 className="text-xs uppercase tracking-widest text-brand-champagne/50 font-sans font-semibold mb-3">
+              <div className="border-t border-[#c8d8f8]/50 pt-6">
+                <h3 className="text-xs uppercase tracking-widest text-[#525B66] font-sans font-semibold mb-3">
                   Specifications
                 </h3>
                 <dl className="grid grid-cols-2 gap-y-3 text-sm font-sans">
                   {listing.material && (
                     <>
-                      <dt className="text-brand-champagne/50">Metal / Materials</dt>
-                      <dd className="text-brand-champagne font-medium">{listing.material}</dd>
+                      <dt className="text-[#525B66]">Metal / Materials</dt>
+                      <dd className="text-[#202124] font-medium">{listing.material}</dd>
                     </>
                   )}
                   {listing.collection && (
                     <>
-                      <dt className="text-brand-champagne/50">Collection</dt>
-                      <dd className="text-brand-champagne font-medium">{listing.collection}</dd>
+                      <dt className="text-[#525B66]">Collection</dt>
+                      <dd className="text-[#202124] font-medium">{listing.collection}</dd>
                     </>
                   )}
                 </dl>
               </div>
 
               {/* Dynamic Cart & Action Buttons */}
-              <div className="border-t border-brand-charcoal-border/50 pt-6 flex flex-col gap-4">
+              <div className="border-t border-[#c8d8f8]/50 pt-6 flex flex-col gap-4">
                 <div className="flex flex-col gap-3">
                   {/* Add to Cart button */}
                   <Button
@@ -473,17 +473,17 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     size="md"
                     icon={shareCopied ? Check : Share2}
                     onClick={handleShare}
-                    className="w-full border border-brand-charcoal-border hover:border-gold-500/25 py-2.5 cursor-pointer"
+                    className="w-full border border-[#c8d8f8] hover:border-[#7D96B5] text-[#525B66] hover:text-[#7D96B5] bg-white py-2.5 cursor-pointer"
                   >
                     {shareCopied ? "Item Link Copied!" : "Share Item Link"}
                   </Button>
                 </div>
 
                 {/* Instruction card overlay */}
-                <div className="glass border border-gold-500/10 p-4 flex gap-3 text-xs text-brand-champagne/70 font-sans leading-relaxed">
-                  <Info className="w-5 h-5 text-gold-400 flex-shrink-0 mt-0.5" />
+                <div className="bg-[#e4eefe] border border-[#c8d8f8] p-4 flex gap-3 text-xs text-[#525B66] font-sans leading-relaxed shadow-xs">
+                  <Info className="w-5 h-5 text-[#7D96B5] flex-shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-gold-400 block mb-1">Manual Payment Checkout:</span>
+                    <span className="font-semibold text-[#202124] block mb-1">Manual Payment Checkout:</span>
                     Add your desired items to the cart and click checkout. You will be provided bank details and mobile accounts to manually transfer funds, and you will track your order using a generated Order ID.
                   </div>
                 </div>
@@ -493,8 +493,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
           {/* Related Listings list */}
           {relatedListings.length > 0 && (
-            <div className="border-t border-brand-charcoal-border/50 pt-16 mt-16">
-              <h2 className="font-serif text-2xl text-brand-champagne tracking-wide mb-8 font-medium">
+            <div className="border-t border-[#c8d8f8]/50 pt-16 mt-16">
+              <h2 className="font-serif text-2xl text-[#202124] tracking-wide mb-8 font-medium">
                 Related Collections
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

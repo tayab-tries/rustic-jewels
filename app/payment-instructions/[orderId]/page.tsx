@@ -155,7 +155,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
               Payment Transfer Accounts
             </h3>
 
-            <div className="bg-[#F8FAFD] border border-[#E1E8F1] p-6 flex flex-col gap-5">
+            <div className="bg-[#f2f6fa] border border-[#c8d8f8] p-6 flex flex-col gap-5">
               {/* Account Title (Shared) */}
               {settings?.account_title && (
                 <div className="flex justify-between items-center border-b border-[#E1E8F1] pb-4">
