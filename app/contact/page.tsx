@@ -105,7 +105,7 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             {/* Left side details (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-8 bg-brand-charcoal-light border border-brand-charcoal-border p-8 sm:p-10">
+            <div className="lg:col-span-5 flex flex-col gap-8 bg-[#E2EDFD] border border-[#c8d8f8] p-8 sm:p-10">
               <h2 className="font-serif text-2xl text-brand-champagne tracking-wide">
                 Direct Contact
               </h2>
@@ -161,7 +161,7 @@ export default function ContactPage() {
             </div>
 
             {/* Right side form input fields (7 cols) */}
-            <div className="lg:col-span-7 bg-brand-charcoal-light border border-brand-charcoal-border p-8 sm:p-10 flex flex-col gap-6">
+            <div className="lg:col-span-7 bg-[#E2EDFD] border border-[#c8d8f8] p-8 sm:p-10 flex flex-col gap-6">
               <h2 className="font-serif text-2xl text-brand-champagne tracking-wide">
                 Send an Inquiry Message
               </h2>

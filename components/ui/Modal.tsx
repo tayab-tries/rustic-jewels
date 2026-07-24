@@ -43,10 +43,10 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="relative w-full max-w-lg bg-brand-charcoal-light border border-brand-charcoal-border p-6 shadow-2xl z-10 overflow-hidden"
+            className="relative w-full max-w-lg bg-[#E2EDFD] border border-[#c8d8f8] p-6 shadow-2xl z-10 overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-brand-charcoal-border pb-4 mb-4">
+            <div className="flex items-center justify-between border-b border-[#c8d8f8] pb-4 mb-4">
               <h3 className="font-serif text-lg font-medium text-brand-champagne">{title}</h3>
               <button
                 onClick={onClose}
