@@ -111,7 +111,7 @@ export const orderService = {
   // Place a new order
   async createOrder(
     orderInput: Omit<Order, "id" | "order_id" | "created_at" | "updated_at" | "status" | "rejection_reason" | "items">,
-    cartItems: { listing_id: string; item_number: string; price: number; quantity: number }[]
+    cartItems: { listing_id: string; item_number: string; price: number; quantity: number; listing_title?: string; listing_image?: string }[]
   ): Promise<Order | null> {
     const order_id = await this.generateOrderId();
     const created_at = new Date().toISOString();
@@ -181,6 +181,8 @@ export const orderService = {
       item_number: item.item_number,
       price: item.price,
       quantity: item.quantity,
+      listing_title: item.listing_title || "Unknown Piece",
+      listing_image: item.listing_image || "/placeholder-jewelry.jpg",
     }));
 
     const { error: itemsError } = await supabase
