@@ -279,7 +279,7 @@ ON public.orders FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (
 
 DROP POLICY IF EXISTS "Allow anyone to insert orders" ON public.orders;
 CREATE POLICY "Allow anyone to insert orders" 
-ON public.orders FOR INSERT WITH CHECK (true);
+ON public.orders FOR INSERT TO anon, authenticated WITH CHECK (true);
 
 -- Order Items Policies
 DROP POLICY IF EXISTS "Allow authenticated admins read/write access to order_items" ON public.order_items;
@@ -288,7 +288,7 @@ ON public.order_items FOR ALL TO authenticated USING (public.is_admin()) WITH CH
 
 DROP POLICY IF EXISTS "Allow anyone to insert order_items" ON public.order_items;
 CREATE POLICY "Allow anyone to insert order_items" 
-ON public.order_items FOR INSERT WITH CHECK (true);
+ON public.order_items FOR INSERT TO anon, authenticated WITH CHECK (true);
 
 -- Order tracking search function (Aggregates order items and listing info securely)
 CREATE OR REPLACE FUNCTION public.get_orders_by_search(p_order_id text, p_phone text, p_email text)
