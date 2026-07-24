@@ -109,6 +109,8 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     item_number TEXT NOT NULL,
     price NUMERIC NOT NULL,
     quantity INTEGER NOT NULL DEFAULT 1,
+    listing_title TEXT NOT NULL,
+    listing_image TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
