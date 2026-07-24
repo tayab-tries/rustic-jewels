@@ -270,7 +270,7 @@ export default function Home() {
         </section>
 
         {/* INSTAGRAM PURCHASE FLOW SECTION */}
-        <section className="py-24 bg-[#f2f5fe] border-t border-border relative overflow-hidden">
+        <section className="py-24 bg-[#E2EDFE] border-t border-border relative overflow-hidden">
           <div className="absolute right-0 bottom-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           
           <div className="max-w-5xl mx-auto px-6 text-center relative z-10 flex flex-col items-center gap-6">

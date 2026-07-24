@@ -125,7 +125,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
             </div>
 
             {/* Display Order ID & Total */}
-            <div className="w-full max-w-md bg-[#F8FAFD] border border-[#E1E8F1] p-5 mt-4 flex flex-col gap-4">
+            <div className="w-full max-w-md bg-[#E2EDFE] border border-[#c8d8f8] p-5 mt-4 flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <span className="text-[10px] uppercase tracking-widest text-text-muted font-sans text-center">Order ID Reference</span>
                 <div className="flex items-center justify-center gap-2 bg-[#FFFFFF] border border-[#DCE5EF]/50 py-2.5 px-4 max-w-sm mx-auto w-full">
@@ -155,7 +155,7 @@ export default function PaymentInstructionsPage({ params }: PaymentInstructionsP
               Payment Transfer Accounts
             </h3>
 
-            <div className="bg-[#f2f6fa] border border-[#c8d8f8] p-6 flex flex-col gap-5">
+            <div className="bg-[#E2EDFE] border border-[#c8d8f8] p-6 flex flex-col gap-5">
               {/* Account Title (Shared) */}
               {settings?.account_title && (
                 <div className="flex justify-between items-center border-b border-[#E1E8F1] pb-4">
