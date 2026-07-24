@@ -55,11 +55,10 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 ${
-          scrolled
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 ${scrolled
             ? "glass py-4 shadow-lg border-b border-brand-charcoal-border/50"
             : "bg-transparent py-6"
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
@@ -80,9 +79,8 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`font-sans text-xs uppercase tracking-widest transition-colors duration-200 relative py-1 ${
-                    isActive ? "text-[#7D96B5] font-medium" : "text-[#525B66] hover:text-[#202124]"
-                  }`}
+                  className={`font-sans text-xs uppercase tracking-widest transition-colors duration-200 relative py-1 ${isActive ? "text-[#7D96B5] font-medium" : "text-[#525B66] hover:text-[#202124]"
+                    }`}
                 >
                   {link.name}
                   {isActive && (
@@ -194,9 +192,8 @@ export default function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      className={`font-serif text-3xl tracking-wider ${
-                        isActive ? "text-[#7D96B5] font-medium" : "text-[#525B66] hover:text-[#202124]"
-                      }`}
+                      className={`font-serif text-3xl tracking-wider ${isActive ? "text-[#7D96B5] font-medium" : "text-[#525B66] hover:text-[#202124]"
+                        }`}
                     >
                       {link.name}
                     </Link>

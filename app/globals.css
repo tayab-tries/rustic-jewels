@@ -13,7 +13,7 @@
   --color-card: #FFFFFF;
   --color-card-hover: #FBFCFE;
   --color-card-border: #DCE5EF;
-  --color-card-shadow: rgba(16,24,40,0.06);
+  --color-card-shadow: rgba(16, 24, 40, 0.06);
 
   --color-primary: #7D96B5;
   --color-primary-hover: #6D88AA;
@@ -111,8 +111,10 @@
 }
 
 :root {
-  --background: #F8FAFD; /* Clean Airy Background */
-  --foreground: #525B66; /* Default body text color */
+  --background: #F8FAFD;
+  /* Clean Airy Background */
+  --foreground: #525B66;
+  /* Default body text color */
 }
 
 body {
@@ -124,7 +126,12 @@ body {
   position: relative;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif), Georgia, serif;
   font-weight: 600;
   color: #202124;
@@ -158,13 +165,16 @@ body::before {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #F8FAFD;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #D8E1EB;
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #7D96B5;
 }
@@ -182,6 +192,7 @@ textarea {
   border: 1px solid #D8E1EB;
   border-radius: 0;
 }
+
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="number"]:focus,
@@ -193,6 +204,7 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(125, 150, 181, 0.20);
   outline: none;
 }
+
 input[type="text"]::placeholder,
 input[type="email"]::placeholder,
 input[type="number"]::placeholder,
@@ -228,4 +240,3 @@ textarea::placeholder {
   background-color: #F8FAFD;
   background-image: none;
 }
-

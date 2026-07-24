@@ -45,18 +45,18 @@ export default function Card({ product }: CardProps) {
 
   const formattedOriginal = originalMinPrice > 0
     ? new Intl.NumberFormat("en-PK", {
-        style: "currency",
-        currency: "PKR",
-        maximumFractionDigits: 0,
-      }).format(originalMinPrice)
+      style: "currency",
+      currency: "PKR",
+      maximumFractionDigits: 0,
+    }).format(originalMinPrice)
     : "";
 
   const formattedDiscounted = discountedMinPrice > 0
     ? new Intl.NumberFormat("en-PK", {
-        style: "currency",
-        currency: "PKR",
-        maximumFractionDigits: 0,
-      }).format(discountedMinPrice)
+      style: "currency",
+      currency: "PKR",
+      maximumFractionDigits: 0,
+    }).format(discountedMinPrice)
     : "";
 
   return (
@@ -83,7 +83,7 @@ export default function Card({ product }: CardProps) {
             </div>
           )
         )}
-        
+
         {listing.featured && (
           <div className="absolute top-3 right-3 z-10 bg-[#7D96B5] text-[#FFFFFF] px-3 py-1 text-xs uppercase tracking-widest font-sans font-bold shadow-xs">
             Featured
@@ -126,13 +126,13 @@ export default function Card({ product }: CardProps) {
         <span className="text-xs uppercase tracking-widest text-[#7D8794] font-sans mb-1.5 line-clamp-1 font-medium">
           {listing.categories?.map((c) => c.name).join(", ") || "Fine Jewellery"}
         </span>
-        
+
         <Link href={`/products/${listing.slug}`} className="block">
           <h3 className="font-serif text-lg text-[#202124] hover:text-[#7D96B5] transition-colors duration-200 line-clamp-1 mb-1 font-medium">
             {listing.title}
           </h3>
         </Link>
-        
+
         {/* Material & Collection Details */}
         {(listing.material || listing.collection) && (
           <p className="text-xs text-[#7D8794] font-sans line-clamp-1 mb-3">
@@ -167,7 +167,7 @@ export default function Card({ product }: CardProps) {
               </span>
             )}
           </div>
-          
+
           <Link
             href={`/products/[slug]`}
             as={`/products/${listing.slug}`}

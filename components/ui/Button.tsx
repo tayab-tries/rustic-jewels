@@ -22,7 +22,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const baseStyles = "inline-flex items-center justify-center font-sans font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#7D96B5]/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
-  
+
   const variants = {
     primary: "bg-[#7D96B5] hover:bg-[#6D88AA] active:bg-[#5D7899] text-[#FFFFFF] font-medium border-0 shadow-xs",
     secondary: "bg-transparent hover:bg-[#F3F6FA] text-[#202124] border border-[#202124] hover:border-[#525B66] hover:text-[#525B66]",
@@ -50,13 +50,13 @@ export default function Button({
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
       )}
-      
+
       {!isLoading && Icon && iconPosition === "left" && (
         <Icon className="w-4 h-4 mr-2" />
       )}
-      
+
       <span>{children}</span>
-      
+
       {!isLoading && Icon && iconPosition === "right" && (
         <Icon className="w-4 h-4 ml-2" />
       )}

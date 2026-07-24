@@ -21,6 +21,19 @@ function setLocalOrders(orders: Order[]) {
   localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify(orders));
 }
 
+// Helper to generate UUID v4
+function generateUUID(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback RFC4122 version 4 compliant UUID generator
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export const orderService = {
   // Generate unique sequential order ID: RJ-YEAR-000001
   async generateOrderId(): Promise<string> {
@@ -38,35 +51,59 @@ export const orderService = {
       const startOfYear = `${currentYear}-01-01T00:00:00.000Z`;
       const endOfYear = `${currentYear}-12-31T23:59:59.999Z`;
 
-      const { count, error } = await supabase
-        .from("orders")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", startOfYear)
-        .lte("created_at", endOfYear);
+      let count: number | null = null;
+      try {
+        const { count: fetchedCount, error } = await supabase
+          .from("orders")
+          .select("id", { count: "exact", head: true })
+          .gte("created_at", startOfYear)
+          .lte("created_at", endOfYear);
+        
+        if (!error) {
+          count = fetchedCount;
+        }
+      } catch (e) {
+        // Ignore RLS error and keep count as null
+      }
 
-      if (error) throw error;
-      const nextSeq = (count || 0) + 1;
+      let checkSeq: number;
+      if (count !== null && count !== undefined) {
+        checkSeq = count + 1;
+      } else {
+        // Fallback for guest users with no select permission: use timestamp
+        checkSeq = (Date.now() % 1000000) || 1;
+      }
       
       // Let's verify if this order_id already exists to prevent race condition duplicate key errors
       let attempts = 0;
-      let checkSeq = nextSeq;
       while (attempts < 10) {
         const testId = `${prefix}${String(checkSeq).padStart(6, "0")}`;
-        const { data } = await supabase
-          .from("orders")
-          .select("id")
-          .eq("order_id", testId)
-          .maybeSingle();
         
-        if (!data) {
+        // Use SECURE stored procedure to check if order exists (works for guests!)
+        const { data, error: rpcError } = await supabase.rpc("get_orders_by_search", {
+          p_order_id: testId,
+          p_phone: "",
+          p_email: "",
+        });
+        
+        if (!rpcError && (!data || data.length === 0)) {
           return testId;
         }
-        checkSeq++;
+        
+        // If it exists or error, try the next number
+        if (count !== null && count !== undefined) {
+          checkSeq++;
+        } else {
+          // If using timestamp-based sequence, select a new one or increment
+          checkSeq = (checkSeq + 1) % 1000000;
+        }
         attempts++;
       }
-      return `${prefix}${String(nextSeq + Math.floor(Math.random() * 1000)).padStart(6, "0")}`;
+      // Ultimate fallback: timestamp with a 3-digit random suffix
+      const randomSuffix = Math.floor(Math.random() * 1000);
+      return `${prefix}${String((Date.now() % 1000) * 1000 + randomSuffix).padStart(6, "0")}`;
     } catch (err) {
-      console.error("Error generating Order ID from Supabase, using timestamp fallback", err);
+      console.error("Error generating Order ID from Supabase", err);
       return `${prefix}${String(Date.now() % 1000000).padStart(6, "0")}`;
     }
   },
@@ -109,11 +146,15 @@ export const orderService = {
       return newOrder;
     }
 
+    // Generate UUID on client to avoid INSERT RETURNING RLS SELECT check failure for guests
+    const id = generateUUID();
+
     // Live mode save: insert Order row
-    const { data: newOrderRow, error: orderError } = await supabase
+    const { error: orderError } = await supabase
       .from("orders")
       .insert([
         {
+          id, // Pass generated UUID
           order_id,
           customer_name: orderInput.customer_name,
           phone: orderInput.phone,
@@ -126,18 +167,16 @@ export const orderService = {
           total: orderInput.total,
           status,
         },
-      ])
-      .select()
-      .single();
+      ]);
 
-    if (orderError || !newOrderRow) {
+    if (orderError) {
       console.error("Failed to insert order in Supabase", orderError);
       return null;
     }
 
     // Insert Order items rows
     const itemsToInsert = cartItems.map((item) => ({
-      order_id: newOrderRow.id,
+      order_id: id,
       listing_id: item.listing_id,
       item_number: item.item_number,
       price: item.price,
@@ -151,12 +190,29 @@ export const orderService = {
     if (itemsError) {
       console.error("Failed to insert order items in Supabase", itemsError);
       // Delete order row on item insertion failure to maintain transactional integrity
-      await supabase.from("orders").delete().eq("id", newOrderRow.id);
+      await supabase.from("orders").delete().eq("id", id);
       return null;
     }
 
-    // Return full order details
-    return this.getOrderById(newOrderRow.id);
+    // Return locally constructed order details for immediate flow progression
+    const newOrder: Order = {
+      ...orderInput,
+      id,
+      order_id,
+      status,
+      created_at,
+      updated_at,
+      items: cartItems.map((item, idx) => ({
+        id: `oi-${id}-${idx}`,
+        order_id: id,
+        listing_id: item.listing_id,
+        item_number: item.item_number,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    };
+
+    return newOrder;
   },
 
   // Get single order with items
@@ -212,41 +268,31 @@ export const orderService = {
       return orders.find((o) => o.order_id === orderId) || null;
     }
 
-    const { data, error } = await supabase
-      .from("orders")
-      .select(`
-        *,
-        order_items (
-          *,
-          listings (
-            title,
-            featured_image
-          )
-        )
-      `)
-      .eq("order_id", orderId)
-      .maybeSingle();
+    try {
+      // Use SECURE stored procedure to load order details (works for guests!)
+      const { data, error } = await supabase.rpc("get_orders_by_search", {
+        p_order_id: orderId,
+        p_phone: "",
+        p_email: "",
+      });
 
-    if (error || !data) {
+      if (error) throw error;
+      if (!data || data.length === 0) return null;
+
+      const order = data[0];
+      // Ensure order_id is present inside each item for full compatibility
+      if (order && order.items) {
+        order.items = order.items.map((item: any) => ({
+          ...item,
+          order_id: order.id,
+        }));
+      }
+
+      return order as Order;
+    } catch (err) {
+      console.error("Error loading order by order_id from RPC", err);
       return null;
     }
-
-    const formattedItems = (data.order_items || []).map((oi: any) => ({
-      id: oi.id,
-      order_id: oi.order_id,
-      listing_id: oi.listing_id,
-      item_number: oi.item_number,
-      price: oi.price,
-      quantity: oi.quantity,
-      listing_title: oi.listings?.title || "Unknown Piece",
-      listing_image: oi.listings?.featured_image || "/placeholder-jewelry.jpg",
-    }));
-
-    const { order_items, ...rest } = data;
-    return {
-      ...rest,
-      items: formattedItems,
-    } as Order;
   },
 
   // Public Order Tracking
