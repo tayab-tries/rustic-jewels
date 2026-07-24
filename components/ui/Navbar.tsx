@@ -55,9 +55,9 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 ${scrolled
-            ? "glass py-4 shadow-lg border-b border-brand-charcoal-border/50"
-            : "bg-transparent py-6"
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 bg-[#e2edfe] border-b border-[#c8d8f8]/50 ${scrolled
+            ? "py-4 shadow-md"
+            : "py-6"
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -164,7 +164,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 top-[73px] z-35 bg-[#F8FAFD] glass flex flex-col md:hidden"
+            className="fixed inset-0 top-[73px] z-35 bg-[#e2edfe] flex flex-col md:hidden"
           >
             {/* Mobile Search Input */}
             <div className="px-8 pt-6 w-full">
