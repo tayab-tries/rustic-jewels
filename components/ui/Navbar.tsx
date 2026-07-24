@@ -56,9 +56,10 @@ export default function Navbar() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 ${scrolled
-            ? "bg-[#e2edfe] py-4 shadow-md border-b border-[#c8d8f8]/50"
-            : "bg-transparent py-6"
+            ? "py-4 shadow-md border-b border-[#c8d8f8]/50"
+            : "py-6 border-b border-transparent"
           }`}
+        style={{ backgroundColor: scrolled ? "#E2EDFE" : "transparent" }}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
@@ -164,7 +165,8 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 top-[73px] z-35 bg-[#e2edfe] flex flex-col md:hidden"
+            className="fixed inset-0 top-[73px] z-35 flex flex-col md:hidden"
+            style={{ backgroundColor: "#E2EDFE" }}
           >
             {/* Mobile Search Input */}
             <div className="px-8 pt-6 w-full">
