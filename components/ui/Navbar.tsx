@@ -55,9 +55,9 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 bg-[#e2edfe] border-b border-[#c8d8f8]/50 ${scrolled
-            ? "py-4 shadow-md"
-            : "py-6"
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-350 ${scrolled
+            ? "bg-[#e2edfe] py-4 shadow-md border-b border-[#c8d8f8]/50"
+            : "bg-transparent py-6"
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
