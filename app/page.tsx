@@ -191,8 +191,19 @@ export default function Home() {
         </section>
 
         {/* NEWEST PRODUCTS ARRIVALS SECTION */}
-        <section className="py-24 bg-[#e6eefe] border-b border-border">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="relative py-24 bg-[#e6eefe] border-b border-border overflow-hidden">
+          {/* Background image overlay */}
+          <div className="absolute inset-0 z-0 opacity-[0.12] pointer-events-none mix-blend-multiply">
+            <img
+              src="/bg-arrivals.png"
+              alt=""
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+          {/* Gradient overlay for readability/depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#e6eefe]/50 via-transparent to-[#e6eefe]/50 z-0 pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
             <div className="flex flex-col md:flex-row items-center md:items-end justify-between text-center md:text-left gap-6 mb-16">
               <div className="flex flex-col items-center md:items-start">
                 <span className="text-xs uppercase tracking-widest text-text-muted font-sans font-semibold">
@@ -271,7 +282,17 @@ export default function Home() {
 
         {/* INSTAGRAM PURCHASE FLOW SECTION */}
         <section className="py-24 bg-[#E2EDFE] border-t border-border relative overflow-hidden">
-          <div className="absolute right-0 bottom-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          {/* Background image overlay */}
+          <div className="absolute inset-0 z-0 opacity-[0.12] pointer-events-none mix-blend-multiply">
+            <img
+              src="/bg-instagram.png"
+              alt=""
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+          {/* Gradient overlay for readability/depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#E2EDFE]/50 via-transparent to-[#E2EDFE]/50 z-0 pointer-events-none" />
+          <div className="absolute right-0 bottom-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl z-0" />
           
           <div className="max-w-5xl mx-auto px-6 text-center relative z-10 flex flex-col items-center gap-6">
             <span className="text-xs uppercase tracking-widest text-text-muted font-sans font-semibold">
